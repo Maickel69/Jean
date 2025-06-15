@@ -1,0 +1,412 @@
+════════════════════════════════════════════════════════════════════════════════════════
+                          🎓 SISTEMA DE GESTIÓN ESCOLAR (SGE)
+                              USUARIOS DE PRUEBA - CREDENCIALES
+════════════════════════════════════════════════════════════════════════════════════════
+
+📅 Fecha de actualización: Diciembre 2024
+🌐 URL del sistema: http://127.0.0.1:5000
+🔐 Todas las contraseñas: 123456 (excepto admin: admin123)
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                    🔑 ADMINISTRADOR
+════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 👑 ADMINISTRADOR - ADMINISTRADOR DEL SISTEMA                                        │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔑 Usuario:     admin                                                               │
+│ 🔒 Contraseña:  admin123                                                            │
+│ 📧 Email:       admin@email.com                                                     │
+│ 📱 Teléfono:    987654320                                                           │
+│ 🏛️ Rol:         Administrador del Sistema                                           │
+│                                                                                     │
+│ 🎯 FUNCIONALIDADES ADMINISTRATIVAS:                                                 │
+│   ✅ Dashboard con estadísticas del sistema                                         │
+│   ✅ Gestión completa de usuarios (CRUD)                                            │
+│     • Crear, editar y eliminar padres                                              │
+│     • Crear, editar y eliminar docentes                                            │
+│     • Crear, editar y eliminar estudiantes                                         │
+│   ✅ Gestión académica                                                              │
+│     • Administrar cursos y asignaturas                                             │
+│     • Configurar grados y secciones                                                │
+│     • Asignar docentes a cursos                                                    │
+│   ✅ Gestión de códigos automáticos                                                 │
+│     • Sistema de códigos EST-YYYY-#### para estudiantes                            │
+│     • Sistema de códigos DOC-YYYY-#### para docentes                               │
+│     • Sistema de códigos PAD-YYYY-#### para padres                                 │
+│   ✅ Reportes y estadísticas                                                        │
+│     • Total de usuarios por tipo                                                   │
+│     • Información consolidada del sistema                                          │
+│   ✅ Configuración del sistema                                                      │
+│     • Parámetros generales                                                         │
+│     • Configuración de seguridad                                                   │
+│                                                                                     │
+│ 🚨 PRIVILEGIOS ESPECIALES:                                                          │
+│   • Acceso completo a todos los módulos                                            │
+│   • Capacidad de crear y eliminar usuarios                                         │
+│   • Configuración de parámetros del sistema                                        │
+│   • Generación de reportes consolidados                                            │
+│   • Administración de códigos automáticos (/admin/codes)                           │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                   👨‍👩‍👧‍👦 PADRES DE FAMILIA
+════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 👤 PADRE REAL - MARIA GONZALES VERA (RAZOKY)                                        │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔑 Usuario:     Razoky                                                              │
+│ 🔒 Contraseña:  123456                                                              │
+│ 📧 Email:       maicolalverto158@gmail.com                                          │
+│ 📱 Teléfono:    928529256                                                           │
+│ 🏷️ Código:      PAD-2025-0004                                                       │
+│ 👶 Hijos:       1 estudiante                                                        │
+│                                                                                     │
+│ 📚 ESTUDIANTE ASOCIADO:                                                             │
+│   • Jhordy James Gonzales Flores (21221045)                                        │
+│     - Grado: 6to Primaria - Sección C                                              │
+│     - Fecha nacimiento: 21/05/2015                                                 │
+│     - Edad: 9 años                                                                 │
+│                                                                                     │
+│ 🎯 FUNCIONALIDADES DISPONIBLES:                                                     │
+│   ✅ Panel principal con información de su hijo                                     │
+│   ✅ Consulta de cursos y detalles académicos                                       │
+│   ✅ Visualización de notas y evaluaciones                                          │
+│   ✅ Registro de asistencias diarias                                                │
+│   ✅ Reuniones programadas con docentes                                             │
+│   ✅ Comunicados institucionales                                                    │
+│   ✅ Estado de cuotas y pagos                                                       │
+│   ✅ Chat directo con docentes                                                      │
+│   ✅ Información de contacto de docentes                                            │
+│                                                                                     │
+│ 📝 NOTA: Usuario real registrado en el sistema                                      │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 👤 PADRE TEST 1 - PADRE DE PRUEBA 1                                                 │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔑 Usuario:     padre_test_1                                                        │
+│ 🔒 Contraseña:  123456                                                              │
+│ 📧 Email:       padre_test_1@test.com                                               │
+│ 📱 Teléfono:    N/A                                                                 │
+│ 🏷️ Código:      PAD-2025-0001                                                       │
+│ 👶 Hijos:       2 estudiantes                                                       │
+│                                                                                     │
+│ 📚 ESTUDIANTES ASOCIADOS:                                                           │
+│   • Estudiante de Prueba 1 (EST-2025-0001)                                         │
+│   • Estudiante de Prueba 4 (EST-2025-0004)                                         │
+│                                                                                     │
+│ 📝 NOTA: Usuario de prueba del sistema                                              │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 👤 PADRE TEST 2 - PADRE DE PRUEBA 2                                                 │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔑 Usuario:     padre_test_2                                                        │
+│ 🔒 Contraseña:  123456                                                              │
+│ 📧 Email:       padre_test_2@test.com                                               │
+│ 📱 Teléfono:    N/A                                                                 │
+│ 🏷️ Código:      PAD-2025-0002                                                       │
+│ 👶 Hijos:       2 estudiantes                                                       │
+│                                                                                     │
+│ 📚 ESTUDIANTES ASOCIADOS:                                                           │
+│   • Estudiante de Prueba 2 (EST-2025-0002)                                         │
+│   • Estudiante de Prueba 5 (EST-2025-0005)                                         │
+│                                                                                     │
+│ 📝 NOTA: Usuario de prueba del sistema                                              │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 👤 PADRE TEST 3 - PADRE DE PRUEBA 3                                                 │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔑 Usuario:     padre_test_3                                                        │
+│ 🔒 Contraseña:  123456                                                              │
+│ 📧 Email:       padre_test_3@test.com                                               │
+│ 📱 Teléfono:    N/A                                                                 │
+│ 🏷️ Código:      PAD-2025-0003                                                       │
+│ 👶 Hijos:       1 estudiante                                                        │
+│                                                                                     │
+│ 📚 ESTUDIANTE ASOCIADO:                                                             │
+│   • Estudiante de Prueba 3 (EST-2025-0003)                                         │
+│                                                                                     │
+│ 📝 NOTA: Usuario de prueba del sistema                                              │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                     👨‍🏫 DOCENTES
+════════════════════════════════════════════════════════════════════════════════════════
+
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ 👩‍🏫 DOCENTE REAL - ELISABET (ELI)                                                   │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│ 🔑 Usuario:      eli                                                                │
+│ 🔒 Contraseña:   123456                                                             │
+│ 📧 Email:        mamdad@gmial.com                                                   │
+│ 📱 Teléfono:     N/A                                                                │
+│ 🏷️ Código:       DOC-2025-0001                                                      │
+│ 🎓 Especialidad: calculo                                                            │
+│ 📜 Título:       Sin título                                                         │
+│ 💼 Experiencia:  0 años                                                             │
+│ 🕐 Horario:      Sin horario                                                        │
+│                                                                                     │
+│ 📚 CURSOS ASIGNADOS:                                                                │
+│   • Total de cursos: 5 cursos                                                      │
+│     - Curso específico: Por determinar                                             │
+│                                                                                     │
+│ 🎯 FUNCIONALIDADES DISPONIBLES:                                                     │
+│   ✅ Dashboard docente con estadísticas                                             │
+│   ✅ Gestión de múltiples cursos                                                    │
+│   ✅ Control de asistencia diaria                                                   │
+│   ✅ Registro y edición de notas                                                    │
+│   ✅ Creación de comunicados                                                        │
+│   ✅ Chat con padres de familia                                                     │
+│   ✅ Programación de reuniones                                                      │
+│   ✅ Generación de reportes                                                         │
+│                                                                                     │
+│ 📝 NOTA: Usuario real registrado en el sistema                                      │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+
+════════════════════════════════════════════════════════════════════════════════════════
+                            🔢 SISTEMA DE CÓDIGOS AUTOMÁTICOS
+════════════════════════════════════════════════════════════════════════════════════════
+
+🎯 IMPLEMENTACIÓN COMPLETA:
+├─ ✅ Estudiantes: EST-YYYY-#### (EST-2025-0001, EST-2025-0002...)
+├─ ✅ Docentes: DOC-YYYY-#### (DOC-2025-0001, DOC-2025-0002...)
+├─ ✅ Padres: PAD-YYYY-#### (PAD-2025-0001, PAD-2025-0002...)
+├─ ✅ Cursos: MATERIA-GRADO-SECCION (MAT-5-A, CIE-6-B...)
+
+🔧 CARACTERÍSTICAS:
+├─ Generación automática al crear usuarios
+├─ Validación de unicidad
+├─ Numeración secuencial por año
+├─ Regeneración de códigos faltantes
+├─ Panel de administración en /admin/codes
+
+📊 ESTADÍSTICAS DE CÓDIGOS ACTUALES:
+├─ Padres: 4 códigos generados (PAD-2025-0001 a PAD-2025-0004)
+├─ Docentes: 1 código generado (DOC-2025-0001)
+├─ Estudiantes: 6 códigos generados (incluyendo legados como 21221045)
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                📊 DATOS DE PRUEBA INCLUIDOS
+════════════════════════════════════════════════════════════════════════════════════════
+
+📝 NOTAS DE EJEMPLO:
+├─ Sistema preparado para evaluaciones
+├─ Base de datos configurada para notas por bimestre
+├─ Escalas de calificación 0-20
+
+📅 ASISTENCIAS:
+├─ Sistema de registro diario
+├─ Estados: presente, ausente, tardanza, justificado
+├─ Reportes automáticos de asistencia
+
+📢 COMUNICADOS:
+├─ Sistema de notificaciones entre docentes y padres
+├─ Clasificación por prioridad
+├─ Historial de comunicados
+
+💰 CUOTAS Y PAGOS:
+├─ Gestión de mensualidades
+├─ Control de estado de pagos
+├─ Notificaciones automáticas
+
+🤝 REUNIONES:
+├─ Programación de citas con padres
+├─ Modalidades: Presencial y Virtual
+├─ Sistema de recordatorios
+
+💬 CHAT:
+├─ Mensajería en tiempo real
+├─ Comunicación por curso específico
+├─ Historial completo de conversaciones
+
+════════════════════════════════════════════════════════════════════════════════════════
+                            🔧 INSTRUCCIONES DE PRUEBA PARA ADMIN
+════════════════════════════════════════════════════════════════════════════════════════
+
+🧪 PASOS PARA PROBAR EL SISTEMA ADMINISTRATIVO:
+
+1️⃣ ACCESO AL SISTEMA:
+   • Ir a http://127.0.0.1:5000
+   • Iniciar sesión con: admin / admin123
+   • Verificar redirección automática al dashboard admin
+
+2️⃣ DASHBOARD ADMINISTRATIVO:
+   • Verificar estadísticas del sistema
+   • Comprobar contadores de usuarios
+   • Navegar por las diferentes secciones
+
+3️⃣ GESTIÓN DE CÓDIGOS AUTOMÁTICOS:
+   • Acceder a /admin/codes
+   • Verificar estadísticas de códigos generados
+   • Probar regeneración de códigos faltantes
+   • Buscar usuarios por código
+   • Validar integridad del sistema
+
+4️⃣ GESTIÓN DE PADRES:
+   • Crear nuevo padre de familia
+   • Verificar generación automática de código PAD-YYYY-####
+   • Editar información existente
+   • Eliminar padre (verificar confirmación)
+   • Probar búsqueda en tiempo real
+
+5️⃣ GESTIÓN DE DOCENTES:
+   • Crear nuevo docente con especialidad
+   • Verificar generación automática de código DOC-YYYY-####
+   • Editar información académica
+   • Eliminar docente (verificar restricciones)
+   • Validar campos de especialidad y título
+
+6️⃣ GESTIÓN DE ESTUDIANTES:
+   • Crear estudiante asociado a padre
+   • Verificar generación automática de código EST-YYYY-####
+   • Configurar grado y sección
+   • Editar información personal
+   • Eliminar estudiante
+
+7️⃣ GESTIÓN DE CURSOS:
+   • Crear curso con docente asignado
+   • Verificar generación automática de código de curso
+   • Configurar grado, sección y créditos
+   • Editar información del curso
+   • Eliminar curso
+
+🎯 CARACTERÍSTICAS TÉCNICAS IMPLEMENTADAS:
+   ✅ Autenticación con decorador @admin_required
+   ✅ Redirección automática después del login
+   ✅ Sistema de códigos automáticos completamente funcional
+   ✅ Interfaz con gradientes animados y efectos glass-morphism
+   ✅ Tablas responsivas con hover effects
+   ✅ Modales de confirmación para eliminaciones
+   ✅ Validación en tiempo real de formularios
+   ✅ Búsqueda instantánea en todas las listas
+   ✅ Iconos Font Awesome para mejor UX
+   ✅ Animaciones AOS (Animate On Scroll)
+   ✅ Diseño mobile-first responsive
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                🚀 INSTRUCCIONES DE USO
+════════════════════════════════════════════════════════════════════════════════════════
+
+1️⃣ INICIALIZAR BASE DE DATOS:
+   > python init_db.py
+
+2️⃣ EJECUTAR EL SERVIDOR:
+   > python run.py
+
+3️⃣ ACCEDER AL SISTEMA:
+   🌐 Abrir navegador en: http://127.0.0.1:5000
+
+4️⃣ PROBAR FUNCIONALIDADES:
+   
+   👑 COMO ADMINISTRADOR:
+   ├─ Usar credenciales: admin / admin123
+   ├─ Acceder al panel de administración
+   ├─ Gestionar usuarios (padres, docentes, estudiantes)
+   ├─ Administrar cursos y configuración académica
+   ├─ Administrar códigos automáticos en /admin/codes
+   ├─ Visualizar estadísticas del sistema
+   ├─ Crear/editar/eliminar registros
+   └─ Configurar parámetros del sistema
+   
+   👨‍👩‍👧‍👦 COMO PADRE REAL (RAZOKY):
+   ├─ Usar credenciales: Razoky / 123456
+   ├─ Ver información de Jhordy James Gonzales Flores
+   ├─ Explorar todas las secciones del menú
+   ├─ Probar chat con docentes
+   └─ Revisar comunicados y cuotas
+   
+   👨‍🏫 COMO DOCENTE REAL (ELI):
+   ├─ Usar credenciales: eli / 123456
+   ├─ Acceder a gestión de cursos
+   ├─ Registrar asistencias
+   ├─ Ingresar notas y evaluaciones
+   ├─ Crear comunicados
+   └─ Usar chat con padres
+   
+   🧪 COMO USUARIOS DE PRUEBA:
+   ├─ padre_test_1, padre_test_2, padre_test_3 / 123456
+   └─ Probar todas las funcionalidades del sistema
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                  ⚠️ NOTAS IMPORTANTES
+════════════════════════════════════════════════════════════════════════════════════════
+
+🔒 SEGURIDAD:
+├─ Estas son credenciales de PRUEBA únicamente
+├─ NO usar en producción
+├─ Cambiar contraseñas en ambiente real
+
+🛠️ DESARROLLO:
+├─ Base de datos SQLite (school.db)
+├─ Modo DEBUG activado
+├─ Hot reload habilitado
+├─ Puerto 5000 por defecto
+
+📱 COMPATIBILIDAD:
+├─ Chrome, Firefox, Safari, Edge
+├─ Responsive para móviles y tablets
+├─ Optimizado para pantallas HD y 4K
+
+🎨 PERSONALIZACIÓN:
+├─ Variables CSS en :root para fácil customización
+├─ Paleta de colores moderna
+├─ Componentes modulares
+├─ Fácil extensión de funcionalidades
+
+════════════════════════════════════════════════════════════════════════════════════════
+                              📞 SOPORTE Y DOCUMENTACIÓN
+════════════════════════════════════════════════════════════════════════════════════════
+
+📚 ARQUITECTURA:
+├─ Flask + SQLAlchemy ORM
+├─ Patrón Repository
+├─ Blueprint modular
+├─ Templates Jinja2
+├─ Bootstrap 5 + CSS custom
+├─ Sistema de códigos automáticos integrado
+
+🔧 ESTRUCTURA:
+├─ app/models/ - Modelos de datos con códigos automáticos
+├─ app/routes/ - Controladores con validación de códigos
+├─ app/templates/ - Vistas HTML responsivas
+├─ app/repositories/ - Acceso a datos y gestión de códigos
+├─ app/utils/ - Generador de códigos automáticos
+└─ static/ - Recursos estáticos
+
+💡 NUEVAS CARACTERÍSTICAS:
+├─ Sistema de códigos automáticos completamente funcional
+├─ Panel de administración de códigos (/admin/codes)
+├─ Generación automática al crear usuarios
+├─ Validación de unicidad y secuencialidad
+├─ Reportes y estadísticas de códigos
+├─ Búsqueda universal por código
+├─ Regeneración de códigos faltantes
+
+════════════════════════════════════════════════════════════════════════════════════════
+                                    🎉 ¡SISTEMA ACTUALIZADO!
+════════════════════════════════════════════════════════════════════════════════════════
+
+El sistema ha sido actualizado con los usuarios reales y nuevas funcionalidades.
+Disfruta explorando todas las características con códigos automáticos! 🚀✨
+
+Fecha de actualización: Diciembre 2024
+Versión: 3.0 - Códigos Automáticos + Usuarios Reales
+
+RESUMEN RÁPIDO DE CREDENCIALES:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👑 ADMINISTRADOR:
+• admin / admin123
+
+👨‍👩‍👧‍👦 PADRES REALES:
+• Razoky / 123456 (Maria Gonzales Vera - PAD-2025-0004)
+
+👨‍🏫 DOCENTES REALES:
+• eli / 123456 (Elisabet - DOC-2025-0001)
+
+🧪 USUARIOS DE PRUEBA:
+• padre_test_1, padre_test_2, padre_test_3 / 123456
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 

@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Docente{% endblock %}
+{% block page_title %}Dashboard de Docente{% endblock %}
+
+{% block content %}
+<!-- Welcome Section -->
+<div class="container-fluid mb-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern card-glass animate-fade-in">
+                <div class="card-modern-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4">
+                                    <div class="surface-elevated rounded-circle p-4 d-inline-block">
+                                        <i class="fas fa-chalkboard-teacher fa-3x text-primary"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 class="text-h2 mb-2">¡Bienvenido, {{ current_user.nombre_completo }}!</h1>
+                                    <p class="text-body-large text-muted mb-3">
+                                        Especialista en {{ docente.especialidad }}
+                                    </p>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <div class="badge-modern badge-primary">
+                                            <i class="fas fa-book me-1"></i>
+                                            {{ cursos|length }} {{ 'Curso' if cursos|length == 1 else 'Cursos' }}
+                                        </div>
+                                        <div class="badge-modern badge-success">
+                                            <i class="fas fa-clock me-1"></i>
+                                            Activo hoy
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="text-caption mb-2">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                {{ moment()|format_datetime('%A, %d de %B de %Y') }}
+                            </div>
+                            <div class="text-caption">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ moment()|format_datetime('%H:%M') }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Stats -->
+<div class="container-fluid mb-4">
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-primary);">
+                            <i class="fas fa-graduation-cap fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">{{ cursos|length }}</h3>
+                    <p class="text-body-small text-muted mb-0">Cursos Asignados</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-success);">
+                            <i class="fas fa-users fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">
+                        {% set total_estudiantes = 0 %}
+                        {% for curso in cursos %}
+                            {% set total_estudiantes = total_estudiantes + curso.estudiantes|length %}
+                        {% endfor %}
+                        {{ total_estudiantes }}
+                    </h3>
+                    <p class="text-body-small text-muted mb-0">Estudiantes Total</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-warning);">
+                            <i class="fas fa-calendar-check fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">85%</h3>
+                    <p class="text-body-small text-muted mb-0">Asistencia Promedio</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-lg-3">
+            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-danger);">
+                            <i class="fas fa-clipboard-list fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">12</h3>
+                    <p class="text-body-small text-muted mb-0">Evaluaciones Pendientes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container-fluid">
+    <div class="row g-4">
+        <!-- Mis Cursos -->
+        <div class="col-lg-8">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.5s;">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="text-h4 mb-1">Mis Cursos</h4>
+                            <p class="text-body-small opacity-75 mb-0">Gestiona tus cursos y estudiantes</p>
+                        </div>
+                        <div>
+                            <div class="badge-modern badge-primary">
+                                {{ cursos|length }} {{ 'Curso' if cursos|length == 1 else 'Cursos' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    {% if cursos %}
+                        <div class="row g-3">
+                            {% for curso in cursos %}
+                            <div class="col-md-6">
+                                <div class="surface-elevated interactive-lift p-4 rounded-3">
+                                    <div class="d-flex align-items-start">
+                                        <div class="me-3">
+                                            <div class="surface-elevated rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
+                                                <i class="fas fa-book text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h5 class="text-h4 mb-2">{{ curso.nombre }}</h5>
+                                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                                <div class="badge-modern badge-neutral">
+                                                    <i class="fas fa-users me-1"></i>
+                                                    {{ curso.estudiantes|length }} estudiantes
+                                                </div>
+                                                <div class="badge-modern badge-success">
+                                                    <i class="fas fa-calendar me-1"></i>
+                                                    Activo
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ url_for('docente.curso_detalle', curso_id=curso.id) }}" 
+                                                   class="btn-modern btn-primary-modern btn-sm-modern">
+                                                    <i class="fas fa-eye me-1"></i>
+                                                    Ver Curso
+                                                </a>
+                                                <a href="{{ url_for('docente.asistencias', curso_id=curso.id) }}" 
+                                                   class="btn-modern btn-secondary-modern btn-sm-modern">
+                                                    <i class="fas fa-clipboard-check me-1"></i>
+                                                    Asistencia
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-book-open fa-4x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-h4 text-muted mb-2">No tienes cursos asignados</h5>
+                            <p class="text-body-small text-muted">Contacta al administrador para recibir tus asignaciones</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Acciones Rápidas -->
+            <div class="card-modern mb-4 animate-slide-up" style="animation-delay: 0.6s;">
+                <div class="card-modern-header">
+                    <h4 class="text-h4 mb-1">Acciones Rápidas</h4>
+                    <p class="text-body-small opacity-75 mb-0">Herramientas más utilizadas</p>
+                </div>
+                <div class="card-modern-body">
+                    <div class="d-grid gap-3">
+                        <a href="{{ url_for('docente.comunicados') }}" 
+                           class="btn-modern btn-secondary-modern interactive-lift">
+                            <i class="fas fa-megaphone me-2"></i>
+                            Crear Comunicado
+                        </a>
+                        <a href="{{ url_for('docente.chat') }}" 
+                           class="btn-modern btn-success-modern interactive-lift">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            Chat con Padres
+                        </a>
+                        {% if cursos %}
+                        <div class="dropdown">
+                            <button class="btn-modern btn-warning-modern w-100 interactive-lift dropdown-toggle" 
+                                    type="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-clipboard-check me-2"></i>
+                                Tomar Asistencia
+                            </button>
+                            <ul class="dropdown-menu w-100 mt-2">
+                                {% for curso in cursos %}
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('docente.asistencias', curso_id=curso.id) }}">
+                                        <i class="fas fa-book me-2"></i>{{ curso.nombre }}
+                                    </a>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Información del Docente -->
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.7s;">
+                <div class="card-modern-header">
+                    <h4 class="text-h4 mb-1">Mi Perfil</h4>
+                    <p class="text-body-small opacity-75 mb-0">Información personal</p>
+                </div>
+                <div class="card-modern-body">
+                    <div class="text-center mb-4">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: var(--gradient-primary);">
+                            <i class="fas fa-user-tie fa-2x text-white"></i>
+                        </div>
+                        <h5 class="text-h4 mb-1">{{ docente.nombre_completo }}</h5>
+                        <div class="badge-modern badge-primary">{{ docente.especialidad }}</div>
+                    </div>
+                    
+                    <div class="space-y-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="surface-elevated rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-phone text-success"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-body-small text-muted">Teléfono</div>
+                                <div class="text-body">{{ docente.telefono or 'No registrado' }}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <div class="surface-elevated rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-body-small text-muted">Email</div>
+                                <div class="text-body">{{ docente.email or 'No registrado' }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles -->
+<style>
+.space-y-3 > * + * {
+    margin-top: var(--space-md);
+}
+
+.dropdown-menu {
+    border: none;
+    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-xl);
+    padding: var(--space-sm);
+    margin-top: var(--space-sm) !important;
+}
+
+.dropdown-item {
+    border-radius: var(--radius-lg);
+    padding: var(--space-md);
+    margin-bottom: var(--space-xs);
+    transition: all var(--transition-fast);
+}
+
+.dropdown-item:hover {
+    background: var(--primary-50);
+    color: var(--primary-700);
+    transform: translateX(4px);
+}
+
+.dropdown-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Enhanced card hover effects */
+.card-interactive:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-2xl);
+}
+
+/* Progress indicators for future use */
+.progress-modern {
+    height: 8px;
+    background: var(--neutral-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.progress-modern-bar {
+    height: 100%;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-full);
+    transition: width 0.6s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .surface-elevated.interactive-lift {
+        padding: var(--space-md) !important;
+    }
+    
+    .d-flex.gap-2 {
+        flex-direction: column;
+        gap: var(--space-sm) !important;
+    }
+    
+    .btn-modern.btn-sm-modern {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-sm);
+    }
+}
+</style>
+
+<!-- Enhanced JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate numbers on page load
+    const numbers = document.querySelectorAll('.text-h3');
+    numbers.forEach(number => {
+        const finalNumber = parseInt(number.textContent);
+        animateNumber(number, 0, finalNumber, 1000);
+    });
+    
+    // Add hover effects to interactive elements
+    const interactiveCards = document.querySelectorAll('.card-interactive');
+    interactiveCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+    
+    // Enhanced dropdown behavior
+    const dropdowns = document.querySelectorAll('.dropdown-toggle');
+    dropdowns.forEach(dropdown => {
+        dropdown.addEventListener('click', function() {
+            const menu = this.nextElementSibling;
+            setTimeout(() => {
+                menu.style.opacity = '1';
+                menu.style.transform = 'translateY(0)';
+            }, 50);
+        });
+    });
+});
+
+// Animate numbers function
+function animateNumber(element, start, end, duration) {
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+        const currentNumber = Math.floor(start + (end - start) * easeOutQuart);
+        
+        element.textContent = currentNumber;
+        
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            element.textContent = end;
+        }
+    }
+    
+    requestAnimationFrame(update);
+}
+
+// Add current time display
+function updateTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('es-ES', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+    });
+    const dateStr = now.toLocaleDateString('es-ES', { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    // Update if elements exist
+    const timeElements = document.querySelectorAll('.fa-clock');
+    timeElements.forEach(el => {
+        const textElement = el.parentElement;
+        if (textElement.textContent.includes(':')) {
+            textElement.innerHTML = `<i class="fas fa-clock me-1"></i>${timeStr}`;
+        }
+    });
+}
+
+// Update time every minute
+setInterval(updateTime, 60000);
+updateTime(); // Initial call
+</script>
+{% endblock %} 

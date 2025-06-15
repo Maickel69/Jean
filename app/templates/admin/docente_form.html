@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if usuario %}Editar Docente{% else %}Nuevo Docente{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="page-header" data-aos="fade-down">
+        <div class="header-content">
+            <h1>
+                <i class="fas fa-chalkboard-teacher"></i>
+                {% if usuario %}Editar Docente{% else %}Nuevo Docente{% endif %}
+            </h1>
+            <p>
+                {% if usuario %}
+                    Modifica la información del docente
+                {% else %}
+                    Registra un nuevo docente en el sistema
+                {% endif %}
+            </p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin.gestionar_docentes') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="form-container" data-aos="fade-up">
+        <form method="POST" class="admin-form glass-effect">
+            <div class="form-header">
+                <h3>
+                    <i class="fas fa-user-tie"></i>
+                    Información del Docente
+                </h3>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre_completo">
+                        <i class="fas fa-user"></i>
+                        Nombre Completo
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nombre_completo" 
+                        name="nombre_completo" 
+                        value="{{ usuario.nombre_completo if usuario else '' }}"
+                        required
+                        class="form-input"
+                        placeholder="Nombre completo del docente"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="nombre_usuario">
+                        <i class="fas fa-at"></i>
+                        Nombre de Usuario
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nombre_usuario" 
+                        name="nombre_usuario" 
+                        value="{{ usuario.nombre_usuario if usuario else '' }}"
+                        {% if usuario %}readonly{% else %}required{% endif %}
+                        class="form-input"
+                        placeholder="Nombre de usuario único"
+                    >
+                    {% if usuario %}
+                        <small class="form-help">El nombre de usuario no se puede modificar</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i>
+                        Correo Electrónico
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        value="{{ usuario.email if usuario else '' }}"
+                        required
+                        class="form-input"
+                        placeholder="correo@ejemplo.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">
+                        <i class="fas fa-phone"></i>
+                        Teléfono
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="telefono" 
+                        name="telefono" 
+                        value="{{ usuario.telefono if usuario else '' }}"
+                        class="form-input"
+                        placeholder="Número de teléfono"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="especialidad">
+                        <i class="fas fa-star"></i>
+                        Especialidad
+                    </label>
+                    <input 
+                        type="text" 
+                        id="especialidad" 
+                        name="especialidad" 
+                        value="{{ docente.especialidad if docente else '' }}"
+                        required
+                        class="form-input"
+                        placeholder="Especialidad del docente"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="titulo">
+                        <i class="fas fa-graduation-cap"></i>
+                        Título Académico
+                    </label>
+                    <input 
+                        type="text" 
+                        id="titulo" 
+                        name="titulo" 
+                        value="{{ docente.titulo if docente else '' }}"
+                        required
+                        class="form-input"
+                        placeholder="Título o grado académico"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        {% if usuario %}Nueva Contraseña (opcional){% else %}Contraseña{% endif %}
+                    </label>
+                    <div class="password-input">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            {% if not usuario %}required{% endif %}
+                            class="form-input"
+                            placeholder="{% if usuario %}Dejar en blanco para no cambiar{% else %}Contraseña segura{% endif %}"
+                            minlength="6"
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="passwordIcon"></i>
+                        </button>
+                    </div>
+                    <small class="form-help">
+                        {% if usuario %}
+                            Deja en blanco si no deseas cambiar la contraseña
+                        {% else %}
+                            Mínimo 6 caracteres
+                        {% endif %}
+                    </small>
+                </div>
+
+                {% if docente and docente.cursos %}
+                <div class="form-group full-width">
+                    <label>
+                        <i class="fas fa-book-open"></i>
+                        Cursos Asignados
+                    </label>
+                    <div class="courses-list">
+                        {% for curso in docente.cursos %}
+                        <div class="course-card">
+                            <div class="course-info">
+                                <div class="course-avatar">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="course-details">
+                                    <strong>{{ curso.nombre }} - {{ curso.seccion }}</strong>
+                                    <span>{{ curso.grado.nombre if curso.grado else 'Sin grado' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    {% if usuario %}Actualizar Docente{% else %}Crear Docente{% endif %}
+                </button>
+                <a href="{{ url_for('admin.gestionar_docentes') }}" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-content {
+    padding: 2rem;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.header-content h1 {
+    color: white;
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.header-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0.5rem 0 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: white;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.admin-form {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-input {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #43e97b;
+    box-shadow: 0 0 20px rgba(67, 233, 123, 0.3);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-input[readonly] {
+    background: rgba(255, 255, 255, 0.05);
+    cursor: not-allowed;
+}
+
+.password-input {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+    color: white;
+}
+
+.form-help {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem;
+    margin-top: 0.3rem;
+}
+
+.courses-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.course-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.course-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.course-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.course-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.course-details strong {
+    color: white;
+    font-weight: 600;
+}
+
+.course-details span {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .courses-list {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = document.getElementById('passwordIcon');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordIcon.className = 'fas fa-eye-slash';
+    } else {
+        passwordInput.type = 'password';
+        passwordIcon.className = 'fas fa-eye';
+    }
+}
+
+// Validación del formulario
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.admin-form');
+    const inputs = form.querySelectorAll('input[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.style.borderColor = '#f5576c';
+            } else {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            }
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.style.borderColor = '#f5576c';
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, completa todos los campos obligatorios.');
+        }
+    });
+});
+</script>
+{% endblock %} 

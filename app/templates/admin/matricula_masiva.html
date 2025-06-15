@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block title %}Matrícula Masiva{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-users"></i> Matrícula Masiva</h2>
+            <p class="text-muted">Matricular múltiples estudiantes en un curso</p>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="{{ url_for('admin.gestionar_matriculas') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a Matrículas
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Formulario -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-chalkboard-teacher"></i> Selección de Curso</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="matriculaMasivaForm">
+                        <div class="mb-4">
+                            <label for="curso_id" class="form-label">Curso Destino <span class="text-danger">*</span></label>
+                            <select class="form-select" id="curso_id" name="curso_id" required>
+                                <option value="">Seleccionar curso...</option>
+                                {% for curso in cursos %}
+                                <option value="{{ curso.id }}" 
+                                        data-grado="{{ curso.grado }}" 
+                                        data-seccion="{{ curso.seccion }}"
+                                        data-docente="{{ curso.docente.nombre_completo if curso.docente else 'Sin asignar' }}"
+                                        data-codigo="{{ curso.codigo }}">
+                                    {{ curso.nombre }} - {{ curso.grado }} {{ curso.seccion }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">Todos los estudiantes seleccionados serán matriculados en este curso</div>
+                        </div>
+
+                        <!-- Información del curso -->
+                        <div id="infoCurso" class="alert alert-info" style="display: none;">
+                            <h6><i class="fas fa-info-circle"></i> Información del Curso</h6>
+                            <div id="detallesCurso"></div>
+                        </div>
+
+                        <!-- Filtros de estudiantes -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="fas fa-filter"></i> Filtros de Estudiantes</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="filtroGrado" class="form-label">Grado</label>
+                                        <select class="form-select" id="filtroGrado">
+                                            <option value="">Todos los grados</option>
+                                            {% for grado in estudiantes|map(attribute='grado')|unique %}
+                                            <option value="{{ grado }}">{{ grado }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="filtroSeccion" class="form-label">Sección</label>
+                                        <select class="form-select" id="filtroSeccion">
+                                            <option value="">Todas las secciones</option>
+                                            {% for seccion in estudiantes|map(attribute='seccion')|unique %}
+                                            <option value="{{ seccion }}">{{ seccion }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="buscarEstudiante" class="form-label">Buscar</label>
+                                        <input type="text" class="form-control" id="buscarEstudiante" 
+                                               placeholder="Nombre del estudiante...">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="button" class="btn btn-sm btn-success" onclick="seleccionarTodos()">
+                                        <i class="fas fa-check-square"></i> Seleccionar Todos
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-warning" onclick="deseleccionarTodos()">
+                                        <i class="fas fa-square"></i> Deseleccionar Todos
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-info" onclick="seleccionarCompatibles()">
+                                        <i class="fas fa-filter"></i> Solo Compatibles
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selección de estudiantes -->
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0"><i class="fas fa-user-graduate"></i> Estudiantes Disponibles</h6>
+                                <span id="contadorSeleccionados" class="badge bg-primary">0 seleccionados</span>
+                            </div>
+                            <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+                                <div class="row" id="listaEstudiantes">
+                                    {% for estudiante in estudiantes %}
+                                    <div class="col-md-6 mb-2 estudiante-item" 
+                                         data-grado="{{ estudiante.grado }}" 
+                                         data-seccion="{{ estudiante.seccion }}"
+                                         data-nombre="{{ estudiante.nombre_completo.lower() }}">
+                                        <div class="form-check card-check">
+                                            <input class="form-check-input estudiante-checkbox" 
+                                                   type="checkbox" 
+                                                   name="estudiantes_ids" 
+                                                   value="{{ estudiante.id }}"
+                                                   id="estudiante_{{ estudiante.id }}">
+                                            <label class="form-check-label w-100" for="estudiante_{{ estudiante.id }}">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar bg-primary text-white me-2">
+                                                        {{ estudiante.nombre_completo[0] }}
+                                                    </div>
+                                                    <div class="flex-grow-1">
+                                                        <strong>{{ estudiante.nombre_completo }}</strong>
+                                                        <br>
+                                                        <small class="text-muted">
+                                                            {{ estudiante.grado }} {{ estudiante.seccion }} - 
+                                                            {{ estudiante.codigo_estudiante }}
+                                                        </small>
+                                                    </div>
+                                                    <div class="compatible-badge" style="display: none;">
+                                                        <span class="badge bg-success">Compatible</span>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 d-flex gap-2">
+                            <button type="submit" class="btn btn-success" id="btnMatricular" disabled>
+                                <i class="fas fa-users"></i> Matricular Estudiantes Seleccionados
+                            </button>
+                            <a href="{{ url_for('admin.gestionar_matriculas') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Resumen -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-chart-pie"></i> Resumen</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Total de Estudiantes:</strong>
+                        <span class="badge bg-info">{{ estudiantes|length }}</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Seleccionados:</strong>
+                        <span id="resumenSeleccionados" class="badge bg-primary">0</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Compatibles:</strong>
+                        <span id="resumenCompatibles" class="badge bg-success">0</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Con Advertencias:</strong>
+                        <span id="resumenAdvertencias" class="badge bg-warning">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ayuda -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-lightbulb"></i> Consejos</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="small">
+                        <li>Use los filtros para encontrar estudiantes específicos</li>
+                        <li>Los estudiantes compatibles tienen el mismo grado que el curso</li>
+                        <li>Puede seleccionar estudiantes de diferentes grados si es necesario</li>
+                        <li>Revise el resumen antes de confirmar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cursoSelect = document.getElementById('curso_id');
+    const infoCurso = document.getElementById('infoCurso');
+    const detallesCurso = document.getElementById('detallesCurso');
+    const checkboxes = document.querySelectorAll('.estudiante-checkbox');
+    const contadorSeleccionados = document.getElementById('contadorSeleccionados');
+    const btnMatricular = document.getElementById('btnMatricular');
+    
+    // Filtros
+    const filtroGrado = document.getElementById('filtroGrado');
+    const filtroSeccion = document.getElementById('filtroSeccion');
+    const buscarEstudiante = document.getElementById('buscarEstudiante');
+
+    // Actualizar información del curso
+    cursoSelect.addEventListener('change', function() {
+        const option = this.selectedOptions[0];
+        if (option && option.value) {
+            detallesCurso.innerHTML = `
+                <strong>Curso:</strong> ${option.text}<br>
+                <strong>Docente:</strong> ${option.dataset.docente}<br>
+                <strong>Código:</strong> ${option.dataset.codigo}
+            `;
+            infoCurso.style.display = 'block';
+            actualizarCompatibilidad();
+        } else {
+            infoCurso.style.display = 'none';
+        }
+    });
+
+    // Actualizar contador de seleccionados
+    function actualizarContador() {
+        const seleccionados = document.querySelectorAll('.estudiante-checkbox:checked').length;
+        contadorSeleccionados.textContent = seleccionados + ' seleccionados';
+        document.getElementById('resumenSeleccionados').textContent = seleccionados;
+        btnMatricular.disabled = seleccionados === 0;
+    }
+
+    // Actualizar compatibilidad
+    function actualizarCompatibilidad() {
+        const cursoOption = cursoSelect.selectedOptions[0];
+        if (!cursoOption || !cursoOption.value) return;
+
+        const cursoGrado = cursoOption.dataset.grado;
+        let compatibles = 0;
+        let advertencias = 0;
+
+        document.querySelectorAll('.estudiante-item').forEach(item => {
+            const estudianteGrado = item.dataset.grado;
+            const badge = item.querySelector('.compatible-badge');
+            
+            if (estudianteGrado === cursoGrado) {
+                badge.style.display = 'block';
+                badge.innerHTML = '<span class="badge bg-success">Compatible</span>';
+                compatibles++;
+            } else {
+                badge.style.display = 'block';
+                badge.innerHTML = '<span class="badge bg-warning">Diferente grado</span>';
+                advertencias++;
+            }
+        });
+
+        document.getElementById('resumenCompatibles').textContent = compatibles;
+        document.getElementById('resumenAdvertencias').textContent = advertencias;
+    }
+
+    // Filtros
+    function aplicarFiltros() {
+        const grado = filtroGrado.value.toLowerCase();
+        const seccion = filtroSeccion.value.toLowerCase();
+        const busqueda = buscarEstudiante.value.toLowerCase();
+
+        document.querySelectorAll('.estudiante-item').forEach(item => {
+            const itemGrado = item.dataset.grado.toLowerCase();
+            const itemSeccion = item.dataset.seccion.toLowerCase();
+            const itemNombre = item.dataset.nombre;
+
+            const mostrar = (!grado || itemGrado.includes(grado)) &&
+                           (!seccion || itemSeccion.includes(seccion)) &&
+                           (!busqueda || itemNombre.includes(busqueda));
+
+            item.style.display = mostrar ? 'block' : 'none';
+        });
+    }
+
+    // Event listeners
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', actualizarContador);
+    });
+
+    filtroGrado.addEventListener('change', aplicarFiltros);
+    filtroSeccion.addEventListener('change', aplicarFiltros);
+    buscarEstudiante.addEventListener('input', aplicarFiltros);
+
+    actualizarContador();
+});
+
+function seleccionarTodos() {
+    document.querySelectorAll('.estudiante-item:not([style*="display: none"]) .estudiante-checkbox').forEach(checkbox => {
+        checkbox.checked = true;
+    });
+    document.getElementById('contadorSeleccionados').textContent = 
+        document.querySelectorAll('.estudiante-checkbox:checked').length + ' seleccionados';
+    document.getElementById('resumenSeleccionados').textContent = 
+        document.querySelectorAll('.estudiante-checkbox:checked').length;
+    document.getElementById('btnMatricular').disabled = false;
+}
+
+function deseleccionarTodos() {
+    document.querySelectorAll('.estudiante-checkbox').forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    document.getElementById('contadorSeleccionados').textContent = '0 seleccionados';
+    document.getElementById('resumenSeleccionados').textContent = '0';
+    document.getElementById('btnMatricular').disabled = true;
+}
+
+function seleccionarCompatibles() {
+    const cursoOption = document.getElementById('curso_id').selectedOptions[0];
+    if (!cursoOption || !cursoOption.value) {
+        alert('Primero seleccione un curso');
+        return;
+    }
+
+    const cursoGrado = cursoOption.dataset.grado;
+    
+    document.querySelectorAll('.estudiante-checkbox').forEach(checkbox => {
+        const item = checkbox.closest('.estudiante-item');
+        const estudianteGrado = item.dataset.grado;
+        checkbox.checked = estudianteGrado === cursoGrado && item.style.display !== 'none';
+    });
+
+    document.getElementById('contadorSeleccionados').textContent = 
+        document.querySelectorAll('.estudiante-checkbox:checked').length + ' seleccionados';
+    document.getElementById('resumenSeleccionados').textContent = 
+        document.querySelectorAll('.estudiante-checkbox:checked').length;
+    document.getElementById('btnMatricular').disabled = 
+        document.querySelectorAll('.estudiante-checkbox:checked').length === 0;
+}
+</script>
+
+<style>
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.card-check {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    transition: all 0.2s;
+}
+
+.card-check:hover {
+    background-color: #f8f9fa;
+    border-color: #0d6efd;
+}
+
+.form-check-input:checked ~ .form-check-label .card-check {
+    background-color: #e7f3ff;
+    border-color: #0d6efd;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+}
+</style>
+{% endblock %} 

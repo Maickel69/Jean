@@ -1,0 +1,391 @@
+/* ===== ADMIN PANEL STYLES ===== */
+
+/* Gradientes para las nuevas tarjetas de matrícula */
+.matriculas-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.warning-gradient {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Page Header Cards */
+.page-header-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.page-header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-md);
+}
+
+.page-title-section {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.page-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: var(--border-radius);
+    font-size: 1.25rem;
+}
+
+.page-title {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.page-subtitle {
+    margin: var(--space-xs) 0 0 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.page-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* Data Cards */
+.data-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.data-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-lg);
+    border-bottom: 1px solid var(--border-color);
+    background: var(--background-secondary);
+}
+
+.data-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+}
+
+.data-card-meta {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.data-card-body {
+    padding: 0;
+}
+
+/* Tables */
+.data-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    background: var(--surface-color);
+}
+
+.data-table thead th {
+    background: var(--background-secondary);
+    border-bottom: 2px solid var(--border-color);
+    padding: var(--space-md);
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.data-table tbody td {
+    padding: var(--space-md);
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: middle;
+}
+
+.data-table tbody tr:hover {
+    background: var(--surface-hover-color);
+}
+
+.th-content {
+    display: flex;
+    align-items: center;
+}
+
+.table-cell-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.cell-primary {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.cell-secondary {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+}
+
+/* Table Actions */
+.table-actions {
+    display: flex;
+    gap: var(--space-xs);
+}
+
+.btn-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: all var(--transition-duration) ease;
+    text-decoration: none;
+}
+
+.btn-action-edit {
+    background: var(--info-color);
+    color: white;
+}
+
+.btn-action-edit:hover {
+    background: var(--info-dark);
+    transform: translateY(-1px);
+}
+
+.btn-action-delete {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-action-delete:hover {
+    background: var(--danger-dark);
+    transform: translateY(-1px);
+}
+
+/* Form Cards */
+.form-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.form-card-header {
+    padding: var(--space-lg);
+    background: var(--background-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.form-card-body {
+    padding: var(--space-lg);
+}
+
+.form-card-footer {
+    padding: var(--space-lg);
+    background: var(--background-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: var(--space-sm);
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: var(--space-sm);
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+/* Empty States */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2xl);
+    text-align: center;
+}
+
+.empty-state-icon {
+    width: 4rem;
+    height: 4rem;
+    background: var(--neutral-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-lg);
+    color: var(--neutral-400);
+    font-size: 1.5rem;
+}
+
+.empty-state-title {
+    margin: 0 0 var(--space-sm) 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.empty-state-text {
+    margin: 0 0 var(--space-lg) 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.badge-primary {
+    background: var(--primary-100);
+    color: var(--primary-700);
+}
+
+.badge-secondary {
+    background: var(--secondary-100);
+    color: var(--secondary-700);
+}
+
+.badge-info {
+    background: var(--info-100);
+    color: var(--info-700);
+}
+
+.badge-success {
+    background: var(--success-100);
+    color: var(--success-700);
+}
+
+.badge-warning {
+    background: var(--warning-100);
+    color: var(--warning-700);
+}
+
+.badge-danger {
+    background: var(--danger-100);
+    color: var(--danger-700);
+}
+
+.badge-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-header-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .page-title-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--space-sm);
+    }
+    
+    .page-actions {
+        justify-content: center;
+    }
+    
+    .data-card-header {
+        flex-direction: column;
+        gap: var(--space-sm);
+        align-items: stretch;
+    }
+    
+    .form-actions {
+        justify-content: stretch;
+    }
+    
+    .form-actions .btn {
+        flex: 1;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .page-icon {
+        background: var(--primary-600);
+    }
+    
+    .empty-state-icon {
+        background: var(--neutral-800);
+        color: var(--neutral-500);
+    }
+}
+
+/* Print styles */
+@media print {
+    .page-actions,
+    .table-actions,
+    .form-actions {
+        display: none;
+    }
+    
+    .data-card,
+    .form-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+} 

@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Asistencias - {{ curso.nombre }}{% endblock %}
+{% block page_title %}Gestión de Asistencias{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern card-glass">
+                <div class="card-modern-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="text-h2 mb-2">{{ curso.nombre }}</h2>
+                            <p class="text-body-large text-muted mb-0">
+                                <i class="fas fa-clipboard-check me-2"></i>
+                                Gestión de Asistencias - {{ curso.estudiantes|length }} estudiantes
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('docente.curso_detalle', curso_id=curso.id) }}" 
+                               class="btn-modern btn-secondary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver al Curso
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Selector de Fecha -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-modern-body">
+                    <form method="GET" class="d-flex align-items-center gap-3">
+                        <div class="form-group-modern mb-0">
+                            <label class="form-label-modern">Seleccionar Fecha:</label>
+                            <input type="date" name="fecha" value="{{ fecha_seleccionada }}" 
+                                   class="form-control-modern" onchange="this.form.submit()">
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" onclick="setToday()" class="btn-modern btn-primary-modern btn-sm-modern">
+                                <i class="fas fa-calendar-day me-1"></i>
+                                Hoy
+                            </button>
+                            <button type="button" onclick="setYesterday()" class="btn-modern btn-secondary-modern btn-sm-modern">
+                                <i class="fas fa-calendar-minus me-1"></i>
+                                Ayer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Asistencia -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="text-h4 mb-1">Lista de Asistencia</h4>
+                            <p class="text-body-small opacity-75 mb-0">
+                                Fecha: {{ fecha_seleccionada }}
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" onclick="marcarTodos('presente')" class="btn-modern btn-success-modern btn-sm-modern">
+                                <i class="fas fa-check-double me-1"></i>
+                                Todos Presentes
+                            </button>
+                            <button type="button" onclick="marcarTodos('ausente')" class="btn-modern btn-danger-modern btn-sm-modern">
+                                <i class="fas fa-times-circle me-1"></i>
+                                Todos Ausentes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    <form method="POST" action="{{ url_for('docente.registrar_asistencia') }}">
+                        <input type="hidden" name="curso_id" value="{{ curso.id }}">
+                        <input type="hidden" name="fecha" value="{{ fecha_seleccionada }}">
+                        
+                        <div class="table-responsive">
+                            <table class="table-modern">
+                                <thead>
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Código</th>
+                                        <th class="text-center">Estado de Asistencia</th>
+                                        <th class="text-center">Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for estudiante in curso.estudiantes %}
+                                    {% set asistencia_actual = asistencias|selectattr('estudiante_id', 'equalto', estudiante.id)|first %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <div class="surface-elevated rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                                        <i class="fas fa-user-graduate text-primary"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1">{{ estudiante.usuario.nombre_completo }}</h6>
+                                                    <small class="text-muted">{{ estudiante.grado }}° - {{ estudiante.seccion }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge-modern badge-neutral">
+                                                {{ estudiante.codigo_estudiante or 'Sin código' }}
+                                            </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <input type="radio" class="btn-check" name="asistencia_{{ estudiante.id }}" 
+                                                       id="presente_{{ estudiante.id }}" value="presente"
+                                                       {% if asistencia_actual and asistencia_actual.estado == 'presente' %}checked{% endif %}>
+                                                <label class="btn btn-outline-success btn-sm" for="presente_{{ estudiante.id }}">
+                                                    <i class="fas fa-check me-1"></i>Presente
+                                                </label>
+                                                
+                                                <input type="radio" class="btn-check" name="asistencia_{{ estudiante.id }}" 
+                                                       id="ausente_{{ estudiante.id }}" value="ausente"
+                                                       {% if asistencia_actual and asistencia_actual.estado == 'ausente' %}checked{% endif %}>
+                                                <label class="btn btn-outline-danger btn-sm" for="ausente_{{ estudiante.id }}">
+                                                    <i class="fas fa-times me-1"></i>Ausente
+                                                </label>
+                                                
+                                                <input type="radio" class="btn-check" name="asistencia_{{ estudiante.id }}" 
+                                                       id="tardanza_{{ estudiante.id }}" value="tardanza"
+                                                       {% if asistencia_actual and asistencia_actual.estado == 'tardanza' %}checked{% endif %}>
+                                                <label class="btn btn-outline-warning btn-sm" for="tardanza_{{ estudiante.id }}">
+                                                    <i class="fas fa-clock me-1"></i>Tardanza
+                                                </label>
+                                            </div>
+                                            <input type="hidden" name="asistencias" value="{{ estudiante.id }}|presente" id="hidden_{{ estudiante.id }}">
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="text" class="form-control form-control-sm" 
+                                                   name="observacion_{{ estudiante.id }}" 
+                                                   placeholder="Observaciones..."
+                                                   value="{{ asistencia_actual.observaciones if asistencia_actual else '' }}">
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Total de estudiantes: {{ curso.estudiantes|length }}
+                            </div>
+                            <button type="submit" class="btn-modern btn-primary-modern">
+                                <i class="fas fa-save me-2"></i>
+                                Guardar Asistencia
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function setToday() {
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('input[name="fecha"]').value = today;
+    document.querySelector('form').submit();
+}
+
+function setYesterday() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    document.querySelector('input[name="fecha"]').value = yesterday.toISOString().split('T')[0];
+    document.querySelector('form').submit();
+}
+
+function marcarTodos(estado) {
+    const radios = document.querySelectorAll(`input[type="radio"][value="${estado}"]`);
+    radios.forEach(radio => {
+        radio.checked = true;
+        updateHiddenInput(radio);
+    });
+}
+
+document.querySelectorAll('input[type="radio"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        updateHiddenInput(this);
+    });
+});
+
+function updateHiddenInput(radio) {
+    if (radio.checked) {
+        const estudianteId = radio.name.split('_')[1];
+        const hiddenInput = document.getElementById(`hidden_${estudianteId}`);
+        hiddenInput.value = `${estudianteId}|${radio.value}`;
+    }
+}
+
+// Inicializar valores hidden
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('input[type="radio"]:checked').forEach(radio => {
+        updateHiddenInput(radio);
+    });
+});
+</script>
+{% endblock %} 

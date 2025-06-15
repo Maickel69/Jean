@@ -1,0 +1,319 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">Comunicación con Docentes</h1>
+                            <p class="page-subtitle">{{ estudiante.nombre_completo }} - {{ estudiante.grado }} {{ estudiante.seccion }}</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('padre.seleccionar_hijo', estudiante_id=estudiante.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Content -->
+    {% if docentes %}
+    <div class="row">
+        <div class="col-12">
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div class="data-card-title">
+                        <i class="fas fa-user-tie me-2"></i>
+                        Docentes Disponibles
+                    </div>
+                    <div class="data-card-meta">
+                        <span class="badge badge-info">{{ docentes|length }} docentes</span>
+                    </div>
+                </div>
+
+                <div class="data-card-body">
+                    <div class="row g-4">
+                        {% for docente in docentes %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="teacher-card">
+                                <div class="teacher-avatar">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="teacher-info">
+                                    <h4 class="teacher-name">{{ docente.nombre_completo }}</h4>
+                                    <p class="teacher-subject">{{ docente.especialidad or 'Docente' }}</p>
+                                    {% if docente.email %}
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope text-primary"></i>
+                                        <span>{{ docente.email }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="teacher-actions">
+                                    <a href="{{ url_for('padre.chat_conversacion', docente_id=docente.id) }}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-comment me-1"></i>
+                                        Chatear
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ docentes|length }}</h3>
+                    <p>Docentes Disponibles</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="stat-card stat-card-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ estudiante.cursos|length }}</h3>
+                    <p>Cursos Matriculados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="row">
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="empty-state-content">
+                    <h3 class="empty-state-title">No hay docentes disponibles</h3>
+                    <p class="empty-state-text">Este estudiante aún no tiene cursos asignados con docentes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Message Modal -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Enviar Mensaje</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="messageForm">
+                <div class="modal-body">
+                    <input type="hidden" id="receptor_id" name="receptor_id">
+                    <div class="mb-3">
+                        <label for="docente_name" class="form-label">Para:</label>
+                        <input type="text" class="form-control" id="docente_name" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="asunto" class="form-label">Asunto:</label>
+                        <input type="text" class="form-control" id="asunto" name="asunto" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label">Mensaje:</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="4" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-1"></i>
+                        Enviar Mensaje
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.teacher-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-duration) ease;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.teacher-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.teacher-avatar {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    margin: 0 auto;
+}
+
+.teacher-info {
+    flex-grow: 1;
+}
+
+.teacher-name {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 1.125rem;
+}
+
+.teacher-subject {
+    margin: 0 0 1rem 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.teacher-actions {
+    margin-top: auto;
+}
+
+.stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-duration) ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.stat-card-info .stat-icon {
+    background: var(--info-color);
+}
+
+.stat-card-primary .stat-icon {
+    background: var(--primary-color);
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .teachers-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .teacher-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function openMessageModal(docenteId, docenteName) {
+    document.getElementById('receptor_id').value = docenteId;
+    document.getElementById('docente_name').value = docenteName;
+    document.getElementById('asunto').value = '';
+    document.getElementById('mensaje').value = '';
+    
+    var modal = new bootstrap.Modal(document.getElementById('messageModal'));
+    modal.show();
+}
+
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    
+    fetch('{{ url_for("padre.enviar_mensaje") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Mensaje enviado correctamente');
+            var modal = bootstrap.Modal.getInstance(document.getElementById('messageModal'));
+            modal.hide();
+        } else {
+            alert('Error al enviar el mensaje: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar el mensaje');
+    });
+});
+</script>
+{% endblock %} 

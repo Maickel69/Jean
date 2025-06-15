@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block title %}Chat con {{ docente.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">Chat con {{ docente.nombre_completo }}</h1>
+                            <p class="page-subtitle">{{ docente.especialidad or 'Docente' }}</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="row">
+        <div class="col-12">
+            <div class="chat-container">
+                <!-- Messages Area -->
+                <div class="messages-area">
+                    {% if mensajes %}
+                        {% for mensaje in mensajes %}
+                        <div class="message {% if mensaje.emisor_id == current_user.id %}message-sent{% else %}message-received{% endif %}">
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <strong>{{ mensaje.emisor.nombre_completo }}</strong>
+                                    <span class="message-time">{{ mensaje.fecha_envio.strftime('%d/%m/%Y %H:%M') }}</span>
+                                </div>
+                                {% if mensaje.asunto %}
+                                <div class="message-subject">{{ mensaje.asunto }}</div>
+                                {% endif %}
+                                <div class="message-text">{{ mensaje.mensaje }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                    <div class="no-messages">
+                        <i class="fas fa-comment-slash"></i>
+                        <p>No hay mensajes aún. ¡Inicia la conversación!</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Message Input -->
+                <div class="message-input-area">
+                    <form id="messageForm">
+                        <input type="hidden" name="receptor_id" value="{{ docente.usuario_id }}">
+                        <div class="mb-2">
+                            <input type="text" 
+                                   class="form-control" 
+                                   name="asunto" 
+                                   placeholder="Asunto (opcional)">
+                        </div>
+                        <div class="input-group">
+                            <textarea class="form-control" 
+                                      name="mensaje" 
+                                      placeholder="Escribe tu mensaje..."
+                                      rows="2"
+                                      required></textarea>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chat-container {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.messages-area {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.message {
+    max-width: 70%;
+}
+
+.message-sent {
+    align-self: flex-end;
+}
+
+.message-received {
+    align-self: flex-start;
+}
+
+.message-content {
+    background: var(--surface-hover-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.message-sent .message-content {
+    background: var(--primary-color);
+    color: white;
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.message-time {
+    opacity: 0.7;
+    font-size: 0.75rem;
+}
+
+.message-subject {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.message-sent .message-subject {
+    border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+.message-text {
+    line-height: 1.5;
+}
+
+.no-messages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.no-messages i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.message-input-area {
+    padding: 1.5rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--surface-hover-color);
+}
+
+.input-group textarea {
+    resize: none;
+}
+</style>
+
+<script>
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    var formData = new FormData(this);
+    
+    fetch('{{ url_for("padre.enviar_mensaje") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert('Error al enviar el mensaje: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al enviar el mensaje');
+    });
+});
+</script>
+{% endblock %} 

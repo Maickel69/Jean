@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Chat con Padres - Sistema Educativo{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 sidebar">
+            <div class="sidebar-sticky">
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Navegación</span>
+                </h6>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('docente.dashboard') }}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('docente.chat') }}">
+                            <i class="fas fa-comments"></i> Chat con Padres
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('docente.comunicados') }}">
+                            <i class="fas fa-bullhorn"></i> Comunicados
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Contenido Principal -->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <i class="fas fa-comments text-primary"></i>
+                    Chat con Padres de Familia
+                </h1>
+            </div>
+
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-users"></i>
+                                Padres de Familia Disponibles
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if padres %}
+                                <div class="row">
+                                    {% for padre in padres %}
+                                        <div class="col-md-6 col-lg-4 mb-3">
+                                            <div class="card h-100 border-left-primary">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <div class="avatar-circle bg-primary text-white me-3">
+                                                            {{ padre.nombre_completo.split()[0][0] }}{{ padre.nombre_completo.split()[-1][0] if padre.nombre_completo.split()|length > 1 else '' }}
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="card-title mb-1">{{ padre.nombre_completo }}</h6>
+                                                            <small class="text-muted">
+                                                                <i class="fas fa-envelope"></i>
+                                                                {{ padre.email }}
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Información de hijos -->
+                                                    <div class="mb-3">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-child"></i>
+                                                            Hijos:
+                                                        </small>
+                                                        <div class="mt-1">
+                                                            {% for estudiante in padre.estudiantes %}
+                                                                <span class="badge bg-light text-dark me-1">
+                                                                    {{ estudiante.nombre }} {{ estudiante.apellido }}
+                                                                </span>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Botones de acción -->
+                                                    <div class="d-grid gap-2">
+                                                        <a href="{{ url_for('docente.chat_conversacion', padre_id=padre.id) }}" 
+                                                           class="btn btn-primary btn-sm">
+                                                            <i class="fas fa-comment"></i>
+                                                            Iniciar Chat
+                                                        </a>
+                                                        <button type="button" 
+                                                                class="btn btn-outline-secondary btn-sm btn-mensaje"
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#nuevoMensajeModal"
+                                                                data-padre-id="{{ padre.id }}"
+                                                                data-padre-nombre="{{ padre.nombre_completo }}">
+                                                            <i class="fas fa-paper-plane"></i>
+                                                            Enviar Mensaje
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="text-center py-5">
+                                    <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No hay padres disponibles</h5>
+                                    <p class="text-muted">
+                                        No tienes estudiantes asignados en tus cursos actualmente.
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Modal para Nuevo Mensaje -->
+<div class="modal fade" id="nuevoMensajeModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-paper-plane"></i>
+                    Enviar Nuevo Mensaje
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="formNuevoMensaje">
+                <div class="modal-body">
+                    <input type="hidden" id="receptor_id" name="receptor_id">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-user"></i>
+                            Para:
+                        </label>
+                        <input type="text" class="form-control" id="receptor_nombre" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="asunto" class="form-label">
+                            <i class="fas fa-tag"></i>
+                            Asunto:
+                        </label>
+                        <input type="text" class="form-control" id="asunto" name="asunto" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label">
+                            <i class="fas fa-comment"></i>
+                            Mensaje:
+                        </label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="5" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times"></i>
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Enviar Mensaje
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.avatar-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.border-left-primary {
+    border-left: 4px solid #007bff !important;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    background-color: #f8f9fa;
+}
+
+.sidebar-sticky {
+    position: relative;
+    top: 0;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: #333;
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin: 2px 10px;
+}
+
+.sidebar .nav-link:hover {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sidebar .nav-link.active {
+    color: #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+main {
+    margin-left: 240px;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        height: auto;
+    }
+    
+    main {
+        margin-left: 0;
+    }
+}
+</style>
+
+<script>
+// Manejar clicks en botones de mensaje
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.btn-mensaje').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const padreId = this.getAttribute('data-padre-id');
+            const padreNombre = this.getAttribute('data-padre-nombre');
+            document.getElementById('receptor_id').value = padreId;
+            document.getElementById('receptor_nombre').value = padreNombre;
+        });
+    });
+});
+
+document.getElementById('formNuevoMensaje').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    fetch('{{ url_for("docente.enviar_mensaje") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('nuevoMensajeModal'));
+            modal.hide();
+            
+            // Limpiar formulario
+            this.reset();
+            
+            // Mostrar mensaje de éxito
+            showAlert('success', data.message);
+        } else {
+            showAlert('danger', data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showAlert('danger', 'Error al enviar el mensaje');
+    });
+});
+
+function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const container = document.querySelector('main .container-fluid');
+    container.insertBefore(alertDiv, container.firstChild);
+    
+    // Auto-dismiss after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+</script>
+{% endblock %} 

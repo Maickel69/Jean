@@ -1,0 +1,599 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Comunicado{% endblock %}
+{% block page_title %}Nuevo Comunicado{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern card-glass">
+                <div class="card-modern-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="text-h2 mb-2">Crear Nuevo Comunicado</h2>
+                            <p class="text-body-large text-muted mb-0">
+                                <i class="fas fa-bullhorn me-2"></i>
+                                Envía comunicados importantes a los padres de familia
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('docente.comunicados') }}" 
+                               class="btn-modern btn-secondary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver a Comunicados
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario Principal -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <div class="surface-elevated rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
+                                <i class="fas fa-edit text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-h4 mb-1">Información del Comunicado</h4>
+                            <p class="text-body-small opacity-75 mb-0">Complete los detalles del comunicado</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    <form method="POST" action="{{ url_for('docente.crear_comunicado') }}" id="comunicadoForm">
+                        <div class="row">
+                            <!-- Título -->
+                            <div class="col-12 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Título del Comunicado</label>
+                                    <input type="text" name="titulo" class="form-control-modern" 
+                                           placeholder="Ej: Reunión de Padres de Familia, Actividad Cultural..." 
+                                           required maxlength="200">
+                                    <div class="form-helper-text">Título claro y descriptivo del comunicado</div>
+                                </div>
+                            </div>
+
+                            <!-- Tipo y Dirigido a -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Tipo de Comunicado</label>
+                                    <select name="tipo" class="form-control-modern" required onchange="actualizarIcono()">
+                                        <option value="">Seleccionar tipo...</option>
+                                        <option value="general">General</option>
+                                        <option value="reunion">Reunión</option>
+                                        <option value="actividad">Actividad</option>
+                                        <option value="evaluacion">Evaluación</option>
+                                        <option value="disciplinario">Disciplinario</option>
+                                        <option value="academico">Académico</option>
+                                        <option value="evento">Evento</option>
+                                        <option value="urgente">Urgente</option>
+                                    </select>
+                                    <div class="form-helper-text">Categoría del comunicado</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Dirigido a</label>
+                                    <select name="dirigido_a" class="form-control-modern" required>
+                                        <option value="padres">Padres de Familia</option>
+                                        <option value="estudiantes">Estudiantes</option>
+                                        <option value="ambos">Padres y Estudiantes</option>
+                                    </select>
+                                    <div class="form-helper-text">Destinatarios del comunicado</div>
+                                </div>
+                            </div>
+
+                            <!-- Curso y Prioridad -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Curso</label>
+                                    <select name="curso_id" class="form-control-modern" required onchange="actualizarContador()">
+                                        <option value="">Seleccionar curso...</option>
+                                        {% for curso in cursos %}
+                                        <option value="{{ curso.id }}" data-estudiantes="{{ curso.estudiantes|length }}">
+                                            {{ curso.nombre }} ({{ curso.estudiantes|length }} estudiantes)
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-helper-text">Curso al que va dirigido el comunicado</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label class="form-label-modern">Comunicado Prioritario</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="prioritario" id="prioritario">
+                                            <label class="form-check-label" for="prioritario">
+                                                Marcar como prioritario
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-helper-text">Los comunicados prioritarios aparecen destacados</div>
+                                </div>
+                            </div>
+
+                            <!-- Fecha de Vencimiento -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">Fecha de Vencimiento</label>
+                                    <input type="date" name="fecha_vencimiento" class="form-control-modern" 
+                                           min="{{ moment().strftime('%Y-%m-%d') }}">
+                                    <div class="form-helper-text">Fecha hasta cuando será visible (opcional)</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">Destinatarios</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-users"></i>
+                                        </span>
+                                        <input type="text" id="contador_destinatarios" class="form-control" 
+                                               readonly placeholder="Seleccione un curso">
+                                    </div>
+                                    <div class="form-helper-text">Número estimado de destinatarios</div>
+                                </div>
+                            </div>
+
+                            <!-- Contenido -->
+                            <div class="col-12 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Contenido del Comunicado</label>
+                                    <textarea name="contenido" class="form-control-modern" rows="8" 
+                                              placeholder="Escriba aquí el contenido completo del comunicado..." 
+                                              required maxlength="2000"></textarea>
+                                    <div class="form-helper-text">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Contenido detallado del comunicado</span>
+                                            <span id="contador_caracteres">0/2000 caracteres</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn-modern btn-secondary-modern" onclick="limpiarFormulario()">
+                                    <i class="fas fa-eraser me-2"></i>
+                                    Limpiar
+                                </button>
+                                <button type="button" class="btn-modern btn-info-modern" onclick="previsualizarComunicado()">
+                                    <i class="fas fa-eye me-2"></i>
+                                    Previsualizar
+                                </button>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('docente.comunicados') }}" 
+                                   class="btn-modern btn-secondary-modern">
+                                    <i class="fas fa-times me-2"></i>
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn-modern btn-primary-modern">
+                                    <i class="fas fa-paper-plane me-2"></i>
+                                    Enviar Comunicado
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Ayuda -->
+        <div class="col-lg-4">
+            <div class="card-modern mb-4">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Consejos para Comunicados
+                    </h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="mb-3">
+                        <h6 class="text-h6 mb-2">Título Efectivo</h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success me-1"></i> Sea claro y específico</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Use palabras clave importantes</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Mantenga entre 5-15 palabras</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="text-h6 mb-2">Contenido Claro</h6>
+                        <ul class="list-unstyled small">
+                            <li><i class="fas fa-check text-success me-1"></i> Información esencial primero</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Use párrafos cortos</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Incluya fechas y horarios</li>
+                            <li><i class="fas fa-check text-success me-1"></i> Termine con datos de contacto</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Importante:</strong> Revise la información antes de enviar. Los comunicados no se pueden editar una vez enviados.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plantillas -->
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Plantillas Rápidas
+                    </h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn-modern btn-outline-primary btn-sm-modern" onclick="aplicarPlantilla('reunion')">
+                            <i class="fas fa-users me-2"></i>
+                            Reunión de Padres
+                        </button>
+                        <button type="button" class="btn-modern btn-outline-primary btn-sm-modern" onclick="aplicarPlantilla('evaluacion')">
+                            <i class="fas fa-clipboard-list me-2"></i>
+                            Evaluación Próxima
+                        </button>
+                        <button type="button" class="btn-modern btn-outline-primary btn-sm-modern" onclick="aplicarPlantilla('actividad')">
+                            <i class="fas fa-calendar-alt me-2"></i>
+                            Actividad Escolar
+                        </button>
+                        <button type="button" class="btn-modern btn-outline-primary btn-sm-modern" onclick="aplicarPlantilla('tareas')">
+                            <i class="fas fa-book me-2"></i>
+                            Recordatorio de Tareas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Previsualización -->
+<div class="modal fade" id="modalPreview" tabindex="-1" data-bs-backdrop="true" data-bs-keyboard="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-eye me-2"></i>
+                    Previsualización del Comunicado
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="preview-content">
+                <!-- Contenido de previsualización -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-danger" onclick="cerrarModalForzado()">
+                    <i class="fas fa-times-circle me-2"></i>
+                    Forzar Cierre
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>
+                    Cerrar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="enviarDesdePreview()">
+                    <i class="fas fa-paper-plane me-2"></i>
+                    Enviar Comunicado
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Contador de caracteres
+document.querySelector('textarea[name="contenido"]').addEventListener('input', function() {
+    const contador = document.getElementById('contador_caracteres');
+    const longitud = this.value.length;
+    contador.textContent = `${longitud}/2000 caracteres`;
+    
+    if (longitud > 1800) {
+        contador.classList.add('text-warning');
+    } else {
+        contador.classList.remove('text-warning');
+    }
+});
+
+// Actualizar contador de destinatarios
+function actualizarContador() {
+    const cursoSelect = document.querySelector('select[name="curso_id"]');
+    const contador = document.getElementById('contador_destinatarios');
+    
+    if (cursoSelect.value) {
+        const estudiantes = cursoSelect.options[cursoSelect.selectedIndex].dataset.estudiantes;
+        const dirigidoA = document.querySelector('select[name="dirigido_a"]').value;
+        
+        let destinatarios = 0;
+        if (dirigidoA === 'padres') {
+            destinatarios = estudiantes;
+        } else if (dirigidoA === 'estudiantes') {
+            destinatarios = estudiantes;
+        } else if (dirigidoA === 'ambos') {
+            destinatarios = estudiantes * 2;
+        }
+        
+        contador.value = `${destinatarios} destinatarios aproximados`;
+    } else {
+        contador.value = '';
+    }
+}
+
+// Actualizar dirigido a también afecta el contador
+document.querySelector('select[name="dirigido_a"]').addEventListener('change', actualizarContador);
+
+// Plantillas predefinidas
+const plantillas = {
+    reunion: {
+        titulo: 'Reunión de Padres de Familia',
+        tipo: 'reunion',
+        contenido: `Estimados padres de familia,
+
+Por medio del presente les comunico que se realizará una reunión de padres de familia con el objetivo de informar sobre el avance académico de sus hijos.
+
+FECHA: [Especificar fecha]
+HORA: [Especificar hora]
+LUGAR: [Especificar lugar]
+
+AGENDA:
+- Informe académico del periodo
+- Actividades próximas
+- Recomendaciones pedagógicas
+- Espacio para preguntas
+
+Su asistencia es muy importante para el seguimiento educativo de su hijo/a.
+
+Atentamente,
+[Su nombre]
+Docente de [Materia]`
+    },
+    evaluacion: {
+        titulo: 'Evaluación Próxima - [Materia]',
+        tipo: 'evaluacion',
+        contenido: `Estimados padres de familia,
+
+Les informo que se realizará una evaluación en la materia de [MATERIA] con los siguientes detalles:
+
+FECHA DE EVALUACIÓN: [Especificar fecha]
+TEMAS A EVALUAR:
+- [Tema 1]
+- [Tema 2]
+- [Tema 3]
+
+RECOMENDACIONES PARA EL ESTUDIANTE:
+- Repasar los temas vistos en clase
+- Practicar ejercicios del cuaderno
+- Consultar dudas antes de la evaluación
+
+Por favor, apoyen a sus hijos en su preparación.
+
+Atentamente,
+[Su nombre]
+Docente de [Materia]`
+    },
+    actividad: {
+        titulo: 'Actividad Escolar - [Nombre de la actividad]',
+        tipo: 'actividad',
+        contenido: `Estimados padres de familia,
+
+Tengo el gusto de informarles sobre la siguiente actividad:
+
+ACTIVIDAD: [Nombre de la actividad]
+FECHA: [Fecha de la actividad]
+HORA: [Hora de inicio y fin]
+LUGAR: [Lugar donde se realizará]
+
+OBJETIVO: [Describir el propósito educativo]
+
+MATERIALES NECESARIOS:
+- [Material 1]
+- [Material 2]
+- [Material 3]
+
+AUTORIZACIÓN: Se requiere autorización firmada de los padres.
+
+Esperamos contar con su apoyo para esta actividad educativa.
+
+Atentamente,
+[Su nombre]
+Docente de [Materia]`
+    },
+    tareas: {
+        titulo: 'Recordatorio - Tareas Pendientes',
+        tipo: 'academico',
+        contenido: `Estimados padres de familia,
+
+Les recuerdo las siguientes tareas pendientes de entrega:
+
+TAREAS PARA ENTREGAR:
+1. [Descripción de tarea 1] - Fecha límite: [fecha]
+2. [Descripción de tarea 2] - Fecha límite: [fecha]
+3. [Descripción de tarea 3] - Fecha límite: [fecha]
+
+RECOMENDACIONES:
+- Supervisar que sus hijos trabajen diariamente
+- Verificar que comprendan las instrucciones
+- Fomentar la responsabilidad en los horarios de estudio
+
+El cumplimiento de las tareas es fundamental para el proceso de aprendizaje.
+
+Atentamente,
+[Su nombre]
+Docente de [Materia]`
+    }
+};
+
+function aplicarPlantilla(tipo) {
+    const plantilla = plantillas[tipo];
+    if (plantilla) {
+        document.querySelector('input[name="titulo"]').value = plantilla.titulo;
+        document.querySelector('select[name="tipo"]').value = plantilla.tipo;
+        document.querySelector('textarea[name="contenido"]').value = plantilla.contenido;
+        actualizarIcono();
+        // Trigger del contador de caracteres
+        document.querySelector('textarea[name="contenido"]').dispatchEvent(new Event('input'));
+    }
+}
+
+function actualizarIcono() {
+    // Esta función se puede usar para cambiar iconos según el tipo
+    const tipo = document.querySelector('select[name="tipo"]').value;
+    // Implementar lógica de iconos si es necesario
+}
+
+function limpiarFormulario() {
+    if (confirm('¿Está seguro de que desea limpiar todos los campos?')) {
+        document.getElementById('comunicadoForm').reset();
+        document.getElementById('contador_caracteres').textContent = '0/2000 caracteres';
+        document.getElementById('contador_destinatarios').value = '';
+    }
+}
+
+function previsualizarComunicado() {
+    const form = document.getElementById('comunicadoForm');
+    const formData = new FormData(form);
+    
+    // Validar campos requeridos antes de previsualizar
+    if (!formData.get('titulo') || !formData.get('tipo') || !formData.get('curso_id') || !formData.get('contenido')) {
+        alert('Por favor, complete todos los campos requeridos antes de previsualizar.');
+        return;
+    }
+    
+    // Obtener datos del formulario
+    const titulo = formData.get('titulo') || 'Sin título';
+    const tipo = formData.get('tipo') || 'Sin tipo';
+    const dirigidoA = formData.get('dirigido_a') || 'Sin destinatario';
+    const curso = document.querySelector('select[name="curso_id"]').selectedOptions[0]?.text || 'Sin curso';
+    const contenido = formData.get('contenido') || 'Sin contenido';
+    const prioritario = formData.get('prioritario') ? 'Sí' : 'No';
+    const fechaVencimiento = formData.get('fecha_vencimiento') || 'Sin fecha límite';
+    
+    const preview = `
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">${titulo}</h6>
+                ${prioritario === 'Sí' ? '<span class="badge bg-danger">PRIORITARIO</span>' : ''}
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Tipo:</strong></div>
+                    <div class="col-sm-9">${tipo}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Dirigido a:</strong></div>
+                    <div class="col-sm-9">${dirigidoA}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Curso:</strong></div>
+                    <div class="col-sm-9">${curso}</div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3"><strong>Válido hasta:</strong></div>
+                    <div class="col-sm-9">${fechaVencimiento}</div>
+                </div>
+                <hr>
+                <div class="contenido-comunicado">
+                    ${contenido.replace(/\n/g, '<br>')}
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>Fecha de envío: ${new Date().toLocaleDateString('es-ES')}</small>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('preview-content').innerHTML = preview;
+    
+    // Crear y mostrar el modal con configuración explícita
+    const modalElement = document.getElementById('modalPreview');
+    const modal = new bootstrap.Modal(modalElement, {
+        backdrop: true,
+        keyboard: true,
+        focus: true
+    });
+    modal.show();
+}
+
+function enviarDesdePreview() {
+    const modalElement = document.getElementById('modalPreview');
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+        modal.hide();
+    }
+    
+    // Esperar a que el modal se cierre antes de enviar
+    setTimeout(() => {
+        document.getElementById('comunicadoForm').submit();
+    }, 300);
+}
+
+// Función para cerrar forzadamente el modal
+function cerrarModalForzado() {
+    const modalElement = document.getElementById('modalPreview');
+    
+    // Intentar cerrar con Bootstrap
+    const modal = bootstrap.Modal.getInstance(modalElement);
+    if (modal) {
+        modal.hide();
+    }
+    
+    // Forzar cierre removiendo clases y backdrop
+    setTimeout(() => {
+        modalElement.classList.remove('show');
+        modalElement.style.display = 'none';
+        modalElement.setAttribute('aria-hidden', 'true');
+        modalElement.removeAttribute('aria-modal');
+        
+        // Remover backdrop si existe
+        const backdrop = document.querySelector('.modal-backdrop');
+        if (backdrop) {
+            backdrop.remove();
+        }
+        
+        // Restaurar scroll del body
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+    }, 100);
+}
+
+// Agregar event listeners para cerrar el modal con ESC y click fuera
+document.addEventListener('DOMContentLoaded', function() {
+    const modalElement = document.getElementById('modalPreview');
+    
+    // Cerrar con ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    });
+    
+    // Cerrar al hacer click en el backdrop
+    modalElement.addEventListener('click', function(e) {
+        if (e.target === modalElement) {
+            const modal = bootstrap.Modal.getInstance(modalElement);
+            if (modal) {
+                modal.hide();
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

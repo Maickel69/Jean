@@ -1,0 +1,366 @@
+{% extends "base.html" %}
+
+{% block title %}Notas de {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">Notas Académicas</h1>
+                            <p class="page-subtitle">{{ estudiante.nombre_completo }} - {{ estudiante.grado }} {{ estudiante.seccion }}</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('padre.seleccionar_hijo', estudiante_id=estudiante.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="info-card">
+                <div class="info-card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="student-info">
+                                <div class="student-avatar">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="student-details">
+                                    <h3 class="student-name">{{ estudiante.nombre_completo }}</h3>
+                                    <div class="student-meta">
+                                        <span class="badge badge-primary">{{ estudiante.codigo_estudiante }}</span>
+                                        <span class="badge badge-secondary">{{ estudiante.grado }} {{ estudiante.seccion }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if notas %}
+                            {% set promedio_general = (notas | sum(attribute='valor_numerico')) / (notas | length) %}
+                            <div class="grade-summary">
+                                <div class="grade-average">
+                                    <span class="grade-number">{{ "%.1f"|format(promedio_general) }}</span>
+                                    <span class="grade-label">Promedio General</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grades Content -->
+    {% if notas %}
+    <div class="row">
+        <div class="col-12">
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div class="data-card-title">
+                        <i class="fas fa-list-alt me-2"></i>
+                        Registro de Notas
+                    </div>
+                    <div class="data-card-meta">
+                        <span class="badge badge-info">{{ notas|length }} evaluaciones</span>
+                    </div>
+                </div>
+
+                <div class="data-card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Tipo</th>
+                                    <th>Nota</th>
+                                    <th>Estado</th>
+                                    <th>Fecha</th>
+                                    <th>Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for nota in notas %}
+                                <tr>
+                                    <td>{{ nota.curso.nombre }}</td>
+                                    <td>{{ nota.tipo_evaluacion }}</td>
+                                    <td>
+                                        <span class="badge badge-primary">{{ nota.valor_numerico }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if nota.estado == 'aprobado' %}badge-success{% elif nota.estado == 'desaprobado' %}badge-danger{% else %}badge-warning{% endif %}">
+                                            {{ nota.estado|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ nota.fecha_evaluacion.strftime('%d/%m/%Y') }}</td>
+                                    <td>{{ nota.observaciones or 'Sin observaciones' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grade Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ notas | selectattr('estado', 'equalto', 'aprobado') | list | length }}</h3>
+                    <p>Evaluaciones Aprobadas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ notas | selectattr('estado', 'equalto', 'desaprobado') | list | length }}</h3>
+                    <p>Evaluaciones Desaprobadas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ notas | selectattr('estado', 'equalto', 'pendiente') | list | length }}</h3>
+                    <p>Evaluaciones Pendientes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="row">
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="empty-state-content">
+                    <h3 class="empty-state-title">No hay notas registradas</h3>
+                    <p class="empty-state-text">Aún no se han registrado evaluaciones para este estudiante.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.info-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.info-card-body {
+    padding: 1.5rem;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.student-details h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.student-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.grade-summary {
+    text-align: center;
+}
+
+.grade-average {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grade-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1;
+}
+
+.grade-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.grade-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.grade-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    min-width: 3rem;
+    text-align: center;
+}
+
+.grade-aprobado {
+    background: var(--success-bg);
+    color: var(--success-color);
+}
+
+.grade-desaprobado {
+    background: var(--danger-bg);
+    color: var(--danger-color);
+}
+
+.grade-pendiente {
+    background: var(--warning-bg);
+    color: var(--warning-color);
+}
+
+.grade-literal {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-aprobado {
+    background: var(--success-bg);
+    color: var(--success-color);
+}
+
+.status-desaprobado {
+    background: var(--danger-bg);
+    color: var(--danger-color);
+}
+
+.status-pendiente {
+    background: var(--warning-bg);
+    color: var(--warning-color);
+}
+
+.observation-text {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    max-width: 200px;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-duration) ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.stat-card-success .stat-icon {
+    background: var(--success-color);
+}
+
+.stat-card-warning .stat-icon {
+    background: var(--warning-color);
+}
+
+.stat-card-info .stat-icon {
+    background: var(--info-color);
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+</style>
+{% endblock %} 

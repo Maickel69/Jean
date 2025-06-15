@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if grado %}Editar Grado{% else %}Nuevo Grado{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">
+                                {% if grado %}Editar Grado{% else %}Nuevo Grado{% endif %}
+                            </h1>
+                            <p class="page-subtitle">
+                                {% if grado %}
+                                    Modifica la información del grado
+                                {% else %}
+                                    Registra un nuevo grado en el sistema
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('admin.gestionar_grados') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="form-card">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <i class="fas fa-layer-group me-2"></i>
+                            Información del Grado
+                        </div>
+                    </div>
+
+                    <div class="form-card-body">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="nombre" class="form-label">
+                                        <i class="fas fa-graduation-cap me-2"></i>
+                                        Nombre del Grado
+                                    </label>
+                                    <input type="text" 
+                                           id="nombre" 
+                                           name="nombre" 
+                                           class="form-control"
+                                           value="{{ grado.nombre if grado else '' }}"
+                                           placeholder="Ej: 1ro Primaria, 2do Secundaria"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingrese el nombre del grado.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="nivel" class="form-label">
+                                        <i class="fas fa-layer-group me-2"></i>
+                                        Nivel Educativo
+                                    </label>
+                                    <select id="nivel" 
+                                            name="nivel" 
+                                            class="form-select"
+                                            required>
+                                        <option value="">Seleccionar nivel educativo...</option>
+                                        <option value="Primaria" {% if grado and grado.nivel == 'Primaria' %}selected{% endif %}>Primaria</option>
+                                        <option value="Secundaria" {% if grado and grado.nivel == 'Secundaria' %}selected{% endif %}>Secundaria</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor, seleccione el nivel educativo.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="numero" class="form-label">
+                                        <i class="fas fa-sort-numeric-up me-2"></i>
+                                        Número del Grado
+                                    </label>
+                                    <input type="number" 
+                                           id="numero" 
+                                           name="numero" 
+                                           class="form-control"
+                                           value="{{ grado.numero if grado else '' }}"
+                                           min="1" 
+                                           max="6"
+                                           placeholder="1-6"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingrese el número del grado (1-6).
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="edad_minima" class="form-label">
+                                        <i class="fas fa-child me-2"></i>
+                                        Edad Mínima
+                                    </label>
+                                    <input type="number" 
+                                           id="edad_minima" 
+                                           name="edad_minima" 
+                                           class="form-control"
+                                           value="{{ grado.edad_minima if grado else '' }}"
+                                           min="3" 
+                                           max="18"
+                                           placeholder="Edad mínima">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <div class="form-group">
+                                    <label for="edad_maxima" class="form-label">
+                                        <i class="fas fa-user me-2"></i>
+                                        Edad Máxima
+                                    </label>
+                                    <input type="number" 
+                                           id="edad_maxima" 
+                                           name="edad_maxima" 
+                                           class="form-control"
+                                           value="{{ grado.edad_maxima if grado else '' }}"
+                                           min="3" 
+                                           max="18"
+                                           placeholder="Edad máxima">
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <i class="fas fa-users me-2"></i>
+                                        Secciones Disponibles
+                                    </label>
+                                    <div class="sections-grid">
+                                        {% set secciones_disponibles = ['A', 'B', 'C', 'D', 'E'] %}
+                                        {% set secciones_seleccionadas = grado.get_secciones_list() if grado else ['A', 'B', 'C'] %}
+                                        
+                                        {% for seccion in secciones_disponibles %}
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   name="secciones" 
+                                                   value="{{ seccion }}"
+                                                   id="seccion{{ seccion }}"
+                                                   {% if seccion in secciones_seleccionadas %}checked{% endif %}>
+                                            <label class="form-check-label" for="seccion{{ seccion }}">
+                                                Sección {{ seccion }}
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card-footer">
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {% if grado %}Actualizar Grado{% else %}Crear Grado{% endif %}
+                            </button>
+                            <a href="{{ url_for('admin.gestionar_grados') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.form-check {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem;
+    transition: all var(--transition-duration) ease;
+}
+
+.form-check:hover {
+    background: var(--surface-hover-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-input:checked + .form-check-label {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+</style>
+
+<script>
+// Bootstrap form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %} 

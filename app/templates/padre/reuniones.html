@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}Reuniones de {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">Reuniones Programadas</h1>
+                            <p class="page-subtitle">{{ estudiante.nombre_completo }} - {{ estudiante.grado }} {{ estudiante.seccion }}</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('padre.seleccionar_hijo', estudiante_id=estudiante.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meetings Content -->
+    {% if reuniones %}
+    <div class="row">
+        <div class="col-12">
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div class="data-card-title">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        Reuniones Programadas
+                    </div>
+                    <div class="data-card-meta">
+                        <span class="badge badge-info">{{ reuniones|length }} reuniones</span>
+                    </div>
+                </div>
+
+                <div class="data-card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Hora</th>
+                                    <th>Asunto</th>
+                                    <th>Curso</th>
+                                    <th>Docente</th>
+                                    <th>Estado</th>
+                                    <th>Lugar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for reunion in reuniones %}
+                                <tr>
+                                    <td>{{ reunion.fecha_reunion.strftime('%d/%m/%Y') }}</td>
+                                    <td>
+                                        {% if reunion.hora_reunion %}
+                                        {{ reunion.hora_reunion.strftime('%H:%M') }}
+                                        {% else %}
+                                        Por confirmar
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="table-cell-content">
+                                            <div class="cell-primary">{{ reunion.asunto }}</div>
+                                            {% if reunion.descripcion %}
+                                            <div class="cell-secondary">{{ reunion.descripcion[:50] }}{% if reunion.descripcion|length > 50 %}...{% endif %}</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>{{ reunion.curso.nombre }}</td>
+                                    <td>{{ reunion.curso.docente.nombre_completo }}</td>
+                                    <td>
+                                        <span class="badge {% if reunion.estado == 'programada' %}badge-info{% elif reunion.estado == 'realizada' %}badge-success{% elif reunion.estado == 'cancelada' %}badge-danger{% else %}badge-secondary{% endif %}">
+                                            {{ reunion.estado|title }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if reunion.lugar %}
+                                        {{ reunion.lugar }}
+                                        {% elif reunion.enlace_virtual %}
+                                        <a href="{{ reunion.enlace_virtual }}" target="_blank" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-video me-1"></i>
+                                            Virtual
+                                        </a>
+                                        {% else %}
+                                        Por definir
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ reuniones | selectattr('estado', 'equalto', 'programada') | list | length }}</h3>
+                    <p>Programadas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ reuniones | selectattr('estado', 'equalto', 'realizada') | list | length }}</h3>
+                    <p>Realizadas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card stat-card-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ reuniones | selectattr('estado', 'equalto', 'cancelada') | list | length }}</h3>
+                    <p>Canceladas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="row">
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="empty-state-content">
+                    <h3 class="empty-state-title">No hay reuniones programadas</h3>
+                    <p class="empty-state-text">Aún no se han programado reuniones para los cursos de este estudiante.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-duration) ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.stat-card-info .stat-icon {
+    background: var(--info-color);
+}
+
+.stat-card-success .stat-icon {
+    background: var(--success-color);
+}
+
+.stat-card-warning .stat-icon {
+    background: var(--warning-color);
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+</style>
+{% endblock %} 

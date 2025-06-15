@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% block title %}Comunicados - {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-fade-in">
+                <div class="card-modern-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="surface-elevated rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 70px; height: 70px; background: var(--gradient-info);">
+                                    <i class="fas fa-bullhorn fa-2x text-white"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-h2 mb-1">Comunicados para {{ estudiante.nombre_completo }}</h2>
+                                    <p class="text-body-large text-muted mb-0">
+                                        {{ estudiante.grado }} - Sección {{ estudiante.seccion }}
+                                    </p>
+                                    <div class="d-flex align-items-center gap-3 mt-2">
+                                        <div class="d-flex align-items-center gap-1">
+                                            <i class="fas fa-id-card text-primary"></i>
+                                            <span class="text-body-small">{{ estudiante.codigo_estudiante }}</span>
+                                        </div>
+                                        <div class="badge-modern badge-info">
+                                            <span class="status-dot info"></span>
+                                            {{ comunicados|length }} comunicado{{ 's' if comunicados|length != 1 else '' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('padre.seleccionar_hijo', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-primary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                <span>Volver al Panel</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="card-modern-body py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-body-medium fw-medium">Filtrar por tipo:</span>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="filtro-tipo" id="todos" autocomplete="off" checked>
+                                    <label class="btn btn-outline-secondary btn-sm" for="todos">Todos</label>
+                                    
+                                    <input type="radio" class="btn-check" name="filtro-tipo" id="general" autocomplete="off">
+                                    <label class="btn btn-outline-primary btn-sm" for="general">General</label>
+                                    
+                                    <input type="radio" class="btn-check" name="filtro-tipo" id="urgente" autocomplete="off">
+                                    <label class="btn btn-outline-danger btn-sm" for="urgente">Urgente</label>
+                                    
+                                    <input type="radio" class="btn-check" name="filtro-tipo" id="academico" autocomplete="off">
+                                    <label class="btn btn-outline-success btn-sm" for="academico">Académico</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="d-flex align-items-center justify-content-end gap-2">
+                                <i class="fas fa-info-circle text-muted"></i>
+                                <span class="text-body-small text-muted">Ordenados por fecha de publicación</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Communications Section -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="text-h4 mb-1">Comunicados Activos</h4>
+                            <p class="text-body-small opacity-75 mb-0">Información importante de la institución y docentes</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="badge-modern badge-warning">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                {% set urgentes = comunicados|selectattr('tipo', 'equalto', 'urgente')|list %}
+                                {{ urgentes|length }} urgente{{ 's' if urgentes|length != 1 else '' }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    {% if comunicados %}
+                        <div class="space-y-4">
+                            {% for comunicado in comunicados %}
+                                <div class="comunicado-item" data-tipo="{{ comunicado.tipo }}" data-aos="fade-up" data-aos-delay="{{ (loop.index0 * 50) + 300 }}">
+                                    <div class="card-modern {% if comunicado.prioritario %}border-warning{% endif %} {% if comunicado.tipo == 'urgente' %}border-danger{% endif %}">
+                                        <div class="card-modern-body">
+                                            <!-- Header del comunicado -->
+                                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex align-items-center gap-3 mb-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            {% if comunicado.tipo == 'urgente' %}
+                                                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                                                            {% elif comunicado.tipo == 'academico' %}
+                                                                <i class="fas fa-graduation-cap text-success"></i>
+                                                            {% elif comunicado.tipo == 'informativo' %}
+                                                                <i class="fas fa-info-circle text-info"></i>
+                                                            {% else %}
+                                                                <i class="fas fa-bullhorn text-primary"></i>
+                                                            {% endif %}
+                                                            <span class="badge-modern badge-{{ comunicado.color_tipo() }}">
+                                                                {{ comunicado.tipo_display() }}
+                                                            </span>
+                                                        </div>
+                                                        {% if comunicado.prioritario %}
+                                                            <div class="badge-modern badge-warning">
+                                                                <i class="fas fa-star me-1"></i>
+                                                                Prioritario
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if comunicado.curso %}
+                                                            <div class="badge-modern badge-secondary">
+                                                                <i class="fas fa-book me-1"></i>
+                                                                {{ comunicado.curso.nombre }}
+                                                            </div>
+                                                        {% else %}
+                                                            <div class="badge-modern badge-info">
+                                                                <i class="fas fa-globe me-1"></i>
+                                                                General
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <h5 class="text-h5 mb-2">{{ comunicado.titulo }}</h5>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="text-body-small text-muted">
+                                                        <i class="fas fa-calendar-alt me-1"></i>
+                                                        {{ comunicado.fecha_publicacion.strftime('%d/%m/%Y') }}
+                                                    </div>
+                                                    <div class="text-caption text-muted">
+                                                        {{ comunicado.fecha_publicacion.strftime('%H:%M') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Contenido del comunicado -->
+                                            <div class="mb-4">
+                                                <div class="comunicado-contenido">
+                                                    <p class="text-body-medium mb-0">{{ comunicado.contenido }}</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Footer del comunicado -->
+                                            <div class="border-top pt-3">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-6">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <div class="surface-elevated rounded-circle d-flex align-items-center justify-content-center" 
+                                                                 style="width: 32px; height: 32px; background: var(--gradient-secondary);">
+                                                                <i class="fas fa-user fa-sm text-white"></i>
+                                                            </div>
+                                                            <div>
+                                                                <div class="text-body-small fw-medium">
+                                                                    {{ comunicado.docente.usuario.nombre_completo if comunicado.docente and comunicado.docente.usuario else 'Administración' }}
+                                                                </div>
+                                                                <div class="text-caption text-muted">
+                                                                    {% if comunicado.docente and comunicado.docente.especialidad %}
+                                                                        {{ comunicado.docente.especialidad }}
+                                                                    {% else %}
+                                                                        Equipo Directivo
+                                                                    {% endif %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6 text-end">
+                                                        {% if comunicado.fecha_vencimiento %}
+                                                            <div class="d-flex align-items-center justify-content-end gap-1">
+                                                                <i class="fas fa-clock text-warning"></i>
+                                                                <span class="text-body-small">
+                                                                    Válido hasta: {{ comunicado.fecha_vencimiento.strftime('%d/%m/%Y') }}
+                                                                </span>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if comunicado.curso and comunicado.docente %}
+                                                            <a href="{{ url_for('padre.informacion_docente', docente_id=comunicado.docente.id) }}" 
+                                                               class="btn btn-sm btn-outline-primary mt-2">
+                                                                <i class="fas fa-user-circle me-1"></i>
+                                                                Ver Docente
+                                                            </a>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Empty State -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-bullhorn fa-4x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-h4 text-muted mb-2">No hay comunicados disponibles</h5>
+                            <p class="text-body-small text-muted mb-4">
+                                No se encontraron comunicados activos para este estudiante
+                            </p>
+                            <div class="alert-modern alert-info d-inline-block">
+                                <div class="alert-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-description">
+                                        Los comunicados aparecerán aquí cuando sean publicados por los docentes
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Navigation -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">Acceso Rápido</h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.cursos', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-primary-modern w-100 interactive-lift">
+                                <i class="fas fa-book-open me-2"></i>
+                                <span>Ver Cursos</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.reuniones', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-info-modern w-100 interactive-lift">
+                                <i class="fas fa-users me-2"></i>
+                                <span>Reuniones</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.chat', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-success-modern w-100 interactive-lift">
+                                <i class="fas fa-comments me-2"></i>
+                                <span>Chat con Docentes</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.notas', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-warning-modern w-100 interactive-lift">
+                                <i class="fas fa-star me-2"></i>
+                                <span>Ver Notas</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.comunicado-item {
+    transition: all 0.3s ease;
+}
+
+.comunicado-item:hover {
+    transform: translateY(-2px);
+}
+
+.comunicado-contenido {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.comunicado-contenido::-webkit-scrollbar {
+    width: 4px;
+}
+
+.comunicado-contenido::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 2px;
+}
+
+.comunicado-contenido::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 2px;
+}
+
+.comunicado-contenido::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.interactive-lift {
+    transition: all 0.2s ease;
+}
+
+.interactive-lift:hover {
+    transform: translateY(-1px);
+}
+
+/* Filtros */
+.comunicado-item[data-tipo] {
+    display: block;
+}
+
+.comunicado-item.hidden {
+    display: none !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtros de comunicados
+    const filtros = document.querySelectorAll('input[name="filtro-tipo"]');
+    const comunicados = document.querySelectorAll('.comunicado-item');
+    
+    filtros.forEach(filtro => {
+        filtro.addEventListener('change', function() {
+            const tipoSeleccionado = this.id;
+            
+            comunicados.forEach(comunicado => {
+                if (tipoSeleccionado === 'todos') {
+                    comunicado.classList.remove('hidden');
+                } else {
+                    const tipoComunicado = comunicado.getAttribute('data-tipo');
+                    if (tipoComunicado === tipoSeleccionado) {
+                        comunicado.classList.remove('hidden');
+                    } else {
+                        comunicado.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

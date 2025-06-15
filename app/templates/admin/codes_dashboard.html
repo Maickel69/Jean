@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Códigos Automáticos{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h1 class="mb-4">Administración de Códigos Automáticos</h1>
+
+    <!-- Alertas -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Problemas -->
+    {% if has_issues %}
+    <div class="alert alert-warning">
+        <h5>Problemas Detectados:</h5>
+        <ul>
+            {% for key, values in issues.items() %}
+                {% if values %}
+                    <li><strong>{{ key }}:</strong> {{ values|join(', ') }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Acciones -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Acciones Rápidas</h5>
+            <div class="row">
+                <div class="col-md-3">
+                    <button class="btn btn-primary w-100" onclick="regenerateCodes()">
+                        Regenerar Códigos
+                    </button>
+                </div>
+                <div class="col-md-3">
+                    <button class="btn btn-info w-100" onclick="validateCodes()">
+                        Validar Códigos
+                    </button>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchCode" placeholder="Buscar código...">
+                        <button class="btn btn-outline-primary" onclick="searchCode()">Buscar</button>
+                    </div>
+                </div>
+            </div>
+            <div id="searchResult" class="mt-3" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Estudiantes</h5>
+                    <h3 class="text-primary">{{ stats.estudiantes.values() | sum if stats.estudiantes else 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Docentes</h5>
+                    <h3 class="text-success">{{ stats.docentes.values() | sum if stats.docentes else 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Padres</h5>
+                    <h3 class="text-info">{{ stats.padres.values() | sum if stats.padres else 0 }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center">
+                <div class="card-body">
+                    <h5>Estado</h5>
+                    <h3 class="{{ 'text-success' if not has_issues else 'text-warning' }}">
+                        {{ 'OK' if not has_issues else 'Issues' }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function regenerateCodes() {
+    if (!confirm('¿Regenerar códigos?')) return;
+    fetch('/admin/codes/regenerate', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.success ? 'Éxito: ' + JSON.stringify(data.counters) : 'Error: ' + data.message);
+            if (data.success) location.reload();
+        });
+}
+
+function validateCodes() {
+    fetch('/admin/codes/validate', { method: 'POST' })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.has_issues) location.reload();
+        });
+}
+
+function searchCode() {
+    const code = document.getElementById('searchCode').value.trim();
+    if (!code) return;
+    
+    fetch('/admin/codes/search?code=' + encodeURIComponent(code))
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('searchResult');
+            if (data.success && data.found) {
+                const r = data.result;
+                resultDiv.innerHTML = `<div class="alert alert-success">
+                    <strong>${r.tipo}:</strong> ${r.codigo} - ${r.nombre}<br>
+                    ${r.detalles}
+                </div>`;
+            } else {
+                resultDiv.innerHTML = `<div class="alert alert-warning">
+                    ${data.message || 'Código no encontrado'}
+                </div>`;
+            }
+            resultDiv.style.display = 'block';
+        });
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if materia %}Editar Materia{% else %}Nueva Materia{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">
+                                {% if materia %}Editar Materia{% else %}Nueva Materia{% endif %}
+                            </h1>
+                            <p class="page-subtitle">
+                                {% if materia %}
+                                    Modifica la información de la materia
+                                {% else %}
+                                    Registra una nueva materia en el sistema
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('admin.gestionar_materias') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form Section -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="form-card">
+                <form method="POST" class="needs-validation" novalidate>
+                    <div class="form-card-header">
+                        <div class="form-card-title">
+                            <i class="fas fa-book me-2"></i>
+                            Información de la Materia
+                        </div>
+                    </div>
+
+                    <div class="form-card-body">
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="nombre" class="form-label">
+                                        <i class="fas fa-book me-2"></i>
+                                        Nombre de la Materia
+                                    </label>
+                                    <input type="text" 
+                                           id="nombre" 
+                                           name="nombre" 
+                                           class="form-control"
+                                           value="{{ materia.nombre if materia else '' }}"
+                                           placeholder="Ingrese el nombre de la materia"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        Por favor, ingrese el nombre de la materia.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="codigo" class="form-label">
+                                        <i class="fas fa-hashtag me-2"></i>
+                                        Código
+                                        <small class="text-muted">(Opcional)</small>
+                                    </label>
+                                    <input type="text" 
+                                           id="codigo" 
+                                           name="codigo" 
+                                           class="form-control"
+                                           value="{{ materia.codigo if materia else '' }}"
+                                           placeholder="Se genera automáticamente si no se especifica">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="area_curricular" class="form-label">
+                                        <i class="fas fa-layer-group me-2"></i>
+                                        Área Curricular
+                                    </label>
+                                    <select id="area_curricular" 
+                                            name="area_curricular" 
+                                            class="form-select"
+                                            required>
+                                        <option value="">Seleccionar área curricular...</option>
+                                        <option value="Matemática" {% if materia and materia.area_curricular == 'Matemática' %}selected{% endif %}>Matemática</option>
+                                        <option value="Comunicación" {% if materia and materia.area_curricular == 'Comunicación' %}selected{% endif %}>Comunicación</option>
+                                        <option value="Ciencia y Tecnología" {% if materia and materia.area_curricular == 'Ciencia y Tecnología' %}selected{% endif %}>Ciencia y Tecnología</option>
+                                        <option value="Personal Social" {% if materia and materia.area_curricular == 'Personal Social' %}selected{% endif %}>Personal Social</option>
+                                        <option value="Arte y Cultura" {% if materia and materia.area_curricular == 'Arte y Cultura' %}selected{% endif %}>Arte y Cultura</option>
+                                        <option value="Educación Física" {% if materia and materia.area_curricular == 'Educación Física' %}selected{% endif %}>Educación Física</option>
+                                        <option value="Educación Religiosa" {% if materia and materia.area_curricular == 'Educación Religiosa' %}selected{% endif %}>Educación Religiosa</option>
+                                        <option value="Inglés" {% if materia and materia.area_curricular == 'Inglés' %}selected{% endif %}>Inglés</option>
+                                        <option value="Educación para el Trabajo" {% if materia and materia.area_curricular == 'Educación para el Trabajo' %}selected{% endif %}>Educación para el Trabajo</option>
+                                        <option value="Tutoría" {% if materia and materia.area_curricular == 'Tutoría' %}selected{% endif %}>Tutoría</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor, seleccione el área curricular.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="form-group">
+                                    <label for="horas_semanales" class="form-label">
+                                        <i class="fas fa-clock me-2"></i>
+                                        Horas por Semana
+                                    </label>
+                                    <input type="number" 
+                                           id="horas_semanales" 
+                                           name="horas_semanales" 
+                                           class="form-control"
+                                           value="{{ materia.horas_semanales if materia else 2 }}"
+                                           min="1" 
+                                           max="10"
+                                           placeholder="Número de horas semanales">
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="descripcion" class="form-label">
+                                        <i class="fas fa-align-left me-2"></i>
+                                        Descripción
+                                    </label>
+                                    <textarea id="descripcion" 
+                                              name="descripcion" 
+                                              class="form-control"
+                                              rows="4"
+                                              placeholder="Descripción opcional de la materia">{{ materia.descripcion if materia else '' }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-card-footer">
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i>
+                                {% if materia %}Actualizar Materia{% else %}Crear Materia{% endif %}
+                            </button>
+                            <a href="{{ url_for('admin.gestionar_materias') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>
+                                Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Bootstrap form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %} 

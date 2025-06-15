@@ -1,0 +1,531 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard">
+    <!-- Hero Section -->
+    <div class="hero-section admin-hero" data-aos="fade-down">
+        <div class="hero-content">
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="admin-info">
+                    <h1>Bienvenido, Administrador</h1>
+                    <p class="admin-subtitle">{{ current_user.nombre_completo }}</p>
+                    <p class="admin-role">Panel de Control del Sistema</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="stats-grid" data-aos="fade-up" data-aos-delay="200">
+        <div class="stat-card primary-gradient">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_padres }}</h3>
+                <p>Padres de Familia</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_padres') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card secondary-gradient" data-aos="fade-up" data-aos-delay="300">
+            <div class="stat-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_docentes }}</h3>
+                <p>Docentes</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_docentes') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card tertiary-gradient" data-aos="fade-up" data-aos-delay="400">
+            <div class="stat-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_estudiantes }}</h3>
+                <p>Estudiantes</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_estudiantes') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card quaternary-gradient" data-aos="fade-up" data-aos-delay="500">
+            <div class="stat-icon">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_cursos }}</h3>
+                <p>Cursos</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_cursos') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card quinary-gradient" data-aos="fade-up" data-aos-delay="600">
+            <div class="stat-icon">
+                <i class="fas fa-book"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_materias }}</h3>
+                <p>Materias</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_materias') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card senary-gradient" data-aos="fade-up" data-aos-delay="700">
+            <div class="stat-icon">
+                <i class="fas fa-layer-group"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_grados }}</h3>
+                <p>Grados</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_grados') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card matriculas-gradient" data-aos="fade-up" data-aos-delay="800">
+            <div class="stat-icon">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ total_matriculas if total_matriculas is defined else 0 }}</h3>
+                <p>Matrículas</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.gestionar_matriculas') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="stat-card warning-gradient" data-aos="fade-up" data-aos-delay="900">
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="stat-content">
+                <h3>{{ estudiantes_sin_cursos if estudiantes_sin_cursos is defined else 0 }}</h3>
+                <p>Sin Cursos</p>
+            </div>
+            <div class="stat-action">
+                <a href="{{ url_for('admin.matricular_estudiante') }}" class="btn-stat">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Cards -->
+    <div class="management-grid" data-aos="fade-up" data-aos-delay="800">
+        <div class="management-card glass-effect">
+            <div class="card-header">
+                <i class="fas fa-users-cog card-icon"></i>
+                <h3>Gestión de Usuarios</h3>
+            </div>
+            <div class="card-content">
+                <p>Administra padres de familia, docentes y estudiantes del sistema</p>
+                <div class="card-actions">
+                    <a href="{{ url_for('admin.gestionar_padres') }}" class="action-btn primary-btn">
+                        <i class="fas fa-users"></i>
+                        Padres
+                    </a>
+                    <a href="{{ url_for('admin.gestionar_docentes') }}" class="action-btn secondary-btn">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                        Docentes
+                    </a>
+                    <a href="{{ url_for('admin.gestionar_estudiantes') }}" class="action-btn tertiary-btn">
+                        <i class="fas fa-graduation-cap"></i>
+                        Estudiantes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-card glass-effect" data-aos="fade-up" data-aos-delay="900">
+            <div class="card-header">
+                <i class="fas fa-school card-icon"></i>
+                <h3>Gestión Académica</h3>
+            </div>
+            <div class="card-content">
+                <p>Configura cursos, materias y estructura académica</p>
+                <div class="card-actions">
+                    <a href="{{ url_for('admin.gestionar_cursos') }}" class="action-btn quaternary-btn">
+                        <i class="fas fa-book-open"></i>
+                        Cursos
+                    </a>
+                    <a href="{{ url_for('admin.gestionar_materias') }}" class="action-btn quinary-btn">
+                        <i class="fas fa-book"></i>
+                        Materias
+                    </a>
+                    <a href="{{ url_for('admin.gestionar_grados') }}" class="action-btn senary-btn">
+                        <i class="fas fa-layer-group"></i>
+                        Grados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-card glass-effect" data-aos="fade-up" data-aos-delay="1000">
+            <div class="card-header">
+                <i class="fas fa-chart-bar card-icon"></i>
+                <h3>Reportes y Estadísticas</h3>
+            </div>
+            <div class="card-content">
+                <p>Genera reportes y analiza estadísticas del sistema</p>
+                <div class="card-actions">
+                    <a href="{{ url_for('admin.reporte_rendimiento') }}" class="action-btn primary-btn">
+                        <i class="fas fa-chart-line"></i>
+                        Rendimiento
+                    </a>
+                    <a href="{{ url_for('admin.reporte_asistencias') }}" class="action-btn secondary-btn">
+                        <i class="fas fa-calendar-check"></i>
+                        Asistencias
+                    </a>
+                    <a href="#" class="action-btn tertiary-btn">
+                        <i class="fas fa-file-export"></i>
+                        Exportar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-card glass-effect" data-aos="fade-up" data-aos-delay="1100">
+            <div class="card-header">
+                <i class="fas fa-user-graduate card-icon"></i>
+                <h3>Gestión de Matrículas</h3>
+            </div>
+            <div class="card-content">
+                <p>Administra las matrículas de estudiantes en cursos</p>
+                <div class="card-actions">
+                    <a href="{{ url_for('admin.gestionar_matriculas') }}" class="action-btn primary-btn">
+                        <i class="fas fa-list"></i>
+                        Ver Matrículas
+                    </a>
+                    <a href="{{ url_for('admin.matricular_estudiante') }}" class="action-btn secondary-btn">
+                        <i class="fas fa-plus"></i>
+                        Nueva Matrícula
+                    </a>
+                    <a href="{{ url_for('admin.matricula_masiva') }}" class="action-btn tertiary-btn">
+                        <i class="fas fa-users"></i>
+                        Matrícula Masiva
+                    </a>
+                    <a href="{{ url_for('admin.reportes_matriculas') }}" class="action-btn quaternary-btn">
+                        <i class="fas fa-chart-bar"></i>
+                        Reportes
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="management-card glass-effect" data-aos="fade-up" data-aos-delay="1200">
+            <div class="card-header">
+                <i class="fas fa-cogs card-icon"></i>
+                <h3>Configuración</h3>
+            </div>
+            <div class="card-content">
+                <p>Configura parámetros del sistema y preferencias</p>
+                <div class="card-actions">
+                    <a href="#" class="action-btn quaternary-btn">
+                        <i class="fas fa-database"></i>
+                        Base de Datos
+                    </a>
+                    <a href="#" class="action-btn quinary-btn">
+                        <i class="fas fa-shield-alt"></i>
+                        Seguridad
+                    </a>
+                    <a href="#" class="action-btn senary-btn">
+                        <i class="fas fa-tools"></i>
+                        Sistema
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-dashboard {
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.admin-hero {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 3rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.admin-avatar {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #ff6b6b, #ffa500);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.admin-info h1 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: white;
+    font-weight: 700;
+}
+
+.admin-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0.5rem 0;
+}
+
+.admin-role {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stat-card:hover::before {
+    opacity: 0.1;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    color: white;
+    min-width: 60px;
+}
+
+.stat-content h3 {
+    font-size: 2.5rem;
+    margin: 0;
+    color: white;
+    font-weight: 700;
+}
+
+.stat-content p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem;
+}
+
+.btn-stat {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-stat:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.management-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.management-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-icon {
+    font-size: 2rem;
+    color: #ffa500;
+}
+
+.card-header h3 {
+    font-size: 1.5rem;
+    margin: 0;
+    color: white;
+    font-weight: 600;
+}
+
+.card-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.action-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.action-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.primary-btn { background: linear-gradient(135deg, #667eea, #764ba2); }
+.secondary-btn { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.tertiary-btn { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+.quaternary-btn { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.quinary-btn { background: linear-gradient(135deg, #fa709a, #fee140); }
+.senary-btn { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+
+@media (max-width: 768px) {
+    .admin-dashboard {
+        padding: 1rem;
+    }
+    
+    .admin-profile {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .management-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .card-actions {
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animación de contadores
+    const counters = document.querySelectorAll('.stat-content h3');
+    counters.forEach(counter => {
+        const target = parseInt(counter.textContent);
+        let current = 0;
+        const increment = target / 50;
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= target) {
+                counter.textContent = target;
+                clearInterval(timer);
+            } else {
+                counter.textContent = Math.floor(current);
+            }
+        }, 30);
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Materias{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">Gestión de Materias</h1>
+                            <p class="page-subtitle">Administra las materias del sistema educativo</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('admin.crear_materia') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Nueva Materia
+                        </a>
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div class="data-card-title">
+                        <i class="fas fa-list me-2"></i>
+                        Lista de Materias
+                    </div>
+                    <div class="data-card-meta">
+                        <span class="badge badge-info">{{ materias|length }} materias</span>
+                    </div>
+                </div>
+
+                {% if materias %}
+                <div class="data-card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div class="th-content">
+                                            <i class="fas fa-hashtag me-2"></i>
+                                            Código
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            <i class="fas fa-book me-2"></i>
+                                            Nombre
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            <i class="fas fa-layer-group me-2"></i>
+                                            Área Curricular
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            <i class="fas fa-clock me-2"></i>
+                                            Horas/Semana
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            <i class="fas fa-calendar me-2"></i>
+                                            Fecha Creación
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="th-content">
+                                            <i class="fas fa-cogs me-2"></i>
+                                            Acciones
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for materia in materias %}
+                                <tr>
+                                    <td>
+                                        <span class="badge badge-primary">{{ materia.codigo }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="table-cell-content">
+                                            <div class="cell-primary">{{ materia.nombre }}</div>
+                                            {% if materia.descripcion %}
+                                            <div class="cell-secondary">{{ materia.descripcion[:50] }}{% if materia.descripcion|length > 50 %}...{% endif %}</div>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-secondary">{{ materia.area_curricular }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-info">{{ materia.horas_semanales }}h</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">{{ materia.fecha_creacion.strftime('%d/%m/%Y') }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{{ url_for('admin.editar_materia', materia_id=materia.id) }}" 
+                                               class="btn-action btn-action-edit" 
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="POST" 
+                                                  action="{{ url_for('admin.eliminar_materia', materia_id=materia.id) }}" 
+                                                  style="display: inline;"
+                                                  onsubmit="return confirm('¿Estás seguro de eliminar esta materia?')">
+                                                <button type="submit" 
+                                                        class="btn-action btn-action-delete" 
+                                                        title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="empty-state-content">
+                        <h3 class="empty-state-title">No hay materias registradas</h3>
+                        <p class="empty-state-text">Comienza agregando la primera materia al sistema</p>
+                        <a href="{{ url_for('admin.crear_materia') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Crear Primera Materia
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

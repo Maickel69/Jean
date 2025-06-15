@@ -1,0 +1,386 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar Nota - {{ curso.nombre }}{% endblock %}
+{% block page_title %}Registrar Nueva Nota{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern card-glass">
+                <div class="card-modern-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="text-h2 mb-2">Registrar Nueva Nota</h2>
+                            <p class="text-body-large text-muted mb-0">
+                                <i class="fas fa-plus-circle me-2"></i>
+                                Curso: {{ curso.nombre }} - {{ curso.estudiantes|length }} estudiantes
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('docente.notas', curso_id=curso.id) }}" 
+                               class="btn-modern btn-secondary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver a Notas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario de Registro -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <div class="surface-elevated rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
+                                <i class="fas fa-star text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-h4 mb-1">Información de la Evaluación</h4>
+                            <p class="text-body-small opacity-75 mb-0">Complete todos los campos para registrar la nota</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    <form method="POST" action="{{ url_for('docente.registrar_nota') }}">
+                        <input type="hidden" name="curso_id" value="{{ curso.id }}">
+                        
+                        <div class="row">
+                            <!-- Estudiante -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Estudiante</label>
+                                    <select name="estudiante_id" class="form-control-modern" required>
+                                        <option value="">Seleccionar estudiante...</option>
+                                        {% for estudiante in curso.estudiantes %}
+                                        <option value="{{ estudiante.id }}">
+                                            {{ estudiante.usuario.nombre_completo }} 
+                                            ({{ estudiante.codigo_estudiante or 'Sin código' }})
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-helper-text">Seleccione el estudiante a evaluar</div>
+                                </div>
+                            </div>
+
+                            <!-- Tipo de Evaluación -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Tipo de Evaluación</label>
+                                    <select name="tipo_evaluacion" class="form-control-modern" required onchange="actualizarDescripcion()">
+                                        <option value="">Seleccionar tipo...</option>
+                                        <option value="examen">Examen</option>
+                                        <option value="tarea">Tarea</option>
+                                        <option value="proyecto">Proyecto</option>
+                                        <option value="participacion">Participación</option>
+                                        <option value="laboratorio">Laboratorio</option>
+                                        <option value="exposicion">Exposición</option>
+                                        <option value="practica">Práctica</option>
+                                    </select>
+                                    <div class="form-helper-text">Tipo de actividad evaluada</div>
+                                </div>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="col-12 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Descripción</label>
+                                    <input type="text" name="descripcion" class="form-control-modern" 
+                                           placeholder="Ej: Examen Unidad 1, Tarea de Matemáticas..." required>
+                                    <div class="form-helper-text">Breve descripción de la evaluación</div>
+                                </div>
+                            </div>
+
+                            <!-- Calificaciones -->
+                            <div class="col-md-4 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Calificación Obtenida</label>
+                                    <input type="number" name="calificacion" class="form-control-modern" 
+                                           step="0.1" min="0" max="20" placeholder="0.0" required
+                                           onchange="calcularPorcentaje()">
+                                    <div class="form-helper-text">Puntos obtenidos</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Calificación Máxima</label>
+                                    <input type="number" name="calificacion_maxima" class="form-control-modern" 
+                                           step="0.1" min="1" value="20" placeholder="20" required
+                                           onchange="calcularPorcentaje()">
+                                    <div class="form-helper-text">Puntos totales posibles</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">Porcentaje</label>
+                                    <div class="input-group">
+                                        <input type="text" id="porcentaje_display" class="form-control-modern" readonly placeholder="0%">
+                                        <span class="input-group-text">
+                                            <span id="estado_nota" class="badge-modern badge-neutral">-</span>
+                                        </span>
+                                    </div>
+                                    <div class="form-helper-text">Porcentaje de logro</div>
+                                </div>
+                            </div>
+
+                            <!-- Periodo y Fecha -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Periodo</label>
+                                    <select name="periodo" class="form-control-modern" required>
+                                        <option value="">Seleccionar periodo...</option>
+                                        <option value="I">Primer Periodo</option>
+                                        <option value="II">Segundo Periodo</option>
+                                        <option value="III">Tercer Periodo</option>
+                                        <option value="IV">Cuarto Periodo</option>
+                                    </select>
+                                    <div class="form-helper-text">Periodo académico</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Fecha de Evaluación</label>
+                                    <input type="date" name="fecha_evaluacion" class="form-control-modern" 
+                                           value="{{ moment().strftime('%Y-%m-%d') }}" required>
+                                    <div class="form-helper-text">Fecha cuando se realizó la evaluación</div>
+                                </div>
+                            </div>
+
+                            <!-- Observaciones -->
+                            <div class="col-12 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">Observaciones</label>
+                                    <textarea name="observaciones" class="form-control-modern" rows="3" 
+                                              placeholder="Comentarios adicionales sobre la evaluación (opcional)..."></textarea>
+                                    <div class="form-helper-text">Comentarios adicionales (opcional)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn-modern btn-secondary-modern" onclick="limpiarFormulario()">
+                                    <i class="fas fa-eraser me-2"></i>
+                                    Limpiar
+                                </button>
+                                <button type="button" class="btn-modern btn-info-modern" onclick="previsualizarNota()">
+                                    <i class="fas fa-eye me-2"></i>
+                                    Previsualizar
+                                </button>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('docente.notas', curso_id=curso.id) }}" 
+                                   class="btn-modern btn-secondary-modern">
+                                    <i class="fas fa-times me-2"></i>
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn-modern btn-primary-modern">
+                                    <i class="fas fa-save me-2"></i>
+                                    Registrar Nota
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Ayuda -->
+        <div class="col-lg-4">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Guía de Calificación
+                    </h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="mb-4">
+                        <h6 class="text-h6 mb-2">Escala de Notas</h6>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="d-flex align-items-center">
+                                <span class="badge-modern badge-success me-2">AD</span>
+                                <small>18-20: Logro Destacado</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge-modern badge-primary me-2">A</span>
+                                <small>14-17: Logro Previsto</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge-modern badge-warning me-2">B</span>
+                                <small>11-13: En Proceso</small>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <span class="badge-modern badge-danger me-2">C</span>
+                                <small>0-10: En Inicio</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="text-h6 mb-2">Tipos de Evaluación</h6>
+                        <div class="d-flex flex-column gap-1">
+                            <small><strong>Examen:</strong> Evaluación formal escrita</small>
+                            <small><strong>Tarea:</strong> Trabajo para casa</small>
+                            <small><strong>Proyecto:</strong> Trabajo de investigación</small>
+                            <small><strong>Participación:</strong> Intervenciones en clase</small>
+                            <small><strong>Laboratorio:</strong> Práctica experimental</small>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        <strong>Consejo:</strong> Registra las notas el mismo día de la evaluación para mantener un seguimiento preciso.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Previsualización -->
+<div class="modal fade" id="modalPreview" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Previsualización de Nota</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="preview-content">
+                <!-- Contenido de previsualización -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function calcularPorcentaje() {
+    const calificacion = parseFloat(document.querySelector('input[name="calificacion"]').value) || 0;
+    const calificacionMaxima = parseFloat(document.querySelector('input[name="calificacion_maxima"]').value) || 20;
+    
+    const porcentaje = calificacionMaxima > 0 ? (calificacion / calificacionMaxima) * 100 : 0;
+    
+    document.getElementById('porcentaje_display').value = porcentaje.toFixed(1) + '%';
+    
+    // Actualizar estado de la nota
+    const estadoNota = document.getElementById('estado_nota');
+    estadoNota.className = 'badge-modern ';
+    
+    if (calificacion >= 18) {
+        estadoNota.className += 'badge-success';
+        estadoNota.textContent = 'AD - Destacado';
+    } else if (calificacion >= 14) {
+        estadoNota.className += 'badge-primary';
+        estadoNota.textContent = 'A - Previsto';
+    } else if (calificacion >= 11) {
+        estadoNota.className += 'badge-warning';
+        estadoNota.textContent = 'B - Proceso';
+    } else if (calificacion > 0) {
+        estadoNota.className += 'badge-danger';
+        estadoNota.textContent = 'C - Inicio';
+    } else {
+        estadoNota.className += 'badge-neutral';
+        estadoNota.textContent = '-';
+    }
+}
+
+function actualizarDescripcion() {
+    const tipo = document.querySelector('select[name="tipo_evaluacion"]').value;
+    const descripcionInput = document.querySelector('input[name="descripcion"]');
+    
+    const ejemplos = {
+        'examen': 'Examen de ',
+        'tarea': 'Tarea de ',
+        'proyecto': 'Proyecto de ',
+        'participacion': 'Participación en ',
+        'laboratorio': 'Práctica de laboratorio de ',
+        'exposicion': 'Exposición sobre ',
+        'practica': 'Práctica de '
+    };
+    
+    if (tipo && ejemplos[tipo] && !descripcionInput.value) {
+        descripcionInput.placeholder = ejemplos[tipo] + '...';
+    }
+}
+
+function limpiarFormulario() {
+    if (confirm('¿Está seguro de que desea limpiar todos los campos?')) {
+        document.querySelector('form').reset();
+        document.getElementById('porcentaje_display').value = '';
+        document.getElementById('estado_nota').className = 'badge-modern badge-neutral';
+        document.getElementById('estado_nota').textContent = '-';
+    }
+}
+
+function previsualizarNota() {
+    const form = document.querySelector('form');
+    const formData = new FormData(form);
+    
+    // Obtener nombre del estudiante
+    const estudianteSelect = document.querySelector('select[name="estudiante_id"]');
+    const estudianteNombre = estudianteSelect.options[estudianteSelect.selectedIndex]?.text || 'Sin seleccionar';
+    
+    const preview = `
+        <div class="row">
+            <div class="col-6"><strong>Estudiante:</strong></div>
+            <div class="col-6">${estudianteNombre}</div>
+        </div>
+        <div class="row">
+            <div class="col-6"><strong>Tipo:</strong></div>
+            <div class="col-6">${formData.get('tipo_evaluacion') || 'Sin seleccionar'}</div>
+        </div>
+        <div class="row">
+            <div class="col-6"><strong>Descripción:</strong></div>
+            <div class="col-6">${formData.get('descripcion') || 'Sin descripción'}</div>
+        </div>
+        <div class="row">
+            <div class="col-6"><strong>Calificación:</strong></div>
+            <div class="col-6">${formData.get('calificacion') || '0'} / ${formData.get('calificacion_maxima') || '20'}</div>
+        </div>
+        <div class="row">
+            <div class="col-6"><strong>Periodo:</strong></div>
+            <div class="col-6">${formData.get('periodo') || 'Sin seleccionar'}</div>
+        </div>
+        <div class="row">
+            <div class="col-6"><strong>Fecha:</strong></div>
+            <div class="col-6">${formData.get('fecha_evaluacion') || 'Sin fecha'}</div>
+        </div>
+        <div class="row">
+            <div class="col-6"><strong>Observaciones:</strong></div>
+            <div class="col-6">${formData.get('observaciones') || 'Sin observaciones'}</div>
+        </div>
+    `;
+    
+    document.getElementById('preview-content').innerHTML = preview;
+    new bootstrap.Modal(document.getElementById('modalPreview')).show();
+}
+
+// Inicializar periodo actual
+document.addEventListener('DOMContentLoaded', function() {
+    const mesActual = new Date().getMonth() + 1;
+    const periodoSelect = document.querySelector('select[name="periodo"]');
+    
+    let periodoActual;
+    if (mesActual <= 3) periodoActual = 'I';
+    else if (mesActual <= 6) periodoActual = 'II';
+    else if (mesActual <= 9) periodoActual = 'III';
+    else periodoActual = 'IV';
+    
+    periodoSelect.value = periodoActual;
+});
+</script>
+{% endblock %}

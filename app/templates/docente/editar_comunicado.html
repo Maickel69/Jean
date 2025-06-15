@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Comunicado{% endblock %}
+{% block page_title %}Editar Comunicado{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern card-glass">
+                <div class="card-modern-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="text-h2 mb-2">Editar Comunicado</h2>
+                            <p class="text-body-large text-muted mb-0">
+                                <i class="fas fa-edit me-2"></i>
+                                Modifica la información del comunicado
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('docente.comunicados') }}" 
+                               class="btn-modern btn-secondary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver a Comunicados
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulario Principal -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center">
+                        <div class="me-3">
+                            <div class="surface-elevated rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-warning);">
+                                <i class="fas fa-edit text-white"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-h4 mb-1">Editar Información del Comunicado</h4>
+                            <p class="text-body-small opacity-75 mb-0">Modifique los detalles según sea necesario</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    <form method="POST" action="{{ url_for('docente.editar_comunicado', comunicado_id=comunicado.id) }}" id="comunicadoForm">
+                        <div class="row">
+                            <!-- Título -->
+                            <div class="col-12 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Título del Comunicado</label>
+                                    <input type="text" name="titulo" class="form-control-modern" 
+                                           value="{{ comunicado.titulo }}"
+                                           placeholder="Ej: Reunión de Padres de Familia, Actividad Cultural..." 
+                                           required maxlength="200">
+                                    <div class="form-helper-text">Título claro y descriptivo del comunicado</div>
+                                </div>
+                            </div>
+
+                            <!-- Tipo y Dirigido a -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Tipo de Comunicado</label>
+                                    <select name="tipo" class="form-control-modern" required>
+                                        <option value="">Seleccionar tipo...</option>
+                                        <option value="general" {% if comunicado.tipo == 'general' %}selected{% endif %}>General</option>
+                                        <option value="reunion" {% if comunicado.tipo == 'reunion' %}selected{% endif %}>Reunión</option>
+                                        <option value="actividad" {% if comunicado.tipo == 'actividad' %}selected{% endif %}>Actividad</option>
+                                        <option value="evaluacion" {% if comunicado.tipo == 'evaluacion' %}selected{% endif %}>Evaluación</option>
+                                        <option value="disciplinario" {% if comunicado.tipo == 'disciplinario' %}selected{% endif %}>Disciplinario</option>
+                                        <option value="academico" {% if comunicado.tipo == 'academico' %}selected{% endif %}>Académico</option>
+                                        <option value="evento" {% if comunicado.tipo == 'evento' %}selected{% endif %}>Evento</option>
+                                        <option value="urgente" {% if comunicado.tipo == 'urgente' %}selected{% endif %}>Urgente</option>
+                                    </select>
+                                    <div class="form-helper-text">Categoría del comunicado</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Dirigido a</label>
+                                    <select name="dirigido_a" class="form-control-modern" required>
+                                        <option value="padres" {% if comunicado.dirigido_a == 'padres' %}selected{% endif %}>Padres de Familia</option>
+                                        <option value="estudiantes" {% if comunicado.dirigido_a == 'estudiantes' %}selected{% endif %}>Estudiantes</option>
+                                        <option value="ambos" {% if comunicado.dirigido_a == 'ambos' %}selected{% endif %}>Padres y Estudiantes</option>
+                                    </select>
+                                    <div class="form-helper-text">Destinatarios del comunicado</div>
+                                </div>
+                            </div>
+
+                            <!-- Curso y Prioridad -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Curso</label>
+                                    <select name="curso_id" class="form-control-modern" required>
+                                        <option value="">Seleccionar curso...</option>
+                                        {% for curso in cursos %}
+                                        <option value="{{ curso.id }}" 
+                                                {% if comunicado.curso_id == curso.id %}selected{% endif %}
+                                                data-estudiantes="{{ curso.estudiantes|length }}">
+                                            {{ curso.nombre }} ({{ curso.estudiantes|length }} estudiantes)
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-helper-text">Curso al que va dirigido el comunicado</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <label class="form-label-modern">Comunicado Prioritario</label>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" name="prioritario" 
+                                                   id="prioritario" {% if comunicado.prioritario %}checked{% endif %}>
+                                            <label class="form-check-label" for="prioritario">
+                                                Marcar como prioritario
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-helper-text">Los comunicados prioritarios aparecen destacados</div>
+                                </div>
+                            </div>
+
+                            <!-- Fecha de Vencimiento -->
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">Fecha de Vencimiento</label>
+                                    <input type="date" name="fecha_vencimiento" class="form-control-modern" 
+                                           value="{% if comunicado.fecha_vencimiento %}{{ comunicado.fecha_vencimiento.strftime('%Y-%m-%d') }}{% endif %}"
+                                           min="{{ moment().strftime('%Y-%m-%d') }}">
+                                    <div class="form-helper-text">Fecha hasta cuando será visible (opcional)</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern">Estado Actual</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-info-circle"></i>
+                                        </span>
+                                        <input type="text" class="form-control" readonly
+                                               value="{% if comunicado.fecha_vencimiento and comunicado.fecha_vencimiento.date() < moment().date() %}Vencido{% else %}Activo{% endif %}">
+                                    </div>
+                                    <div class="form-helper-text">Estado actual del comunicado</div>
+                                </div>
+                            </div>
+
+                            <!-- Contenido -->
+                            <div class="col-12 mb-4">
+                                <div class="form-group-modern">
+                                    <label class="form-label-modern required">Contenido del Comunicado</label>
+                                    <textarea name="contenido" class="form-control-modern" rows="8" 
+                                              placeholder="Escriba aquí el contenido completo del comunicado..." 
+                                              required maxlength="2000">{{ comunicado.contenido }}</textarea>
+                                    <div class="form-helper-text">
+                                        <div class="d-flex justify-content-between">
+                                            <span>Contenido detallado del comunicado</span>
+                                            <span id="contador_caracteres">{{ comunicado.contenido|length }}/2000 caracteres</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de Creación -->
+                        <div class="alert alert-info mb-4">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <div>
+                                    <strong>Información:</strong> 
+                                    Comunicado creado el {{ comunicado.fecha_publicacion.strftime('%d/%m/%Y a las %H:%M') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn-modern btn-info-modern" onclick="previsualizarComunicado()">
+                                    <i class="fas fa-eye me-2"></i>
+                                    Previsualizar
+                                </button>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('docente.comunicados') }}" 
+                                   class="btn-modern btn-secondary-modern">
+                                    <i class="fas fa-times me-2"></i>
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn-modern btn-warning-modern">
+                                    <i class="fas fa-save me-2"></i>
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de Ayuda -->
+        <div class="col-lg-4">
+            <div class="card-modern mb-4">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>
+                        Consejos para Editar
+                    </h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <div class="surface-elevated rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; background: var(--gradient-info);">
+                                    <i class="fas fa-edit text-white fa-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Modificar con Cuidado</h6>
+                                <p class="text-body-small text-muted mb-0">Los cambios serán visibles inmediatamente para los destinatarios.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <div class="surface-elevated rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; background: var(--gradient-warning);">
+                                    <i class="fas fa-clock text-white fa-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Fechas de Vencimiento</h6>
+                                <p class="text-body-small text-muted mb-0">Actualice la fecha de vencimiento si es necesario.</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <div class="surface-elevated rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px; background: var(--gradient-success);">
+                                    <i class="fas fa-eye text-white fa-sm"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Previsualizar</h6>
+                                <p class="text-body-small text-muted mb-0">Use la previsualización antes de guardar los cambios.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas del Comunicado -->
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        Información del Comunicado
+                    </h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="mb-2">
+                                <div class="text-h4 mb-1">{{ comunicado.curso.estudiantes|length if comunicado.curso else 0 }}</div>
+                                <small class="text-muted">Destinatarios</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-2">
+                                <div class="text-h4 mb-1">
+                                    <span class="badge {% if comunicado.tipo == 'reunion' %}bg-info{% elif comunicado.tipo == 'urgente' %}bg-danger{% elif comunicado.tipo == 'actividad' %}bg-success{% else %}bg-primary{% endif %}">
+                                        {{ comunicado.tipo.title() }}
+                                    </span>
+                                </div>
+                                <small class="text-muted">Tipo</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="mb-2">
+                                <div class="text-h4 mb-1">
+                                    {% if comunicado.prioritario %}
+                                        <i class="fas fa-exclamation-triangle text-warning"></i>
+                                    {% else %}
+                                        <i class="fas fa-check-circle text-success"></i>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">Prioridad</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Contador de caracteres
+const textarea = document.querySelector('textarea[name="contenido"]');
+const contador = document.getElementById('contador_caracteres');
+
+textarea.addEventListener('input', function() {
+    const length = this.value.length;
+    contador.textContent = `${length}/2000 caracteres`;
+    
+    if (length > 1800) {
+        contador.classList.add('text-warning');
+    } else {
+        contador.classList.remove('text-warning');
+    }
+    
+    if (length >= 2000) {
+        contador.classList.add('text-danger');
+        contador.classList.remove('text-warning');
+    }
+});
+
+// Función de previsualización
+function previsualizarComunicado() {
+    const titulo = document.querySelector('input[name="titulo"]').value;
+    const contenido = document.querySelector('textarea[name="contenido"]').value;
+    const tipo = document.querySelector('select[name="tipo"]').value;
+    
+    if (!titulo || !contenido) {
+        alert('Por favor complete el título y contenido antes de previsualizar.');
+        return;
+    }
+    
+    // Crear modal de previsualización
+    const modal = `
+        <div class="modal fade" id="previewModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Previsualización del Comunicado</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">
+                                    <span class="badge bg-light text-dark me-2">${tipo.toUpperCase()}</span>
+                                    ${titulo}
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div style="white-space: pre-line;">${contenido}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Remover modal existente si existe
+    const existingModal = document.getElementById('previewModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Agregar modal al DOM
+    document.body.insertAdjacentHTML('beforeend', modal);
+    
+    // Mostrar modal
+    const modalInstance = new bootstrap.Modal(document.getElementById('previewModal'));
+    modalInstance.show();
+}
+</script>
+{% endblock %} 

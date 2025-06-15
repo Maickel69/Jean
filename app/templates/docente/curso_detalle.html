@@ -1,0 +1,553 @@
+{% extends "base.html" %}
+
+{% block title %}{{ curso.nombre }} - Detalle del Curso{% endblock %}
+{% block page_title %}{{ curso.nombre }}{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('docente.dashboard') }}" class="btn btn-outline-secondary btn-sm">
+    <i class="fas fa-arrow-left me-1"></i>Volver al Dashboard
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Información del curso -->
+    <div class="col-12 mb-4" data-aos="fade-down">
+        <div class="card glass-morphism">
+            <div class="card-header d-flex align-items-center">
+                <div class="header-icon me-3">
+                    <i class="fas fa-book-open fa-2x pulse-animation"></i>
+                </div>
+                <div>
+                    <h5 class="mb-1">📚 Información del Curso</h5>
+                    <small class="text-white-75">Detalles académicos y estadísticas</small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <div class="course-info">
+                            <h3 class="course-title mb-3">{{ curso.nombre }}</h3>
+                            <div class="course-details">
+                                <div class="detail-row">
+                                    <i class="fas fa-info-circle text-primary"></i>
+                                    <span><strong>Descripción:</strong> {{ curso.descripcion or 'No especificada' }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-clock text-success"></i>
+                                    <span><strong>Horas semanales:</strong> {{ curso.horas_semanales or 'No especificadas' }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-calendar text-info"></i>
+                                    <span><strong>Período académico:</strong> {{ curso.periodo_academico or 'Actual' }}</span>
+                                </div>
+                                <div class="detail-row">
+                                    {% if curso.activo %}
+                                        <i class="fas fa-check-circle text-success"></i>
+                                        <span><strong>Estado:</strong> <span class="badge badge-success">Activo</span></span>
+                                    {% else %}
+                                        <i class="fas fa-times-circle text-danger"></i>
+                                        <span><strong>Estado:</strong> <span class="badge badge-danger">Inactivo</span></span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="course-stats">
+                            <div class="stat-card-mini">
+                                <div class="stat-icon bg-primary">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>{{ estudiantes|length }}</h4>
+                                    <span>Estudiantes</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Acciones rápidas -->
+    <div class="col-12 mb-4" data-aos="fade-up">
+        <div class="card glass-morphism">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-bolt me-2"></i>
+                    Acciones Rápidas
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <a href="{{ url_for('docente.asistencias', curso_id=curso.id) }}" class="btn btn-success w-100 quick-action-btn">
+                            <i class="fas fa-calendar-check mb-2"></i><br>
+                            <span>Tomar Asistencia</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('docente.notas', curso_id=curso.id) }}" class="btn btn-warning w-100 quick-action-btn">
+                            <i class="fas fa-star mb-2"></i><br>
+                            <span>Gestionar Notas</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('docente.registrar_nota', curso_id=curso.id) }}" class="btn btn-info w-100 quick-action-btn">
+                            <i class="fas fa-plus-circle mb-2"></i><br>
+                            <span>Nueva Evaluación</span>
+                        </a>
+                    </div>
+                    <div class="col-md-3">
+                        <a href="{{ url_for('docente.crear_comunicado') }}?curso_id={{ curso.id }}" class="btn btn-primary w-100 quick-action-btn">
+                            <i class="fas fa-megaphone mb-2"></i><br>
+                            <span>Comunicado</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de estudiantes -->
+    <div class="col-12" data-aos="fade-up" data-aos-delay="200">
+        <div class="card glass-morphism">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <div class="header-icon me-3">
+                        <i class="fas fa-graduation-cap fa-2x pulse-animation"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-1">👨‍🎓 Lista de Estudiantes</h5>
+                        <small class="text-white-75">{{ estudiantes|length }} estudiantes matriculados</small>
+                    </div>
+                </div>
+                <div class="search-container">
+                    <input type="text" class="form-control" id="searchStudent" placeholder="Buscar estudiante...">
+                </div>
+            </div>
+            <div class="card-body p-0">
+                {% if estudiantes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0" id="studentsTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th width="60">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-hashtag me-2"></i>
+                                            #
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-user me-2"></i>
+                                            Estudiante
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-id-card me-2"></i>
+                                            Código
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-layer-group me-2"></i>
+                                            Grado/Sección
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-birthday-cake me-2"></i>
+                                            Edad
+                                        </div>
+                                    </th>
+                                    <th width="120">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-cogs me-2"></i>
+                                            Acciones
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for estudiante in estudiantes %}
+                                <tr class="student-row" data-aos="fade-in" data-aos-delay="{{ loop.index0 * 50 }}">
+                                    <td>
+                                        <div class="student-number">
+                                            {{ loop.index }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="student-info-cell">
+                                            <div class="student-avatar-mini">
+                                                {% set avatar_colors = ['primary', 'success', 'warning', 'info', 'danger', 'secondary'] %}
+                                                {% set color = avatar_colors[loop.index0 % 6] %}
+                                                <div class="avatar-mini bg-{{ color }}">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            </div>
+                                            <div class="student-details">
+                                                <div class="student-name">{{ estudiante.nombre_completo }}</div>
+                                                <div class="student-meta">ID: {{ estudiante.id }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-outline-primary">{{ estudiante.codigo_estudiante }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="grade-info">
+                                            <span class="grade">{{ estudiante.grado }}</span>
+                                            <span class="section">{{ estudiante.seccion }}</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        {% if estudiante.fecha_nacimiento %}
+                                            {% set current_year = moment().year %}
+                                            {% set edad = (current_year - estudiante.fecha_nacimiento.year) %}
+                                            <span class="age-badge">{{ edad }} años</span>
+                                        {% else %}
+                                            <span class="text-muted">No especificada</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn btn-sm btn-outline-info" 
+                                                    title="Ver perfil"
+                                                    onclick="showStudentProfile({{ estudiante.id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success" 
+                                                    title="Contactar padre"
+                                                    onclick="contactParent({{ estudiante.padre_id }})">
+                                                <i class="fas fa-phone"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty-state text-center py-5">
+                        <div class="empty-icon">
+                            <i class="fas fa-user-slash fa-4x text-muted mb-3"></i>
+                        </div>
+                        <h4 class="text-muted">No hay estudiantes matriculados</h4>
+                        <p class="text-muted">Este curso aún no tiene estudiantes asignados.</p>
+                        <button class="btn btn-outline-primary" onclick="alert('Función en desarrollo')">
+                            <i class="fas fa-user-plus me-2"></i>Solicitar Asignación
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Course Info Styles */
+.course-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.course-details {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.detail-row:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateX(5px);
+}
+
+.detail-row i {
+    width: 25px;
+    margin-right: 15px;
+    font-size: 1.1rem;
+}
+
+/* Stats */
+.stat-card-mini {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-card-mini:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+    margin-right: 15px;
+}
+
+.stat-info h4 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.stat-info span {
+    color: #666;
+    font-weight: 500;
+}
+
+/* Quick Actions */
+.quick-action-btn {
+    padding: 20px 15px;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    text-decoration: none;
+}
+
+.quick-action-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+}
+
+.quick-action-btn i {
+    font-size: 1.5rem;
+    display: block;
+}
+
+/* Search */
+.search-container {
+    position: relative;
+    width: 250px;
+}
+
+.search-container input {
+    border-radius: 20px;
+    padding-left: 15px;
+    border: 2px solid rgba(102, 126, 234, 0.2);
+    transition: all 0.3s ease;
+}
+
+.search-container input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+/* Students Table */
+.table th {
+    border: none;
+    font-weight: 600;
+    color: #2c3e50;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    padding: 15px;
+}
+
+.table td {
+    border: none;
+    padding: 15px;
+    vertical-align: middle;
+}
+
+.student-row {
+    transition: all 0.3s ease;
+}
+
+.student-row:hover {
+    background: rgba(102, 126, 234, 0.05);
+    transform: translateX(5px);
+}
+
+.student-number {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.student-info-cell {
+    display: flex;
+    align-items: center;
+}
+
+.student-avatar-mini {
+    margin-right: 15px;
+}
+
+.avatar-mini {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.student-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.student-meta {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.badge-outline-primary {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    font-weight: 600;
+}
+
+.grade-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.grade {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.section {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.age-badge {
+    background: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.action-buttons .btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.action-buttons .btn:hover {
+    transform: scale(1.1);
+}
+
+/* Empty State */
+.empty-state {
+    padding: 60px 40px;
+}
+
+.empty-icon {
+    opacity: 0.5;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-container {
+        width: 200px;
+    }
+    
+    .quick-action-btn {
+        padding: 15px 10px;
+    }
+    
+    .quick-action-btn i {
+        font-size: 1.2rem;
+    }
+    
+    .stat-card-mini {
+        padding: 15px;
+    }
+    
+    .student-info-cell {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .student-avatar-mini {
+        margin: 0 0 10px 0;
+    }
+}
+</style>
+
+<script>
+// Search functionality
+document.getElementById('searchStudent').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#studentsTable tbody tr');
+    
+    rows.forEach(row => {
+        const studentName = row.querySelector('.student-name').textContent.toLowerCase();
+        const studentCode = row.querySelector('.badge-outline-primary').textContent.toLowerCase();
+        
+        if (studentName.includes(searchTerm) || studentCode.includes(searchTerm)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+
+// Student profile modal
+function showStudentProfile(studentId) {
+    alert(`Función en desarrollo: Ver perfil del estudiante ID ${studentId}`);
+}
+
+// Contact parent
+function contactParent(parentId) {
+    alert(`Función en desarrollo: Contactar padre ID ${parentId}`);
+}
+
+// Add moment.js equivalent for age calculation
+{% set current_year = moment().year if moment else 2024 %}
+</script>
+{% endblock %} 

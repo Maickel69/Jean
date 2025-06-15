@@ -1,0 +1,421 @@
+{% extends "base.html" %}
+
+{% block title %}Cursos de {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-user-graduate"></i> Cursos de {{ estudiante.nombre_completo }}</h2>
+            <p class="text-muted">
+                {{ estudiante.grado }} {{ estudiante.seccion }} - 
+                Código: {{ estudiante.codigo_estudiante }}
+            </p>
+        </div>
+        <div class="col-md-4 text-right">
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarCurso">
+                    <i class="fas fa-plus"></i> Agregar Curso
+                </button>
+                <a href="{{ url_for('admin.gestionar_matriculas') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Información del Estudiante -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-chalkboard-teacher fa-2x mb-2"></i>
+                    <h3>{{ cursos_data|length }}</h3>
+                    <small>Cursos Matriculados</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-2x mb-2"></i>
+                    <h3>{{ ((cursos_data|sum(attribute='promedio')) / cursos_data|length if cursos_data else 0)|round(1) }}%</h3>
+                    <small>Promedio General</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-clipboard-check fa-2x mb-2"></i>
+                    <h3>{{ ((cursos_data|sum(attribute='porcentaje_asistencia')) / cursos_data|length if cursos_data else 0)|round(1) }}%</h3>
+                    <small>Asistencia Promedio</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                    <h3>{{ cursos_disponibles|length }}</h3>
+                    <small>Cursos Disponibles</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Cursos Matriculados -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-list"></i> Cursos Matriculados</h5>
+        </div>
+        <div class="card-body">
+            {% if cursos_data %}
+            <div class="row">
+                {% for data in cursos_data %}
+                {% set curso = data.curso %}
+                <div class="col-md-6 mb-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    {{ curso.nombre }}
+                                </h6>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ url_for('admin.curso_estudiantes', curso_id=curso.id) }}">
+                                                <i class="fas fa-users"></i> Ver Estudiantes del Curso
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#" 
+                                               onclick="confirmarDesmatricula({{ curso.id }}, '{{ curso.nombre }}', {{ data.notas_count }}, {{ data.porcentaje_asistencia }})">
+                                                <i class="fas fa-user-minus"></i> Desmatricular
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-6">
+                                    <span class="badge bg-info">{{ curso.grado }}</span>
+                                    <span class="badge bg-secondary">{{ curso.seccion }}</span>
+                                    {% if curso.grado != estudiante.grado %}
+                                    <br><small class="text-warning">⚠️ Grado diferente</small>
+                                    {% endif %}
+                                </div>
+                                <div class="col-6 text-end">
+                                    <small class="text-muted">{{ curso.codigo }}</small>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Docente:</strong>
+                                {% if curso.docente %}
+                                    {{ curso.docente.nombre_completo }}
+                                {% else %}
+                                    <span class="text-muted">Sin asignar</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Estadísticas del curso -->
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="border-end">
+                                        <h5 class="text-primary mb-0">{{ data.notas_count }}</h5>
+                                        <small class="text-muted">Notas</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="border-end">
+                                        <h5 class="text-success mb-0">{{ data.promedio }}%</h5>
+                                        <small class="text-muted">Promedio</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <h5 class="{% if data.porcentaje_asistencia >= 80 %}text-success{% elif data.porcentaje_asistencia >= 60 %}text-warning{% else %}text-danger{% endif %} mb-0">
+                                        {{ data.porcentaje_asistencia }}%
+                                    </h5>
+                                    <small class="text-muted">Asistencia</small>
+                                </div>
+                            </div>
+
+                            <!-- Barra de progreso de rendimiento -->
+                            <div class="mt-3">
+                                <label class="form-label small">Rendimiento General</label>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar 
+                                        {% if (data.promedio + data.porcentaje_asistencia) / 2 >= 80 %}bg-success
+                                        {% elif (data.promedio + data.porcentaje_asistencia) / 2 >= 60 %}bg-warning
+                                        {% else %}bg-danger{% endif %}"
+                                         style="width: {{ ((data.promedio + data.porcentaje_asistencia) / 2) }}%">
+                                    </div>
+                                </div>
+                                <small class="text-muted">
+                                    {{ ((data.promedio + data.porcentaje_asistencia) / 2)|round(1) }}% de rendimiento global
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                <h5>No hay cursos matriculados</h5>
+                <p class="text-muted">Este estudiante no está matriculado en ningún curso</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarCurso">
+                    <i class="fas fa-plus"></i> Primer Curso
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Cursos Recomendados (mismo grado) -->
+    {% if cursos_disponibles %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-star"></i> Cursos Recomendados</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for curso in cursos_disponibles[:6] %}
+                <div class="col-md-4 mb-3">
+                    <div class="card border-primary" style="cursor: pointer;" onclick="seleccionarCurso({{ curso.id }})">
+                        <div class="card-body p-3">
+                            <h6 class="card-title mb-1">{{ curso.nombre }}</h6>
+                            <p class="card-text small text-muted mb-2">
+                                {{ curso.grado }} {{ curso.seccion }}
+                                {% if curso.docente %}
+                                - {{ curso.docente.nombre_completo }}
+                                {% endif %}
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">{{ curso.codigo }}</small>
+                                {% if curso.grado == estudiante.grado %}
+                                <span class="badge bg-success">Recomendado</span>
+                                {% else %}
+                                <span class="badge bg-warning">Diferente grado</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% if cursos_disponibles|length > 6 %}
+            <div class="text-center">
+                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarCurso">
+                    Ver todos los cursos disponibles ({{ cursos_disponibles|length }})
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modal Agregar Curso -->
+<div class="modal fade" id="modalAgregarCurso" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-plus"></i> Agregar Curso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                {% if cursos_disponibles %}
+                <form method="POST" action="{{ url_for('admin.matricular_estudiante') }}">
+                    <input type="hidden" name="estudiante_id" value="{{ estudiante.id }}">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Buscar Curso</label>
+                        <input type="text" class="form-control" id="buscarCurso" placeholder="Nombre del curso...">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Seleccionar Curso</label>
+                        <div class="row" style="max-height: 400px; overflow-y: auto;" id="listaCursos">
+                            {% for curso in cursos_disponibles %}
+                            <div class="col-md-6 mb-2 curso-item" data-nombre="{{ curso.nombre.lower() }}">
+                                <div class="form-check card-check">
+                                    <input class="form-check-input" type="radio" name="curso_id" 
+                                           value="{{ curso.id }}" id="modal_curso_{{ curso.id }}">
+                                    <label class="form-check-label w-100" for="modal_curso_{{ curso.id }}">
+                                        <div class="d-flex align-items-center">
+                                            <div class="icon-circle bg-primary text-white me-2">
+                                                <i class="fas fa-chalkboard-teacher"></i>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <strong>{{ curso.nombre }}</strong>
+                                                <br>
+                                                <small class="text-muted">
+                                                    {{ curso.grado }} {{ curso.seccion }}
+                                                    {% if curso.grado != estudiante.grado %}
+                                                    - <span class="text-warning">Grado diferente</span>
+                                                    {% endif %}
+                                                </small>
+                                            </div>
+                                            {% if curso.grado == estudiante.grado %}
+                                            <span class="badge bg-success">Recomendado</span>
+                                            {% endif %}
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Matricular en Curso
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="fas fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                    <h5>No hay cursos disponibles</h5>
+                    <p class="text-muted">Este estudiante ya está matriculado en todos los cursos disponibles</p>
+                    <a href="{{ url_for('admin.crear_curso') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Crear Nuevo Curso
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Desmatrícula -->
+<div class="modal fade" id="modalConfirmarDesmatricula" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger"><i class="fas fa-exclamation-triangle"></i> Confirmar Desmatrícula</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro de desmatricular a <strong>{{ estudiante.nombre_completo }}</strong> del curso <strong id="nombreCurso"></strong>?</p>
+                
+                <div id="alertaRegistros" class="alert alert-warning" style="display: none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Advertencia:</strong> El estudiante tiene registros académicos en este curso.
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="confirmarDesmatricula" name="confirmar_desmatricula" value="1">
+                        <label class="form-check-label" for="confirmarDesmatricula">
+                            Confirmo que deseo proceder con la desmatrícula
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form method="POST" id="formDesmatricula" class="d-inline">
+                    <input type="hidden" id="hiddenConfirmar" name="confirmar_desmatricula" value="">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-user-minus"></i> Desmatricular
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filtro de búsqueda de cursos
+document.getElementById('buscarCurso')?.addEventListener('input', function() {
+    const busqueda = this.value.toLowerCase();
+    document.querySelectorAll('.curso-item').forEach(item => {
+        const mostrar = item.dataset.nombre.includes(busqueda);
+        item.style.display = mostrar ? 'block' : 'none';
+    });
+});
+
+function seleccionarCurso(cursoId) {
+    document.querySelector(`#modal_curso_${cursoId}`).checked = true;
+    new bootstrap.Modal(document.getElementById('modalAgregarCurso')).show();
+}
+
+function confirmarDesmatricula(cursoId, nombreCurso, notasCount, asistencia) {
+    document.getElementById('nombreCurso').textContent = nombreCurso;
+    document.getElementById('formDesmatricula').action = 
+        `/admin/matriculas/{{ estudiante.id }}/${cursoId}/eliminar`;
+    
+    const alertaRegistros = document.getElementById('alertaRegistros');
+    const confirmarCheckbox = document.getElementById('confirmarDesmatricula');
+    
+    if (notasCount > 0 || asistencia > 0) {
+        alertaRegistros.style.display = 'block';
+        
+        // Desactivar botón hasta que se confirme
+        const btnDesmatricular = document.querySelector('#modalConfirmarDesmatricula .btn-danger');
+        btnDesmatricular.disabled = true;
+        
+        confirmarCheckbox.addEventListener('change', function() {
+            btnDesmatricular.disabled = !this.checked;
+            document.getElementById('hiddenConfirmar').value = this.checked ? '1' : '';
+        });
+    } else {
+        alertaRegistros.style.display = 'none';
+        document.getElementById('hiddenConfirmar').value = '1';
+    }
+    
+    new bootstrap.Modal(document.getElementById('modalConfirmarDesmatricula')).show();
+}
+</script>
+
+<style>
+.icon-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-check {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    transition: all 0.2s;
+}
+
+.card-check:hover {
+    background-color: #f8f9fa;
+    border-color: #0d6efd;
+}
+
+.form-check-input:checked ~ .form-check-label .card-check {
+    background-color: #e7f3ff;
+    border-color: #0d6efd;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.border-primary {
+    border: 1px solid #0d6efd !important;
+}
+
+.progress {
+    background-color: #e9ecef;
+}
+</style>
+{% endblock %} 

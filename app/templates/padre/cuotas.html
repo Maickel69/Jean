@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+
+{% block title %}Cuotas y Pagos - {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<!-- Header Section -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-fade-in">
+                <div class="card-modern-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="surface-elevated rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 70px; height: 70px; background: var(--gradient-success);">
+                                    <i class="fas fa-credit-card fa-2x text-white"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-h2 mb-1">Cuotas y Pagos de {{ estudiante.nombre_completo }}</h2>
+                                    <p class="text-body-large text-muted mb-0">
+                                        {{ estudiante.grado }} - Sección {{ estudiante.seccion }}
+                                    </p>
+                                    <div class="d-flex align-items-center gap-3 mt-2">
+                                        <div class="d-flex align-items-center gap-1">
+                                            <i class="fas fa-id-card text-primary"></i>
+                                            <span class="text-body-small">{{ estudiante.codigo_estudiante }}</span>
+                                        </div>
+                                        <div class="badge-modern badge-success">
+                                            <span class="status-dot success"></span>
+                                            {{ cuotas|length }} cuota{{ 's' if cuotas|length != 1 else '' }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <a href="{{ url_for('padre.seleccionar_hijo', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-primary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                <span>Volver al Panel</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="container-fluid mt-4">
+    <div class="row g-4">
+        {% set pendientes = cuotas|selectattr('estado', 'equalto', 'pendiente')|list %}
+        {% set pagadas = cuotas|selectattr('estado', 'equalto', 'pagado')|list %}
+        {% set vencidas = cuotas|selectattr('estado', 'equalto', 'vencido')|list %}
+        {% set total_pendiente = pendientes|sum(attribute='monto') %}
+        {% set total_pagado = pagadas|sum(attribute='monto') %}
+        
+        <div class="col-md-3">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.1s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: var(--gradient-warning);">
+                            <i class="fas fa-clock fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-h4 mb-1">${{ "%.2f"|format(total_pendiente) }}</h4>
+                    <p class="text-body-small text-muted mb-2">Total Pendiente</p>
+                    <div class="badge-modern badge-warning">
+                        {{ pendientes|length }} cuota{{ 's' if pendientes|length != 1 else '' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: var(--gradient-success);">
+                            <i class="fas fa-check-circle fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-h4 mb-1">${{ "%.2f"|format(total_pagado) }}</h4>
+                    <p class="text-body-small text-muted mb-2">Total Pagado</p>
+                    <div class="badge-modern badge-success">
+                        {{ pagadas|length }} cuota{{ 's' if pagadas|length != 1 else '' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: var(--gradient-danger);">
+                            <i class="fas fa-exclamation-triangle fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-h4 mb-1">{{ vencidas|length }}</h4>
+                    <p class="text-body-small text-muted mb-2">Cuotas Vencidas</p>
+                    <div class="badge-modern badge-danger">
+                        {% if vencidas|length > 0 %}Requiere Atención{% else %}Al Día{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
+                             style="width: 60px; height: 60px; background: var(--gradient-info);">
+                            <i class="fas fa-chart-line fa-lg text-white"></i>
+                        </div>
+                    </div>
+                    <h4 class="text-h4 mb-1">{{ cuotas|length }}</h4>
+                    <p class="text-body-small text-muted mb-2">Total Cuotas</p>
+                    <div class="badge-modern badge-info">
+                        Período 2024
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter Section -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.5s;">
+                <div class="card-modern-body py-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="text-body-medium fw-medium">Filtrar por estado:</span>
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="filtro-estado" id="todos" autocomplete="off" checked>
+                                    <label class="btn btn-outline-secondary btn-sm" for="todos">Todos</label>
+                                    
+                                    <input type="radio" class="btn-check" name="filtro-estado" id="pendiente" autocomplete="off">
+                                    <label class="btn btn-outline-warning btn-sm" for="pendiente">Pendientes</label>
+                                    
+                                    <input type="radio" class="btn-check" name="filtro-estado" id="pagado" autocomplete="off">
+                                    <label class="btn btn-outline-success btn-sm" for="pagado">Pagadas</label>
+                                    
+                                    <input type="radio" class="btn-check" name="filtro-estado" id="vencido" autocomplete="off">
+                                    <label class="btn btn-outline-danger btn-sm" for="vencido">Vencidas</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <div class="d-flex align-items-center justify-content-end gap-2">
+                                <i class="fas fa-info-circle text-muted"></i>
+                                <span class="text-body-small text-muted">Ordenadas por fecha de vencimiento</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Fees Section -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.6s;">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="text-h4 mb-1">Historial de Cuotas</h4>
+                            <p class="text-body-small opacity-75 mb-0">Gestión de pagos y cuotas académicas</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            {% if pendientes|length > 0 %}
+                            <div class="badge-modern badge-warning">
+                                <i class="fas fa-exclamation-circle me-1"></i>
+                                {{ pendientes|length }} pendiente{{ 's' if pendientes|length != 1 else '' }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    {% if cuotas %}
+                        <div class="space-y-4">
+                            {% for cuota in cuotas %}
+                                <div class="cuota-item" data-estado="{{ cuota.estado }}" data-aos="fade-up" data-aos-delay="{{ (loop.index0 * 50) + 700 }}">
+                                    <div class="card-modern {% if cuota.estado == 'vencido' %}border-danger{% elif cuota.estado == 'pendiente' and cuota.dias_vencimiento() <= 7 %}border-warning{% endif %}">
+                                        <div class="card-modern-body">
+                                            <!-- Header de la cuota -->
+                                            <div class="d-flex align-items-start justify-content-between mb-3">
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex align-items-center gap-3 mb-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            {% if cuota.tipo == 'mensualidad' %}
+                                                                <i class="fas fa-calendar-alt text-primary"></i>
+                                                            {% elif cuota.tipo == 'matricula' %}
+                                                                <i class="fas fa-graduation-cap text-success"></i>
+                                                            {% elif cuota.tipo == 'multa' %}
+                                                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                                                            {% elif cuota.tipo == 'material' %}
+                                                                <i class="fas fa-book text-info"></i>
+                                                            {% elif cuota.tipo == 'examen' %}
+                                                                <i class="fas fa-file-alt text-warning"></i>
+                                                            {% else %}
+                                                                <i class="fas fa-money-bill text-secondary"></i>
+                                                            {% endif %}
+                                                            <span class="badge-modern badge-{{ cuota.color_estado() }}">
+                                                                {{ cuota.estado_display() }}
+                                                            </span>
+                                                        </div>
+                                                        <div class="badge-modern badge-secondary">
+                                                            {{ cuota.tipo_display() }}
+                                                        </div>
+                                                        {% if cuota.estado == 'pendiente' and cuota.dias_vencimiento() <= 7 and cuota.dias_vencimiento() > 0 %}
+                                                            <div class="badge-modern badge-warning">
+                                                                <i class="fas fa-clock me-1"></i>
+                                                                Vence en {{ cuota.dias_vencimiento() }} día{{ 's' if cuota.dias_vencimiento() != 1 else '' }}
+                                                            </div>
+                                                        {% elif cuota.estado == 'vencido' %}
+                                                            <div class="badge-modern badge-danger">
+                                                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                                                Vencida
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <h5 class="text-h5 mb-2">{{ cuota.descripcion }}</h5>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="text-h4 fw-bold mb-1 {% if cuota.estado == 'vencido' %}text-danger{% elif cuota.estado == 'pagado' %}text-success{% else %}text-warning{% endif %}">
+                                                        ${{ "%.2f"|format(cuota.monto) }}
+                                                    </div>
+                                                    <div class="text-body-small text-muted">
+                                                        Vence: {{ cuota.fecha_vencimiento.strftime('%d/%m/%Y') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Detalles de la cuota -->
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <div class="space-y-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <i class="fas fa-calendar text-muted"></i>
+                                                            <div>
+                                                                <span class="text-body-small text-muted">Fecha de vencimiento:</span>
+                                                                <div class="text-body-medium fw-medium">{{ cuota.fecha_vencimiento.strftime('%d/%m/%Y') }}</div>
+                                                            </div>
+                                                        </div>
+                                                        {% if cuota.fecha_pago %}
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <i class="fas fa-check-circle text-success"></i>
+                                                            <div>
+                                                                <span class="text-body-small text-muted">Fecha de pago:</span>
+                                                                <div class="text-body-medium fw-medium">{{ cuota.fecha_pago.strftime('%d/%m/%Y %H:%M') }}</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="space-y-2">
+                                                        {% if cuota.metodo_pago %}
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <i class="fas fa-credit-card text-muted"></i>
+                                                            <div>
+                                                                <span class="text-body-small text-muted">Método de pago:</span>
+                                                                <div class="text-body-medium fw-medium">{{ cuota.metodo_pago.title() }}</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                        {% if cuota.referencia_pago %}
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <i class="fas fa-receipt text-muted"></i>
+                                                            <div>
+                                                                <span class="text-body-small text-muted">Referencia:</span>
+                                                                <div class="text-body-small font-monospace">{{ cuota.referencia_pago }}</div>
+                                                            </div>
+                                                        </div>
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Observaciones -->
+                                            {% if cuota.observaciones %}
+                                            <div class="mb-4">
+                                                <div class="surface-elevated p-3 rounded-3">
+                                                    <h6 class="text-body-medium fw-medium mb-2">
+                                                        <i class="fas fa-sticky-note text-info me-1"></i>
+                                                        Observaciones
+                                                    </h6>
+                                                    <p class="text-body-small text-muted mb-0">{{ cuota.observaciones }}</p>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+
+                                            <!-- Acciones -->
+                                            <div class="border-top pt-3">
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="text-body-small text-muted">
+                                                        <i class="fas fa-calendar-plus me-1"></i>
+                                                        Creada el {{ cuota.fecha_creacion.strftime('%d/%m/%Y') }}
+                                                    </div>
+                                                    <div class="d-flex gap-2">
+                                                        {% if cuota.estado == 'pendiente' %}
+                                                            <a href="{{ url_for('padre.pagar_cuota', cuota_id=cuota.id) }}" 
+                                                               class="btn btn-sm btn-success">
+                                                                <i class="fas fa-credit-card me-1"></i>
+                                                                Pagar Ahora
+                                                            </a>
+                                                        {% elif cuota.estado == 'pagado' %}
+                                                            <button class="btn btn-sm btn-outline-info" onclick="descargarRecibo({{ cuota.id }})">
+                                                                <i class="fas fa-download me-1"></i>
+                                                                Descargar Recibo
+                                                            </button>
+                                                        {% endif %}
+                                                        <button class="btn btn-sm btn-outline-secondary" onclick="verDetalle({{ cuota.id }})">
+                                                            <i class="fas fa-eye me-1"></i>
+                                                            Ver Detalle
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <!-- Empty State -->
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-credit-card fa-4x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-h4 text-muted mb-2">No hay cuotas registradas</h5>
+                            <p class="text-body-small text-muted mb-4">
+                                No se encontraron cuotas para este estudiante
+                            </p>
+                            <div class="alert-modern alert-info d-inline-block">
+                                <div class="alert-icon">
+                                    <i class="fas fa-info-circle"></i>
+                                </div>
+                                <div class="alert-content">
+                                    <div class="alert-description">
+                                        Las cuotas aparecerán aquí cuando sean generadas por la administración
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Navigation -->
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern animate-slide-up" style="animation-delay: 0.8s;">
+                <div class="card-modern-header">
+                    <h5 class="text-h5 mb-0">Acceso Rápido</h5>
+                </div>
+                <div class="card-modern-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.notas', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-warning-modern w-100 interactive-lift">
+                                <i class="fas fa-star me-2"></i>
+                                <span>Ver Notas</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.asistencias', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-success-modern w-100 interactive-lift">
+                                <i class="fas fa-calendar-check me-2"></i>
+                                <span>Asistencias</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.comunicados', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-info-modern w-100 interactive-lift">
+                                <i class="fas fa-bullhorn me-2"></i>
+                                <span>Comunicados</span>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ url_for('padre.chat', estudiante_id=estudiante.id) }}" 
+                               class="btn-modern btn-outline-primary-modern w-100 interactive-lift">
+                                <i class="fas fa-comments me-2"></i>
+                                <span>Chat con Docentes</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.space-y-2 > * + * {
+    margin-top: 0.5rem;
+}
+
+.cuota-item {
+    transition: all 0.3s ease;
+}
+
+.cuota-item:hover {
+    transform: translateY(-2px);
+}
+
+.interactive-lift {
+    transition: all 0.2s ease;
+}
+
+.interactive-lift:hover {
+    transform: translateY(-1px);
+}
+
+/* Filtros */
+.cuota-item[data-estado] {
+    display: block;
+}
+
+.cuota-item.hidden {
+    display: none !important;
+}
+
+.font-monospace {
+    font-family: 'Courier New', monospace;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtros de cuotas
+    const filtros = document.querySelectorAll('input[name="filtro-estado"]');
+    const cuotas = document.querySelectorAll('.cuota-item');
+    
+    filtros.forEach(filtro => {
+        filtro.addEventListener('change', function() {
+            const estadoSeleccionado = this.id;
+            
+            cuotas.forEach(cuota => {
+                if (estadoSeleccionado === 'todos') {
+                    cuota.classList.remove('hidden');
+                } else {
+                    const estadoCuota = cuota.getAttribute('data-estado');
+                    if (estadoCuota === estadoSeleccionado) {
+                        cuota.classList.remove('hidden');
+                    } else {
+                        cuota.classList.add('hidden');
+                    }
+                }
+            });
+        });
+    });
+});
+
+function descargarRecibo(cuotaId) {
+    // TODO: Implementar descarga de recibo
+    alert('Funcionalidad de descarga de recibo en desarrollo');
+}
+
+function verDetalle(cuotaId) {
+    // TODO: Implementar modal de detalle
+    alert('Funcionalidad de detalle en desarrollo');
+}
+</script>
+{% endblock %}

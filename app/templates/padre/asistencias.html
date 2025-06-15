@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}Asistencias de {{ estudiante.nombre_completo }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="page-header-card">
+                <div class="page-header-content">
+                    <div class="page-title-section">
+                        <div class="page-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="page-title-text">
+                            <h1 class="page-title">Control de Asistencias</h1>
+                            <p class="page-subtitle">{{ estudiante.nombre_completo }} - {{ estudiante.grado }} {{ estudiante.seccion }}</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <a href="{{ url_for('padre.seleccionar_hijo', estudiante_id=estudiante.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Volver
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="info-card">
+                <div class="info-card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="student-info">
+                                <div class="student-avatar">
+                                    <i class="fas fa-user-graduate"></i>
+                                </div>
+                                <div class="student-details">
+                                    <h3 class="student-name">{{ estudiante.nombre_completo }}</h3>
+                                    <div class="student-meta">
+                                        <span class="badge badge-primary">{{ estudiante.codigo_estudiante }}</span>
+                                        <span class="badge badge-secondary">{{ estudiante.grado }} {{ estudiante.seccion }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            {% if asistencias %}
+                            {% set total_asistencias = asistencias | length %}
+                            {% set presentes = asistencias | selectattr('estado', 'equalto', 'presente') | list | length %}
+                            {% set porcentaje = (presentes * 100 / total_asistencias) if total_asistencias > 0 else 0 %}
+                            <div class="attendance-summary">
+                                <div class="attendance-percentage">
+                                    <span class="percentage-number">{{ "%.1f"|format(porcentaje) }}%</span>
+                                    <span class="percentage-label">Asistencia</span>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Attendance Content -->
+    {% if asistencias %}
+    <div class="row">
+        <div class="col-12">
+            <div class="data-card">
+                <div class="data-card-header">
+                    <div class="data-card-title">
+                        <i class="fas fa-list-alt me-2"></i>
+                        Registro de Asistencias
+                    </div>
+                    <div class="data-card-meta">
+                        <span class="badge badge-info">{{ asistencias|length }} registros</span>
+                    </div>
+                </div>
+
+                <div class="data-card-body">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Curso</th>
+                                    <th>Hora</th>
+                                    <th>Estado</th>
+                                    <th>Observaciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for asistencia in asistencias %}
+                                <tr>
+                                    <td>{{ asistencia.fecha.strftime('%d/%m/%Y') }}</td>
+                                    <td>{{ asistencia.curso.nombre }}</td>
+                                    <td>
+                                        {% if asistencia.hora %}
+                                        {{ asistencia.hora.strftime('%H:%M') }}
+                                        {% else %}
+                                        No especificada
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge {% if asistencia.estado == 'presente' %}badge-success{% elif asistencia.estado == 'ausente' %}badge-danger{% elif asistencia.estado == 'tardanza' %}badge-warning{% else %}badge-secondary{% endif %}">
+                                            {{ asistencia.estado|title }}
+                                        </span>
+                                    </td>
+                                    <td>{{ asistencia.observaciones or 'Sin observaciones' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="stat-card stat-card-success">
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ asistencias | selectattr('estado', 'equalto', 'presente') | list | length }}</h3>
+                    <p>Presentes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-card-danger">
+                <div class="stat-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ asistencias | selectattr('estado', 'equalto', 'ausente') | list | length }}</h3>
+                    <p>Ausentes</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-card-warning">
+                <div class="stat-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ asistencias | selectattr('estado', 'equalto', 'tardanza') | list | length }}</h3>
+                    <p>Tardanzas</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stat-card stat-card-info">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <h3>{{ asistencias | length }}</h3>
+                    <p>Total</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="row">
+        <div class="col-12">
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="empty-state-content">
+                    <h3 class="empty-state-title">No hay registros de asistencia</h3>
+                    <p class="empty-state-text">Aún no se han registrado asistencias para este estudiante.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+.info-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.info-card-body {
+    padding: 1.5rem;
+}
+
+.student-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.student-avatar {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+}
+
+.student-details h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.student-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.attendance-summary {
+    text-align: center;
+}
+
+.attendance-percentage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.percentage-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--success-color);
+    line-height: 1;
+}
+
+.percentage-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+.stat-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-duration) ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+}
+
+.stat-card-success .stat-icon {
+    background: var(--success-color);
+}
+
+.stat-card-danger .stat-icon {
+    background: var(--danger-color);
+}
+
+.stat-card-warning .stat-icon {
+    background: var(--warning-color);
+}
+
+.stat-card-info .stat-icon {
+    background: var(--info-color);
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-content p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+</style>
+{% endblock %} 

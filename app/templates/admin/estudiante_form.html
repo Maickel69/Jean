@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if estudiante %}Editar Estudiante{% else %}Nuevo Estudiante{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="page-header" data-aos="fade-down">
+        <div class="header-content">
+            <h1>
+                <i class="fas fa-user-graduate"></i>
+                {% if estudiante %}Editar Estudiante{% else %}Nuevo Estudiante{% endif %}
+            </h1>
+            <p>
+                {% if estudiante %}
+                    Modifica la información del estudiante
+                {% else %}
+                    Registra un nuevo estudiante en el sistema
+                {% endif %}
+            </p>
+        </div>
+        <div class="header-actions">
+            <a href="{{ url_for('admin.gestionar_estudiantes') }}" class="btn-secondary">
+                <i class="fas fa-arrow-left"></i>
+                Volver
+            </a>
+        </div>
+    </div>
+
+    <div class="form-container" data-aos="fade-up">
+        <form method="POST" class="admin-form glass-effect">
+            <div class="form-header">
+                <h3>
+                    <i class="fas fa-user-graduate"></i>
+                    Información del Estudiante
+                </h3>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="nombre_completo">
+                        <i class="fas fa-user"></i>
+                        Nombre Completo
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nombre_completo" 
+                        name="nombre_completo" 
+                        value="{{ estudiante.nombre_completo if estudiante else '' }}"
+                        required
+                        class="form-input"
+                        placeholder="Nombre completo del estudiante"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="codigo_estudiante">
+                        <i class="fas fa-id-card"></i>
+                        Código de Estudiante
+                        <small class="text-muted">(Opcional - se genera automáticamente)</small>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="codigo_estudiante" 
+                        name="codigo_estudiante" 
+                        value="{{ estudiante.codigo_estudiante if estudiante else '' }}"
+                        class="form-input"
+                        placeholder="Se genera automáticamente si no se especifica"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha_nacimiento">
+                        <i class="fas fa-calendar"></i>
+                        Fecha de Nacimiento
+                    </label>
+                    <input 
+                        type="date" 
+                        id="fecha_nacimiento" 
+                        name="fecha_nacimiento" 
+                        value="{{ estudiante.fecha_nacimiento.strftime('%Y-%m-%d') if estudiante and estudiante.fecha_nacimiento else '' }}"
+                        required
+                        class="form-input"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="padre_id">
+                        <i class="fas fa-user-friends"></i>
+                        Padre de Familia
+                    </label>
+                    <select 
+                        id="padre_id" 
+                        name="padre_id" 
+                        required
+                        class="form-input"
+                    >
+                        <option value="">Seleccionar padre...</option>
+                        {% for padre in padres %}
+                        <option value="{{ padre.id }}" 
+                                {% if estudiante and estudiante.padre_id == padre.id %}selected{% endif %}>
+                            {{ padre.nombre_completo }} ({{ padre.nombre_usuario }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="grado">
+                        <i class="fas fa-graduation-cap"></i>
+                        Grado
+                    </label>
+                    <select 
+                        id="grado" 
+                        name="grado" 
+                        required
+                        class="form-input"
+                    >
+                        <option value="">Seleccionar grado...</option>
+                        <option value="1ro Primaria" {% if estudiante and estudiante.grado == '1ro Primaria' %}selected{% endif %}>1ro Primaria</option>
+                        <option value="2do Primaria" {% if estudiante and estudiante.grado == '2do Primaria' %}selected{% endif %}>2do Primaria</option>
+                        <option value="3ro Primaria" {% if estudiante and estudiante.grado == '3ro Primaria' %}selected{% endif %}>3ro Primaria</option>
+                        <option value="4to Primaria" {% if estudiante and estudiante.grado == '4to Primaria' %}selected{% endif %}>4to Primaria</option>
+                        <option value="5to Primaria" {% if estudiante and estudiante.grado == '5to Primaria' %}selected{% endif %}>5to Primaria</option>
+                        <option value="6to Primaria" {% if estudiante and estudiante.grado == '6to Primaria' %}selected{% endif %}>6to Primaria</option>
+                        <option value="1ro Secundaria" {% if estudiante and estudiante.grado == '1ro Secundaria' %}selected{% endif %}>1ro Secundaria</option>
+                        <option value="2do Secundaria" {% if estudiante and estudiante.grado == '2do Secundaria' %}selected{% endif %}>2do Secundaria</option>
+                        <option value="3ro Secundaria" {% if estudiante and estudiante.grado == '3ro Secundaria' %}selected{% endif %}>3ro Secundaria</option>
+                        <option value="4to Secundaria" {% if estudiante and estudiante.grado == '4to Secundaria' %}selected{% endif %}>4to Secundaria</option>
+                        <option value="5to Secundaria" {% if estudiante and estudiante.grado == '5to Secundaria' %}selected{% endif %}>5to Secundaria</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="seccion">
+                        <i class="fas fa-layer-group"></i>
+                        Sección
+                    </label>
+                    <select 
+                        id="seccion" 
+                        name="seccion" 
+                        required
+                        class="form-input"
+                    >
+                        <option value="">Seleccionar sección...</option>
+                        <option value="A" {% if estudiante and estudiante.seccion == 'A' %}selected{% endif %}>A</option>
+                        <option value="B" {% if estudiante and estudiante.seccion == 'B' %}selected{% endif %}>B</option>
+                        <option value="C" {% if estudiante and estudiante.seccion == 'C' %}selected{% endif %}>C</option>
+                        <option value="D" {% if estudiante and estudiante.seccion == 'D' %}selected{% endif %}>D</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-save"></i>
+                    {% if estudiante %}Actualizar Estudiante{% else %}Crear Estudiante{% endif %}
+                </button>
+                <a href="{{ url_for('admin.gestionar_estudiantes') }}" class="btn-secondary">
+                    <i class="fas fa-times"></i>
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.admin-content {
+    padding: 2rem;
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    min-height: 100vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.header-content h1 {
+    color: white;
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.header-content p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0.5rem 0 0 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    color: white;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.admin-form {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-header h3 {
+    color: white;
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    color: white;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.form-input {
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #43e97b;
+    box-shadow: 0 0 20px rgba(67, 233, 123, 0.3);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.form-input option {
+    background: #333;
+    color: white;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Validación del formulario
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('.admin-form');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+                this.style.borderColor = '#f5576c';
+            } else {
+                this.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            }
+        });
+    });
+    
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.style.borderColor = '#f5576c';
+                isValid = false;
+            }
+        });
+        
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, completa todos los campos obligatorios.');
+        }
+    });
+});
+</script>
+{% endblock %} 

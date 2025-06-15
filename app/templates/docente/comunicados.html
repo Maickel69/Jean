@@ -1,0 +1,491 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Comunicados{% endblock %}
+{% block page_title %}Gestión de Comunicados{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern card-glass">
+                <div class="card-modern-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="text-h2 mb-2">Mis Comunicados</h2>
+                            <p class="text-body-large text-muted mb-0">
+                                <i class="fas fa-bullhorn me-2"></i>
+                                Gestiona los comunicados enviados a los padres de familia
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('docente.crear_comunicado') }}" 
+                               class="btn-modern btn-primary-modern">
+                                <i class="fas fa-plus me-2"></i>
+                                Nuevo Comunicado
+                            </a>
+                            <a href="{{ url_for('docente.dashboard') }}" 
+                               class="btn-modern btn-secondary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver al Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
+                            <i class="fas fa-list text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">{{ comunicados|length }}</h3>
+                    <p class="text-body-small text-muted mb-0">Total Comunicados</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-success);">
+                            <i class="fas fa-check-circle text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">
+                        {% set hoy = moment().date() %}
+                        {% set activos = [] %}
+                        {% for comunicado in comunicados %}
+                            {% if not comunicado.fecha_vencimiento or comunicado.fecha_vencimiento.date() >= hoy %}
+                                {% set _ = activos.append(comunicado) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ activos|length }}
+                    </h3>
+                    <p class="text-body-small text-muted mb-0">Comunicados Activos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-warning);">
+                            <i class="fas fa-exclamation text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">{{ comunicados|selectattr('prioritario', 'true')|list|length }}</h3>
+                    <p class="text-body-small text-muted mb-0">Prioritarios</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-info);">
+                            <i class="fas fa-calendar text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">
+                        {% set inicio_mes = moment().replace(day=1) %}
+                        {% set este_mes = [] %}
+                        {% for comunicado in comunicados %}
+                            {% if comunicado.fecha_publicacion >= inicio_mes %}
+                                {% set _ = este_mes.append(comunicado) %}
+                            {% endif %}
+                        {% endfor %}
+                        {{ este_mes|length }}
+                    </h3>
+                    <p class="text-body-small text-muted mb-0">Este Mes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-modern-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Filtrar por Tipo:</label>
+                                <select class="form-control-modern" id="filtro_tipo">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="general">General</option>
+                                    <option value="reunion">Reunión</option>
+                                    <option value="actividad">Actividad</option>
+                                    <option value="evaluacion">Evaluación</option>
+                                    <option value="disciplinario">Disciplinario</option>
+                                    <option value="academico">Académico</option>
+                                    <option value="evento">Evento</option>
+                                    <option value="urgente">Urgente</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Estado:</label>
+                                <select class="form-control-modern" id="filtro_estado">
+                                    <option value="">Todos los estados</option>
+                                    <option value="activo">Activos</option>
+                                    <option value="vencido">Vencidos</option>
+                                    <option value="prioritario">Prioritarios</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Buscar:</label>
+                                <input type="text" class="form-control-modern" id="buscar_comunicado" 
+                                       placeholder="Buscar por título o contenido...">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" onclick="limpiarFiltros()" class="btn-modern btn-secondary-modern w-100">
+                                <i class="fas fa-times me-1"></i>
+                                Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Comunicados -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="text-h4 mb-1">Lista de Comunicados</h4>
+                            <p class="text-body-small opacity-75 mb-0">Todos los comunicados enviados</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn-modern btn-secondary-modern btn-sm-modern" onclick="exportarComunicados()">
+                                <i class="fas fa-download me-1"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    {% if comunicados %}
+                        <div class="row g-4" id="comunicados_container">
+                            {% for comunicado in comunicados %}
+                            <div class="col-md-6 col-lg-4 comunicado-item" 
+                                 data-comunicado-id="{{ comunicado.id }}"
+                                 data-tipo="{{ comunicado.tipo }}"
+                                 data-estado="{% if comunicado.fecha_vencimiento and comunicado.fecha_vencimiento.date() < hoy %}vencido{% elif comunicado.prioritario %}prioritario{% else %}activo{% endif %}"
+                                 data-titulo="{{ comunicado.titulo|lower }}"
+                                 data-contenido="{{ comunicado.contenido|lower }}">
+                                <div class="card h-100 {% if comunicado.prioritario %}border-danger{% endif %}">
+                                    <div class="card-header d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title mb-1">{{ comunicado.titulo }}</h6>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <span class="badge 
+                                                    {% if comunicado.tipo == 'general' %}bg-primary
+                                                    {% elif comunicado.tipo == 'reunion' %}bg-info
+                                                    {% elif comunicado.tipo == 'actividad' %}bg-success
+                                                    {% elif comunicado.tipo == 'evaluacion' %}bg-warning
+                                                    {% elif comunicado.tipo == 'disciplinario' %}bg-danger
+                                                    {% elif comunicado.tipo == 'academico' %}bg-secondary
+                                                    {% elif comunicado.tipo == 'evento' %}bg-dark
+                                                    {% elif comunicado.tipo == 'urgente' %}bg-danger
+                                                    {% else %}bg-light{% endif %}">
+                                                    {{ comunicado.tipo.title() }}
+                                                </span>
+                                                {% if comunicado.prioritario %}
+                                                    <span class="badge bg-danger">
+                                                        <i class="fas fa-exclamation me-1"></i>
+                                                        Prioritario
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-1">
+                                            <button class="btn btn-sm btn-outline-primary" 
+                                                    type="button" 
+                                                    onclick="verDetalle({{ comunicado.id }})"
+                                                    title="Ver Detalle">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-warning" 
+                                                    type="button" 
+                                                    onclick="editarComunicado({{ comunicado.id }})"
+                                                    title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" 
+                                                    type="button" 
+                                                    onclick="eliminarComunicado({{ comunicado.id }})"
+                                                    title="Eliminar">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text small text-muted mb-3">
+                                            {{ comunicado.contenido[:100] }}{% if comunicado.contenido|length > 100 %}...{% endif %}
+                                        </p>
+                                        
+                                        <div class="row text-center mb-3">
+                                            <div class="col-4">
+                                                <div class="text-muted small">Dirigido a</div>
+                                                <div class="fw-bold small">{{ comunicado.dirigido_a.title() }}</div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted small">Curso</div>
+                                                <div class="fw-bold small">{{ comunicado.curso.nombre if comunicado.curso else 'Todos' }}</div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted small">Estado</div>
+                                                <div class="fw-bold small">
+                                                    {% if comunicado.fecha_vencimiento and comunicado.fecha_vencimiento.date() < hoy %}
+                                                        <span class="text-danger">Vencido</span>
+                                                    {% else %}
+                                                        <span class="text-success">Activo</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ comunicado.fecha_publicacion.strftime('%d/%m/%Y') }}
+                                            </small>
+                                            {% if comunicado.fecha_vencimiento %}
+                                                <small class="text-muted">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    Hasta: {{ comunicado.fecha_vencimiento.strftime('%d/%m/%Y') }}
+                                                </small>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-bullhorn fa-4x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-h4 text-muted mb-2">No hay comunicados registrados</h5>
+                            <p class="text-body-small text-muted mb-3">Comienza creando tu primer comunicado para los padres de familia</p>
+                            <a href="{{ url_for('docente.crear_comunicado') }}" 
+                               class="btn-modern btn-primary-modern">
+                                <i class="fas fa-plus me-2"></i>
+                                Crear Primer Comunicado
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Detalle -->
+<div class="modal fade" id="modalDetalle" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalle del Comunicado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detalle-content">
+                <!-- Contenido del detalle -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Estilos para los botones de acción */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    border-radius: 0.375rem;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.btn-outline-warning:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* Mejorar el diseño de las tarjetas */
+.card {
+    overflow: visible !important;
+}
+
+.card-header {
+    overflow: visible !important;
+}
+
+/* Asegurar que el contenedor de comunicados tenga espacio */
+#comunicados_container {
+    padding: 1rem 0;
+}
+
+.comunicado-item {
+    margin-bottom: 1rem;
+}
+</style>
+
+<script>
+// Funciones simplificadas para los botones directos
+console.log('Sistema de botones directos cargado');
+
+// Aplicar filtros
+document.getElementById('filtro_tipo').addEventListener('change', aplicarFiltros);
+document.getElementById('filtro_estado').addEventListener('change', aplicarFiltros);
+document.getElementById('buscar_comunicado').addEventListener('input', aplicarFiltros);
+
+function aplicarFiltros() {
+    const tipo = document.getElementById('filtro_tipo').value.toLowerCase();
+    const estado = document.getElementById('filtro_estado').value.toLowerCase();
+    const busqueda = document.getElementById('buscar_comunicado').value.toLowerCase();
+    
+    const items = document.querySelectorAll('.comunicado-item');
+    
+    items.forEach(item => {
+        const itemTipo = item.dataset.tipo.toLowerCase();
+        const itemEstado = item.dataset.estado.toLowerCase();
+        const itemTitulo = item.dataset.titulo.toLowerCase();
+        const itemContenido = item.dataset.contenido.toLowerCase();
+        
+        const mostrar = 
+            (tipo === '' || itemTipo.includes(tipo)) &&
+            (estado === '' || itemEstado.includes(estado)) &&
+            (busqueda === '' || itemTitulo.includes(busqueda) || itemContenido.includes(busqueda));
+        
+        item.style.display = mostrar ? '' : 'none';
+    });
+}
+
+function limpiarFiltros() {
+    document.getElementById('filtro_tipo').value = '';
+    document.getElementById('filtro_estado').value = '';
+    document.getElementById('buscar_comunicado').value = '';
+    aplicarFiltros();
+}
+
+function verDetalle(comunicadoId) {
+    // TODO: Implementar vista de detalle
+    alert('Función de ver detalle próximamente disponible. ID: ' + comunicadoId);
+}
+
+function editarComunicado(comunicadoId) {
+    // Redirigir a la página de edición
+    window.location.href = `/docente/editar_comunicado/${comunicadoId}`;
+}
+
+function eliminarComunicado(comunicadoId) {
+    if (confirm('¿Está seguro de que desea eliminar este comunicado? Esta acción no se puede deshacer.')) {
+        // Mostrar loading
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+        
+        fetch(`/docente/eliminar_comunicado/${comunicadoId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Mostrar mensaje de éxito
+                showAlert('success', data.message);
+                
+                // Remover el comunicado de la vista
+                const comunicadoElement = document.querySelector(`[data-comunicado-id="${comunicadoId}"]`) || 
+                                        event.target.closest('.comunicado-item');
+                if (comunicadoElement) {
+                    comunicadoElement.style.transition = 'opacity 0.3s ease';
+                    comunicadoElement.style.opacity = '0';
+                    setTimeout(() => {
+                        comunicadoElement.remove();
+                        // Verificar si no quedan comunicados
+                        const remaining = document.querySelectorAll('.comunicado-item').length;
+                        if (remaining === 0) {
+                            location.reload(); // Recargar para mostrar mensaje de "no hay comunicados"
+                        }
+                    }, 300);
+                }
+            } else {
+                showAlert('danger', data.message);
+                // Restaurar botón
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showAlert('danger', 'Error al eliminar el comunicado');
+            // Restaurar botón
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        });
+    }
+}
+
+function showAlert(type, message) {
+    // Crear alerta
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto-dismiss después de 5 segundos
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+function exportarComunicados() {
+    // TODO: Implementar exportación
+    alert('Función de exportar próximamente disponible.');
+}
+</script>
+{% endblock %}

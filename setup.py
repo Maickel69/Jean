@@ -1,0 +1,37 @@
+from setuptools import setup, find_packages
+
+setup(
+    name="sistema-gestion-educativa",
+    version="1.0.0",
+    description="Sistema completo de gestión educativa desarrollado en Flask",
+    author="Tu Nombre",
+    author_email="tu.email@ejemplo.com",
+    packages=find_packages(),
+    include_package_data=True,
+    install_requires=[
+        "Flask==2.3.3",
+        "Flask-SQLAlchemy==3.0.5",
+        "Flask-Login==0.6.3",
+        "Flask-WTF==1.1.1",
+        "WTForms==3.0.1",
+        "Werkzeug==2.3.7",
+        "Jinja2==3.1.2",
+        "MarkupSafe==2.1.3",
+        "itsdangerous==2.1.2",
+        "click==8.1.7",
+        "blinker==1.6.3",
+        "python-dotenv==1.0.0",
+    ],
+    python_requires=">=3.8",
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Education",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Framework :: Flask",
+    ],
+) 

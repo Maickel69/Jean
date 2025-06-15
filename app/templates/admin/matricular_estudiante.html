@@ -1,0 +1,235 @@
+{% extends "base.html" %}
+
+{% block title %}Nueva Matrícula{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-user-plus"></i> Nueva Matrícula</h2>
+            <p class="text-muted">Matricular un estudiante en un curso</p>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="{{ url_for('admin.gestionar_matriculas') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Volver a Matrículas
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Formulario -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user-graduate"></i> Datos de Matrícula</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="matriculaForm">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="estudiante_id" class="form-label">Estudiante <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="estudiante_id" name="estudiante_id" required>
+                                        <option value="">Seleccionar estudiante...</option>
+                                        {% for estudiante in estudiantes %}
+                                        <option value="{{ estudiante.id }}" 
+                                                data-grado="{{ estudiante.grado }}" 
+                                                data-seccion="{{ estudiante.seccion }}"
+                                                data-codigo="{{ estudiante.codigo_estudiante }}">
+                                            {{ estudiante.nombre_completo }} - {{ estudiante.grado }} {{ estudiante.seccion }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-text">Seleccione el estudiante a matricular</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="curso_id" class="form-label">Curso <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="curso_id" name="curso_id" required>
+                                        <option value="">Seleccionar curso...</option>
+                                        {% for curso in cursos %}
+                                        <option value="{{ curso.id }}" 
+                                                data-grado="{{ curso.grado }}" 
+                                                data-seccion="{{ curso.seccion }}"
+                                                data-codigo="{{ curso.codigo }}"
+                                                data-docente="{{ curso.docente.nombre_completo if curso.docente else 'Sin asignar' }}">
+                                            {{ curso.nombre }} - {{ curso.grado }} {{ curso.seccion }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-text">Seleccione el curso donde matricular</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div id="infoAdicional" class="alert alert-info" style="display: none;">
+                            <h6><i class="fas fa-info-circle"></i> Información de la Matrícula</h6>
+                            <div id="infoEstudiante"></div>
+                            <div id="infoCurso"></div>
+                            <div id="alertaCompatibilidad"></div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Matricular Estudiante
+                            </button>
+                            <a href="{{ url_for('admin.gestionar_matriculas') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Ayuda -->
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-lightbulb"></i> Ayuda</h6>
+                </div>
+                <div class="card-body">
+                    <h6>Proceso de Matrícula</h6>
+                    <ol class="small">
+                        <li>Seleccione el estudiante de la lista</li>
+                        <li>Elija el curso correspondiente</li>
+                        <li>Verifique la compatibilidad de grado</li>
+                        <li>Confirme la matrícula</li>
+                    </ol>
+
+                    <hr>
+
+                    <h6>Validaciones</h6>
+                    <ul class="small">
+                        <li><strong>Duplicados:</strong> No se puede matricular dos veces en el mismo curso</li>
+                        <li><strong>Grado:</strong> Se recomienda que coincida el grado del estudiante y curso</li>
+                        <li><strong>Capacidad:</strong> Verificar límites del curso si aplica</li>
+                    </ul>
+
+                    <hr>
+
+                    <div class="text-center">
+                        <a href="{{ url_for('admin.matricula_masiva') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-users"></i> Matrícula Masiva
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estudiantes recientes -->
+            {% if estudiantes[:5] %}
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-clock"></i> Estudiantes Recientes</h6>
+                </div>
+                <div class="card-body">
+                    {% for estudiante in estudiantes[:5] %}
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="avatar bg-primary text-white me-2">
+                            {{ estudiante.nombre_completo[0] }}
+                        </div>
+                        <div class="flex-grow-1">
+                            <small><strong>{{ estudiante.nombre_completo }}</strong></small>
+                            <br>
+                            <small class="text-muted">{{ estudiante.grado }} {{ estudiante.seccion }}</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" 
+                                onclick="seleccionarEstudiante({{ estudiante.id }})">
+                            Usar
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const estudianteSelect = document.getElementById('estudiante_id');
+    const cursoSelect = document.getElementById('curso_id');
+    const infoAdicional = document.getElementById('infoAdicional');
+    const infoEstudiante = document.getElementById('infoEstudiante');
+    const infoCurso = document.getElementById('infoCurso');
+    const alertaCompatibilidad = document.getElementById('alertaCompatibilidad');
+
+    function actualizarInfo() {
+        const estudianteOption = estudianteSelect.selectedOptions[0];
+        const cursoOption = cursoSelect.selectedOptions[0];
+
+        if (estudianteOption && cursoOption && estudianteOption.value && cursoOption.value) {
+            const estudianteGrado = estudianteOption.dataset.grado;
+            const cursoGrado = cursoOption.dataset.grado;
+            
+            infoEstudiante.innerHTML = `
+                <strong>Estudiante:</strong> ${estudianteOption.text}<br>
+                <small>Código: ${estudianteOption.dataset.codigo}</small>
+            `;
+            
+            infoCurso.innerHTML = `
+                <strong>Curso:</strong> ${cursoOption.text}<br>
+                <small>Docente: ${cursoOption.dataset.docente}</small>
+            `;
+
+            // Verificar compatibilidad de grado
+            if (estudianteGrado !== cursoGrado) {
+                alertaCompatibilidad.innerHTML = `
+                    <div class="alert alert-warning mt-2 mb-0">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Advertencia:</strong> El grado del estudiante (${estudianteGrado}) 
+                        no coincide con el del curso (${cursoGrado})
+                    </div>
+                `;
+            } else {
+                alertaCompatibilidad.innerHTML = `
+                    <div class="alert alert-success mt-2 mb-0">
+                        <i class="fas fa-check-circle"></i>
+                        Los grados son compatibles
+                    </div>
+                `;
+            }
+
+            infoAdicional.style.display = 'block';
+        } else {
+            infoAdicional.style.display = 'none';
+        }
+    }
+
+    estudianteSelect.addEventListener('change', actualizarInfo);
+    cursoSelect.addEventListener('change', actualizarInfo);
+});
+
+function seleccionarEstudiante(estudianteId) {
+    document.getElementById('estudiante_id').value = estudianteId;
+    document.getElementById('estudiante_id').dispatchEvent(new Event('change'));
+}
+</script>
+
+<style>
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+</style>
+{% endblock %} 

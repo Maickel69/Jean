@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+
+{% block title %}Notas - {{ curso.nombre }}{% endblock %}
+{% block page_title %}Gestión de Notas{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern card-glass">
+                <div class="card-modern-body">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="text-h2 mb-2">{{ curso.nombre }}</h2>
+                            <p class="text-body-large text-muted mb-0">
+                                <i class="fas fa-star me-2"></i>
+                                Gestión de Notas y Calificaciones - {{ curso.estudiantes|length }} estudiantes
+                            </p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ url_for('docente.registrar_nota', curso_id=curso.id) }}" 
+                               class="btn-modern btn-primary-modern">
+                                <i class="fas fa-plus me-2"></i>
+                                Nueva Nota
+                            </a>
+                            <a href="{{ url_for('docente.curso_detalle', curso_id=curso.id) }}" 
+                               class="btn-modern btn-secondary-modern">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Volver al Curso
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
+                            <i class="fas fa-clipboard-list text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">{{ notas|length }}</h3>
+                    <p class="text-body-small text-muted mb-0">Total Evaluaciones</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-success);">
+                            <i class="fas fa-chart-line text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">
+                        {% if notas %}
+                            {{ "%.1f"|format((notas|sum(attribute='calificacion'))/notas|length) }}
+                        {% else %}
+                            --
+                        {% endif %}
+                    </h3>
+                    <p class="text-body-small text-muted mb-0">Promedio General</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-warning);">
+                            <i class="fas fa-calendar-week text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">
+                        {% set periodo_actual = moment().strftime('%m') %}
+                        {% if periodo_actual|int <= 3 %}I{% elif periodo_actual|int <= 6 %}II{% elif periodo_actual|int <= 9 %}III{% else %}IV{% endif %}
+                    </h3>
+                    <p class="text-body-small text-muted mb-0">Periodo Actual</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-modern card-interactive">
+                <div class="card-modern-body text-center">
+                    <div class="mb-3">
+                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-info);">
+                            <i class="fas fa-users text-white"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-h3 mb-1">{{ curso.estudiantes|length }}</h3>
+                    <p class="text-body-small text-muted mb-0">Estudiantes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-modern-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Filtrar por Periodo:</label>
+                                <select class="form-control-modern" id="filtro_periodo">
+                                    <option value="">Todos los periodos</option>
+                                    <option value="I">Primer Periodo</option>
+                                    <option value="II">Segundo Periodo</option>
+                                    <option value="III">Tercer Periodo</option>
+                                    <option value="IV">Cuarto Periodo</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Tipo de Evaluación:</label>
+                                <select class="form-control-modern" id="filtro_tipo">
+                                    <option value="">Todos los tipos</option>
+                                    <option value="examen">Examen</option>
+                                    <option value="tarea">Tarea</option>
+                                    <option value="proyecto">Proyecto</option>
+                                    <option value="participacion">Participación</option>
+                                    <option value="laboratorio">Laboratorio</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group-modern">
+                                <label class="form-label-modern">Buscar Estudiante:</label>
+                                <input type="text" class="form-control-modern" id="buscar_estudiante" 
+                                       placeholder="Nombre del estudiante...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" onclick="limpiarFiltros()" class="btn-modern btn-secondary-modern w-100">
+                                <i class="fas fa-times me-2"></i>
+                                Limpiar Filtros
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de Notas -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card-modern">
+                <div class="card-modern-header">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h4 class="text-h4 mb-1">Historial de Notas</h4>
+                            <p class="text-body-small opacity-75 mb-0">Todas las calificaciones registradas</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" class="btn-modern btn-secondary-modern btn-sm-modern" onclick="exportarNotas()">
+                                <i class="fas fa-download me-1"></i>
+                                Exportar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-modern-body">
+                    {% if notas %}
+                        <div class="table-responsive">
+                            <table class="table-modern" id="tabla_notas">
+                                <thead>
+                                    <tr>
+                                        <th>Estudiante</th>
+                                        <th>Tipo</th>
+                                        <th>Descripción</th>
+                                        <th>Calificación</th>
+                                        <th>Periodo</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for nota in notas %}
+                                    <tr data-periodo="{{ nota.periodo }}" 
+                                        data-tipo="{{ nota.tipo_evaluacion }}"
+                                        data-estudiante="{{ nota.estudiante.usuario.nombre_completo|lower }}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-3">
+                                                    <div class="surface-elevated rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                                        <i class="fas fa-user-graduate text-primary"></i>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1">{{ nota.estudiante.usuario.nombre_completo }}</h6>
+                                                    <small class="text-muted">{{ nota.estudiante.codigo_estudiante or 'Sin código' }}</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge-modern 
+                                                {% if nota.tipo_evaluacion == 'examen' %}badge-danger
+                                                {% elif nota.tipo_evaluacion == 'tarea' %}badge-primary
+                                                {% elif nota.tipo_evaluacion == 'proyecto' %}badge-success
+                                                {% elif nota.tipo_evaluacion == 'participacion' %}badge-warning
+                                                {% else %}badge-neutral{% endif %}">
+                                                <i class="fas 
+                                                    {% if nota.tipo_evaluacion == 'examen' %}fa-file-alt
+                                                    {% elif nota.tipo_evaluacion == 'tarea' %}fa-tasks
+                                                    {% elif nota.tipo_evaluacion == 'proyecto' %}fa-project-diagram
+                                                    {% elif nota.tipo_evaluacion == 'participacion' %}fa-comments
+                                                    {% else %}fa-clipboard{% endif %} me-1"></i>
+                                                {{ nota.tipo_evaluacion.title() }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-1">{{ nota.descripcion }}</h6>
+                                                {% if nota.observaciones %}
+                                                    <small class="text-muted">{{ nota.observaciones }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-2">
+                                                    <span class="fw-bold fs-5 
+                                                        {% set porcentaje = (nota.calificacion / nota.calificacion_maxima) * 100 %}
+                                                        {% if porcentaje >= 70 %}text-success
+                                                        {% elif porcentaje >= 50 %}text-warning
+                                                        {% else %}text-danger{% endif %}">
+                                                        {{ nota.calificacion }}
+                                                    </span>
+                                                    <small class="text-muted">/ {{ nota.calificacion_maxima }}</small>
+                                                </div>
+                                                <div class="progress-circle-sm">
+                                                    <div class="progress-circle-fill" style="transform: rotate({{ (porcentaje * 3.6)|round }}deg);"></div>
+                                                    <span class="progress-text">{{ porcentaje|round }}%</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge-modern badge-info">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ nota.periodo }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="text-muted">
+                                                {{ nota.fecha_evaluacion.strftime('%d/%m/%Y') }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                <button type="button" class="btn-modern btn-primary-modern btn-sm-modern"
+                                                        onclick="editarNota({{ nota.id }})">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn-modern btn-danger-modern btn-sm-modern"
+                                                        onclick="eliminarNota({{ nota.id }})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <div class="mb-4">
+                                <i class="fas fa-star fa-4x text-muted opacity-50"></i>
+                            </div>
+                            <h5 class="text-h4 text-muted mb-2">No hay notas registradas</h5>
+                            <p class="text-body-small text-muted mb-3">Comienza registrando la primera evaluación para este curso</p>
+                            <a href="{{ url_for('docente.registrar_nota', curso_id=curso.id) }}" 
+                               class="btn-modern btn-primary-modern">
+                                <i class="fas fa-plus me-2"></i>
+                                Registrar Primera Nota
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Filtros
+document.getElementById('filtro_periodo').addEventListener('change', aplicarFiltros);
+document.getElementById('filtro_tipo').addEventListener('change', aplicarFiltros);
+document.getElementById('buscar_estudiante').addEventListener('input', aplicarFiltros);
+
+function aplicarFiltros() {
+    const periodo = document.getElementById('filtro_periodo').value.toLowerCase();
+    const tipo = document.getElementById('filtro_tipo').value.toLowerCase();
+    const estudiante = document.getElementById('buscar_estudiante').value.toLowerCase();
+    
+    const filas = document.querySelectorAll('#tabla_notas tbody tr');
+    
+    filas.forEach(fila => {
+        const filaPeriodo = fila.dataset.periodo.toLowerCase();
+        const filaTipo = fila.dataset.tipo.toLowerCase();
+        const filaEstudiante = fila.dataset.estudiante.toLowerCase();
+        
+        const mostrar = 
+            (periodo === '' || filaPeriodo.includes(periodo)) &&
+            (tipo === '' || filaTipo.includes(tipo)) &&
+            (estudiante === '' || filaEstudiante.includes(estudiante));
+        
+        fila.style.display = mostrar ? '' : 'none';
+    });
+}
+
+function limpiarFiltros() {
+    document.getElementById('filtro_periodo').value = '';
+    document.getElementById('filtro_tipo').value = '';
+    document.getElementById('buscar_estudiante').value = '';
+    aplicarFiltros();
+}
+
+function editarNota(notaId) {
+    // TODO: Implementar modal de edición o redireccionar a página de edición
+    alert('Función de editar nota próximamente disponible. ID: ' + notaId);
+}
+
+function eliminarNota(notaId) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta nota? Esta acción no se puede deshacer.')) {
+        // TODO: Implementar eliminación de nota
+        alert('Función de eliminar nota próximamente disponible. ID: ' + notaId);
+    }
+}
+
+function exportarNotas() {
+    // TODO: Implementar exportación de notas a Excel/PDF
+    alert('Función de exportar próximamente disponible.');
+}
+</script>
+
+<style>
+.progress-circle-sm {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: conic-gradient(var(--primary) 0deg, var(--surface-variant) 0deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-text {
+    font-size: 8px;
+    font-weight: bold;
+    color: var(--on-surface);
+}
+</style>
+{% endblock %}
