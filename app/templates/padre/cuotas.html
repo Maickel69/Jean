@@ -7,8 +7,8 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-fade-in">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-8">
                             <div class="d-flex align-items-center gap-4">
@@ -26,7 +26,7 @@
                                             <i class="fas fa-id-card text-primary"></i>
                                             <span class="text-body-small">{{ estudiante.codigo_estudiante }}</span>
                                         </div>
-                                        <div class="badge-modern badge-success">
+                                        <div class="badge badge-success corporate-theme">
                                             <span class="status-dot success"></span>
                                             {{ cuotas|length }} cuota{{ 's' if cuotas|length != 1 else '' }}
                                         </div>
@@ -58,7 +58,7 @@
         {% set total_pagado = pagadas|sum(attribute='monto') %}
         
         <div class="col-md-3">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="card corporate-theme" style="animation-delay: 0.1s;"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
@@ -68,7 +68,7 @@
                     </div>
                     <h4 class="text-h4 mb-1">${{ "%.2f"|format(total_pendiente) }}</h4>
                     <p class="text-body-small text-muted mb-2">Total Pendiente</p>
-                    <div class="badge-modern badge-warning">
+                    <div class="badge badge-warning corporate-theme">
                         {{ pendientes|length }} cuota{{ 's' if pendientes|length != 1 else '' }}
                     </div>
                 </div>
@@ -76,7 +76,7 @@
         </div>
         
         <div class="col-md-3">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.2s;">
+            <div class="card corporate-theme" style="animation-delay: 0.2s;"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
@@ -86,7 +86,7 @@
                     </div>
                     <h4 class="text-h4 mb-1">${{ "%.2f"|format(total_pagado) }}</h4>
                     <p class="text-body-small text-muted mb-2">Total Pagado</p>
-                    <div class="badge-modern badge-success">
+                    <div class="badge badge-success corporate-theme">
                         {{ pagadas|length }} cuota{{ 's' if pagadas|length != 1 else '' }}
                     </div>
                 </div>
@@ -94,7 +94,7 @@
         </div>
         
         <div class="col-md-3">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.3s;">
+            <div class="card corporate-theme" style="animation-delay: 0.3s;"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
@@ -104,7 +104,7 @@
                     </div>
                     <h4 class="text-h4 mb-1">{{ vencidas|length }}</h4>
                     <p class="text-body-small text-muted mb-2">Cuotas Vencidas</p>
-                    <div class="badge-modern badge-danger">
+                    <div class="badge badge-danger corporate-theme">
                         {% if vencidas|length > 0 %}Requiere Atención{% else %}Al Día{% endif %}
                     </div>
                 </div>
@@ -112,7 +112,7 @@
         </div>
         
         <div class="col-md-3">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.4s;">
+            <div class="card corporate-theme" style="animation-delay: 0.4s;"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" 
@@ -122,7 +122,7 @@
                     </div>
                     <h4 class="text-h4 mb-1">{{ cuotas|length }}</h4>
                     <p class="text-body-small text-muted mb-2">Total Cuotas</p>
-                    <div class="badge-modern badge-info">
+                    <div class="badge badge-info corporate-theme">
                         Período 2024
                     </div>
                 </div>
@@ -135,7 +135,7 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.5s;">
+            <div class="card corporate-theme" style="animation-delay: 0.5s;"> data-aos="fade-up"
                 <div class="card-modern-body py-3">
                     <div class="row align-items-center">
                         <div class="col-md-6">
@@ -173,8 +173,8 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.6s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.6s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h4 class="text-h4 mb-1">Historial de Cuotas</h4>
@@ -182,7 +182,7 @@
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             {% if pendientes|length > 0 %}
-                            <div class="badge-modern badge-warning">
+                            <div class="badge badge-warning corporate-theme">
                                 <i class="fas fa-exclamation-circle me-1"></i>
                                 {{ pendientes|length }} pendiente{{ 's' if pendientes|length != 1 else '' }}
                             </div>
@@ -190,13 +190,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     {% if cuotas %}
                         <div class="space-y-4">
                             {% for cuota in cuotas %}
                                 <div class="cuota-item" data-estado="{{ cuota.estado }}" data-aos="fade-up" data-aos-delay="{{ (loop.index0 * 50) + 700 }}">
                                     <div class="card-modern {% if cuota.estado == 'vencido' %}border-danger{% elif cuota.estado == 'pendiente' and cuota.dias_vencimiento() <= 7 %}border-warning{% endif %}">
-                                        <div class="card-modern-body">
+                                        <div class="card-body">
                                             <!-- Header de la cuota -->
                                             <div class="d-flex align-items-start justify-content-between mb-3">
                                                 <div class="flex-grow-1">
@@ -219,16 +219,16 @@
                                                                 {{ cuota.estado_display() }}
                                                             </span>
                                                         </div>
-                                                        <div class="badge-modern badge-secondary">
+                                                        <div class="badge badge-secondary corporate-theme">
                                                             {{ cuota.tipo_display() }}
                                                         </div>
                                                         {% if cuota.estado == 'pendiente' and cuota.dias_vencimiento() <= 7 and cuota.dias_vencimiento() > 0 %}
-                                                            <div class="badge-modern badge-warning">
+                                                            <div class="badge badge-warning corporate-theme">
                                                                 <i class="fas fa-clock me-1"></i>
                                                                 Vence en {{ cuota.dias_vencimiento() }} día{{ 's' if cuota.dias_vencimiento() != 1 else '' }}
                                                             </div>
                                                         {% elif cuota.estado == 'vencido' %}
-                                                            <div class="badge-modern badge-danger">
+                                                            <div class="badge badge-danger corporate-theme">
                                                                 <i class="fas fa-exclamation-triangle me-1"></i>
                                                                 Vencida
                                                             </div>
@@ -369,11 +369,11 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.8s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.8s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h5 class="text-h5 mb-0">Acceso Rápido</h5>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ url_for('padre.notas', estudiante_id=estudiante.id) }}" 

@@ -7,8 +7,8 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-fade-in">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-8">
                             <div class="d-flex align-items-center gap-4">
@@ -26,7 +26,7 @@
                                             <i class="fas fa-id-card text-primary"></i>
                                             <span class="text-body-small">{{ estudiante.codigo_estudiante }}</span>
                                         </div>
-                                        <div class="badge-modern badge-info">
+                                        <div class="badge badge-info corporate-theme">
                                             <span class="status-dot info"></span>
                                             {{ comunicados|length }} comunicado{{ 's' if comunicados|length != 1 else '' }}
                                         </div>
@@ -52,7 +52,7 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="card corporate-theme" style="animation-delay: 0.1s;"> data-aos="fade-up"
                 <div class="card-modern-body py-3">
                     <div class="row align-items-center">
                         <div class="col-md-6">
@@ -90,15 +90,15 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.2s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.2s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h4 class="text-h4 mb-1">Comunicados Activos</h4>
                             <p class="text-body-small opacity-75 mb-0">Información importante de la institución y docentes</p>
                         </div>
                         <div class="d-flex align-items-center gap-2">
-                            <div class="badge-modern badge-warning">
+                            <div class="badge badge-warning corporate-theme">
                                 <i class="fas fa-exclamation-triangle me-1"></i>
                                 {% set urgentes = comunicados|selectattr('tipo', 'equalto', 'urgente')|list %}
                                 {{ urgentes|length }} urgente{{ 's' if urgentes|length != 1 else '' }}
@@ -106,13 +106,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     {% if comunicados %}
                         <div class="space-y-4">
                             {% for comunicado in comunicados %}
                                 <div class="comunicado-item" data-tipo="{{ comunicado.tipo }}" data-aos="fade-up" data-aos-delay="{{ (loop.index0 * 50) + 300 }}">
                                     <div class="card-modern {% if comunicado.prioritario %}border-warning{% endif %} {% if comunicado.tipo == 'urgente' %}border-danger{% endif %}">
-                                        <div class="card-modern-body">
+                                        <div class="card-body">
                                             <!-- Header del comunicado -->
                                             <div class="d-flex align-items-start justify-content-between mb-3">
                                                 <div class="flex-grow-1">
@@ -132,18 +132,18 @@
                                                             </span>
                                                         </div>
                                                         {% if comunicado.prioritario %}
-                                                            <div class="badge-modern badge-warning">
+                                                            <div class="badge badge-warning corporate-theme">
                                                                 <i class="fas fa-star me-1"></i>
                                                                 Prioritario
                                                             </div>
                                                         {% endif %}
                                                         {% if comunicado.curso %}
-                                                            <div class="badge-modern badge-secondary">
+                                                            <div class="badge badge-secondary corporate-theme">
                                                                 <i class="fas fa-book me-1"></i>
                                                                 {{ comunicado.curso.nombre }}
                                                             </div>
                                                         {% else %}
-                                                            <div class="badge-modern badge-info">
+                                                            <div class="badge badge-info corporate-theme">
                                                                 <i class="fas fa-globe me-1"></i>
                                                                 General
                                                             </div>
@@ -248,11 +248,11 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-12">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.4s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.4s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h5 class="text-h5 mb-0">Acceso Rápido</h5>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ url_for('padre.cursos', estudiante_id=estudiante.id) }}" 

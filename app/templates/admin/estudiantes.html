@@ -3,23 +3,27 @@
 {% block title %}Gestión de Estudiantes{% endblock %}
 
 {% block content %}
-<div class="admin-content">
-    <div class="page-header" data-aos="fade-down">
-        <div class="header-content">
-            <h1><i class="fas fa-graduation-cap"></i> Gestión de Estudiantes</h1>
-            <p>Administra la información de los estudiantes del centro educativo</p>
+<!-- Professional Header -->
+<div class="page-header corporate-theme admin-theme" data-aos="fade-down">
+    <div class="header-content">
+        <div class="header-left">
+            <div class="page-title">
+                <h1 class="h3 mb-0"><i class="fas fa-graduation-cap me-2"></i>Gestión de Estudiantes</h1>
+                <p class="page-subtitle">Administra la información de los estudiantes del centro educativo</p>
+            </div>
         </div>
-        <div class="header-actions">
-            <a href="{{ url_for('admin.crear_estudiante') }}" class="btn-primary">
-                <i class="fas fa-plus"></i>
-                Nuevo Estudiante
-            </a>
-            <a href="{{ url_for('admin.dashboard') }}" class="btn-secondary">
-                <i class="fas fa-arrow-left"></i>
-                Volver
-            </a>
+        <div class="header-right">
+            <div class="header-actions">
+                <a href="{{ url_for('admin.crear_estudiante') }}" class="btn btn-primary corporate-theme">
+                    <i class="fas fa-plus me-2"></i>Nuevo Estudiante
+                </a>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-secondary corporate-theme">
+                    <i class="fas fa-arrow-left me-2"></i>Volver
+                </a>
+            </div>
         </div>
     </div>
+</div>
 
     <div class="content-card glass-effect" data-aos="fade-up">
         <div class="card-header">
@@ -117,7 +121,7 @@
 </div>
 
 <!-- Modal de confirmación -->
-<div id="deleteModal" class="modal">
+<div id="deleteModal" class="modal corporate-theme">
     <div class="modal-content">
         <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Eliminación</h3>
         <p>¿Estás seguro de que deseas eliminar al estudiante <strong id="estudianteNombre"></strong>?</p>
@@ -128,291 +132,7 @@
     </div>
 </div>
 
-<style>
-.admin-content {
-    padding: 2rem;
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    min-height: 100vh;
-}
-
-.student-avatar {
-    background: linear-gradient(135deg, #4facfe, #00f2fe) !important;
-}
-
-.parent-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.parent-info span {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-}
-
-.badge-primary { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
-
-/* Resto de estilos similares a los otros archivos */
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 15px;
-    padding: 2rem;
-}
-
-.header-content h1 {
-    color: white;
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-.header-content p {
-    color: rgba(255, 255, 255, 0.8);
-    margin: 0.5rem 0 0 0;
-}
-
-.header-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-.btn-primary, .btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: linear-gradient(135deg, #43e97b, #38f9d7);
-    color: white;
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn-primary:hover, .btn-secondary:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.content-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 20px;
-    padding: 2rem;
-}
-
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.card-header h3 {
-    color: white;
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.search-box {
-    position: relative;
-}
-
-.search-input {
-    padding: 0.8rem 1rem 0.8rem 3rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    width: 300px;
-    backdrop-filter: blur(10px);
-}
-
-.search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.6);
-}
-
-.table-container {
-    overflow-x: auto;
-}
-
-.admin-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-.admin-table th {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    padding: 1rem;
-    text-align: left;
-    font-weight: 600;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.admin-table td {
-    padding: 1rem;
-    color: white;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.admin-table tr:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-}
-
-.user-details {
-    display: flex;
-    flex-direction: column;
-}
-
-.user-details span {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
-}
-
-.badge {
-    padding: 0.3rem 0.8rem;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.badge-success { background: #43e97b; color: white; }
-.badge-danger { background: #f5576c; color: white; }
-.badge-info { background: #4facfe; color: white; }
-
-.action-buttons {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.btn-action {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-edit {
-    background: linear-gradient(135deg, #4facfe, #00f2fe);
-    color: white;
-}
-
-.btn-delete {
-    background: linear-gradient(135deg, #f093fb, #f5576c);
-    color: white;
-}
-
-.btn-action:hover {
-    transform: scale(1.1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.empty-state i {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 15% auto;
-    padding: 2rem;
-    width: 400px;
-    border-radius: 20px;
-    text-align: center;
-    color: white;
-}
-
-.modal-content h3 {
-    color: #f5576c;
-    margin-bottom: 1rem;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 2rem;
-}
-
-.btn-danger {
-    padding: 0.8rem 1.5rem;
-    border-radius: 50px;
-    background: linear-gradient(135deg, #f093fb, #f5576c);
+<!-- Data table with corporate theme and search functionality -->
     color: white;
     border: none;
     cursor: pointer;

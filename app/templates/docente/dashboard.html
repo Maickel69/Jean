@@ -4,118 +4,94 @@
 {% block page_title %}Dashboard de Docente{% endblock %}
 
 {% block content %}
-<!-- Welcome Section -->
-<div class="container-fluid mb-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card-modern card-glass animate-fade-in">
-                <div class="card-modern-body">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <div class="d-flex align-items-center">
-                                <div class="me-4">
-                                    <div class="surface-elevated rounded-circle p-4 d-inline-block">
-                                        <i class="fas fa-chalkboard-teacher fa-3x text-primary"></i>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h1 class="text-h2 mb-2">¡Bienvenido, {{ current_user.nombre_completo }}!</h1>
-                                    <p class="text-body-large text-muted mb-3">
-                                        Especialista en {{ docente.especialidad }}
-                                    </p>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <div class="badge-modern badge-primary">
-                                            <i class="fas fa-book me-1"></i>
-                                            {{ cursos|length }} {{ 'Curso' if cursos|length == 1 else 'Cursos' }}
-                                        </div>
-                                        <div class="badge-modern badge-success">
-                                            <i class="fas fa-clock me-1"></i>
-                                            Activo hoy
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-end">
-                            <div class="text-caption mb-2">
-                                <i class="fas fa-calendar-alt me-1"></i>
-                                {{ moment()|format_datetime('%A, %d de %B de %Y') }}
-                            </div>
-                            <div class="text-caption">
-                                <i class="fas fa-clock me-1"></i>
-                                {{ moment()|format_datetime('%H:%M') }}
-                            </div>
-                        </div>
-                    </div>
+<!-- Professional Header -->
+<div class="dashboard-header corporate-theme docente-theme" data-aos="fade-down"> data-aos="fade-down"
+    <div class="header-content">
+        <div class="header-left">
+            <div class="page-title">
+                <h1 class="h3 mb-0">Dashboard de Docente</h1>
+                <p class="text-muted mb-0">{{ current_user.nombre_completo }} - Especialista en {{ docente.especialidad }}</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="user-details">
+                    <span class="user-name">{{ cursos|length }} {{ 'Curso' if cursos|length == 1 else 'Cursos' }}</span>
+                    <small class="user-role">Docente Activo</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Quick Stats -->
-<div class="container-fluid mb-4">
-    <div class="row g-4">
-        <div class="col-md-6 col-lg-3">
-            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.1s;">
-                <div class="card-modern-body text-center">
-                    <div class="mb-3">
-                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-primary);">
-                            <i class="fas fa-graduation-cap fa-lg text-white"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-h3 mb-1">{{ cursos|length }}</h3>
-                    <p class="text-body-small text-muted mb-0">Cursos Asignados</p>
-                </div>
-            </div>
+<!-- Statistics Cards -->
+<div class="stats-grid" data-aos="fade-up" data-aos-delay="200">
+    <div class="stat-card corporate-theme docente-theme" data-aos="fade-up" data-aos-delay="200"> data-aos="zoom-in"
+        <div class="stat-icon">
+            <i class="fas fa-graduation-cap"></i>
         </div>
-        
-        <div class="col-md-6 col-lg-3">
-            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.2s;">
-                <div class="card-modern-body text-center">
-                    <div class="mb-3">
-                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-success);">
-                            <i class="fas fa-users fa-lg text-white"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-h3 mb-1">
-                        {% set total_estudiantes = 0 %}
-                        {% for curso in cursos %}
-                            {% set total_estudiantes = total_estudiantes + curso.estudiantes|length %}
-                        {% endfor %}
-                        {{ total_estudiantes }}
-                    </h3>
-                    <p class="text-body-small text-muted mb-0">Estudiantes Total</p>
-                </div>
-            </div>
+        <div class="stat-content">
+            <h3>{{ cursos|length }}</h3>
+            <p>Cursos Asignados</p>
         </div>
-        
-        <div class="col-md-6 col-lg-3">
-            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.3s;">
-                <div class="card-modern-body text-center">
-                    <div class="mb-3">
-                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-warning);">
-                            <i class="fas fa-calendar-check fa-lg text-white"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-h3 mb-1">85%</h3>
-                    <p class="text-body-small text-muted mb-0">Asistencia Promedio</p>
-                </div>
-            </div>
+        <div class="stat-action">
+            <a href="#" class="btn-stat">
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
-        
-        <div class="col-md-6 col-lg-3">
-            <div class="card-modern card-interactive animate-slide-up" style="animation-delay: 0.4s;">
-                <div class="card-modern-body text-center">
-                    <div class="mb-3">
-                        <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: var(--gradient-danger);">
-                            <i class="fas fa-clipboard-list fa-lg text-white"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-h3 mb-1">12</h3>
-                    <p class="text-body-small text-muted mb-0">Evaluaciones Pendientes</p>
-                </div>
-            </div>
+    </div>
+
+    <div class="stat-card corporate-theme docente-theme" data-aos="fade-up" data-aos-delay="300"> data-aos="zoom-in"
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-content">
+            <h3>
+                {% set total_estudiantes = 0 %}
+                {% for curso in cursos %}
+                    {% set total_estudiantes = total_estudiantes + curso.estudiantes|length %}
+                {% endfor %}
+                {{ total_estudiantes }}
+            </h3>
+            <p>Estudiantes Total</p>
+        </div>
+        <div class="stat-action">
+            <a href="#" class="btn-stat">
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="stat-card corporate-theme docente-theme" data-aos="fade-up" data-aos-delay="400"> data-aos="zoom-in"
+        <div class="stat-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+            <h3>85%</h3>
+            <p>Asistencia Promedio</p>
+        </div>
+        <div class="stat-action">
+            <a href="{{ url_for('docente.asistencias') if cursos else '#' }}" class="btn-stat">
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="stat-card corporate-theme docente-theme" data-aos="fade-up" data-aos-delay="500"> data-aos="zoom-in"
+        <div class="stat-icon">
+            <i class="fas fa-clipboard-list"></i>
+        </div>
+        <div class="stat-content">
+            <h3>{{ comunicados|length if comunicados is defined else 5 }}</h3>
+            <p>Comunicados</p>
+        </div>
+        <div class="stat-action">
+            <a href="{{ url_for('docente.comunicados') }}" class="btn-stat">
+                <i class="fas fa-arrow-right"></i>
+            </a>
         </div>
     </div>
 </div>
@@ -125,21 +101,21 @@
     <div class="row g-4">
         <!-- Mis Cursos -->
         <div class="col-lg-8">
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.5s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.5s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h4 class="text-h4 mb-1">Mis Cursos</h4>
                             <p class="text-body-small opacity-75 mb-0">Gestiona tus cursos y estudiantes</p>
                         </div>
                         <div>
-                            <div class="badge-modern badge-primary">
+                            <div class="badge badge-primary corporate-theme">
                                 {{ cursos|length }} {{ 'Curso' if cursos|length == 1 else 'Cursos' }}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     {% if cursos %}
                         <div class="row g-3">
                             {% for curso in cursos %}
@@ -154,23 +130,23 @@
                                         <div class="flex-grow-1">
                                             <h5 class="text-h4 mb-2">{{ curso.nombre }}</h5>
                                             <div class="d-flex flex-wrap gap-2 mb-3">
-                                                <div class="badge-modern badge-neutral">
+                                                <div class="badge badge-neutral corporate-theme">
                                                     <i class="fas fa-users me-1"></i>
                                                     {{ curso.estudiantes|length }} estudiantes
                                                 </div>
-                                                <div class="badge-modern badge-success">
+                                                <div class="badge badge-success corporate-theme">
                                                     <i class="fas fa-calendar me-1"></i>
                                                     Activo
                                                 </div>
                                             </div>
                                             <div class="d-flex gap-2">
                                                 <a href="{{ url_for('docente.curso_detalle', curso_id=curso.id) }}" 
-                                                   class="btn-modern btn-primary-modern btn-sm-modern">
+                                                   class="btn btn-primary corporate-theme">
                                                     <i class="fas fa-eye me-1"></i>
                                                     Ver Curso
                                                 </a>
                                                 <a href="{{ url_for('docente.asistencias', curso_id=curso.id) }}" 
-                                                   class="btn-modern btn-secondary-modern btn-sm-modern">
+                                                   class="btn btn-secondary corporate-theme">
                                                     <i class="fas fa-clipboard-check me-1"></i>
                                                     Asistencia
                                                 </a>
@@ -197,15 +173,15 @@
         <!-- Sidebar -->
         <div class="col-lg-4">
             <!-- Acciones Rápidas -->
-            <div class="card-modern mb-4 animate-slide-up" style="animation-delay: 0.6s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.6s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h4 class="text-h4 mb-1">Acciones Rápidas</h4>
                     <p class="text-body-small opacity-75 mb-0">Herramientas más utilizadas</p>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="d-grid gap-3">
                         <a href="{{ url_for('docente.comunicados') }}" 
-                           class="btn-modern btn-secondary-modern interactive-lift">
+                           class="btn btn-secondary corporate-theme">
                             <i class="fas fa-megaphone me-2"></i>
                             Crear Comunicado
                         </a>
@@ -237,18 +213,18 @@
             </div>
             
             <!-- Información del Docente -->
-            <div class="card-modern animate-slide-up" style="animation-delay: 0.7s;">
-                <div class="card-modern-header">
+            <div class="card corporate-theme" style="animation-delay: 0.7s;"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h4 class="text-h4 mb-1">Mi Perfil</h4>
                     <p class="text-body-small opacity-75 mb-0">Información personal</p>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="text-center mb-4">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; background: var(--gradient-primary);">
                             <i class="fas fa-user-tie fa-2x text-white"></i>
                         </div>
                         <h5 class="text-h4 mb-1">{{ docente.nombre_completo }}</h5>
-                        <div class="badge-modern badge-primary">{{ docente.especialidad }}</div>
+                        <div class="badge badge-primary corporate-theme">{{ docente.especialidad }}</div>
                     </div>
                     
                     <div class="space-y-3">

@@ -30,7 +30,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="estudiante_id" class="form-label">Estudiante <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="estudiante_id" name="estudiante_id" required>
+                                    <select class="form-select corporate-theme" id="estudiante_id" name="estudiante_id" required>
                                         <option value="">Seleccionar estudiante...</option>
                                         {% for estudiante in estudiantes %}
                                         <option value="{{ estudiante.id }}" 
@@ -47,7 +47,7 @@
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="curso_id" class="form-label">Curso <span class="text-danger">*</span></label>
-                                    <select class="form-select" id="curso_id" name="curso_id" required>
+                                    <select class="form-select corporate-theme" id="curso_id" name="curso_id" required>
                                         <option value="">Seleccionar curso...</option>
                                         {% for curso in cursos %}
                                         <option value="{{ curso.id }}" 

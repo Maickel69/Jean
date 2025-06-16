@@ -8,8 +8,8 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card-modern card-glass">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h2 class="text-h2 mb-2">Editar Comunicado</h2>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ url_for('docente.comunicados') }}" 
-                               class="btn-modern btn-secondary-modern">
+                               class="btn btn-secondary corporate-theme">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Volver a Comunicados
                             </a>
@@ -34,8 +34,8 @@
     <!-- Formulario Principal -->
     <div class="row">
         <div class="col-lg-8">
-            <div class="card-modern">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center">
                         <div class="me-3">
                             <div class="surface-elevated rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-warning);">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <form method="POST" action="{{ url_for('docente.editar_comunicado', comunicado_id=comunicado.id) }}" id="comunicadoForm">
                         <div class="row">
                             <!-- Título -->
@@ -146,7 +146,7 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-info-circle"></i>
                                         </span>
-                                        <input type="text" class="form-control" readonly
+                                        <input type="text" class="form-control corporate-theme" readonly
                                                value="{% if comunicado.fecha_vencimiento and comunicado.fecha_vencimiento.date() < moment().date() %}Vencido{% else %}Activo{% endif %}">
                                     </div>
                                     <div class="form-helper-text">Estado actual del comunicado</div>
@@ -191,7 +191,7 @@
                             </div>
                             <div class="d-flex gap-2">
                                 <a href="{{ url_for('docente.comunicados') }}" 
-                                   class="btn-modern btn-secondary-modern">
+                                   class="btn btn-secondary corporate-theme">
                                     <i class="fas fa-times me-2"></i>
                                     Cancelar
                                 </a>
@@ -208,14 +208,14 @@
 
         <!-- Panel de Ayuda -->
         <div class="col-lg-4">
-            <div class="card-modern mb-4">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h5 class="text-h5 mb-0">
                         <i class="fas fa-lightbulb me-2"></i>
                         Consejos para Editar
                     </h5>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="d-flex flex-column gap-3">
                         <div class="d-flex align-items-start">
                             <div class="me-3">
@@ -257,14 +257,14 @@
             </div>
 
             <!-- Estadísticas del Comunicado -->
-            <div class="card-modern">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h5 class="text-h5 mb-0">
                         <i class="fas fa-chart-bar me-2"></i>
                         Información del Comunicado
                     </h5>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="row text-center">
                         <div class="col-4">
                             <div class="mb-2">

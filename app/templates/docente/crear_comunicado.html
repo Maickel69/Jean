@@ -8,8 +8,8 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card-modern card-glass">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h2 class="text-h2 mb-2">Crear Nuevo Comunicado</h2>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ url_for('docente.comunicados') }}" 
-                               class="btn-modern btn-secondary-modern">
+                               class="btn btn-secondary corporate-theme">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Volver a Comunicados
                             </a>
@@ -34,8 +34,8 @@
     <!-- Formulario Principal -->
     <div class="row">
         <div class="col-lg-8">
-            <div class="card-modern">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center">
                         <div class="me-3">
                             <div class="surface-elevated rounded-circle p-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <form method="POST" action="{{ url_for('docente.crear_comunicado') }}" id="comunicadoForm">
                         <div class="row">
                             <!-- Título -->
@@ -141,7 +141,7 @@
                                         <span class="input-group-text">
                                             <i class="fas fa-users"></i>
                                         </span>
-                                        <input type="text" id="contador_destinatarios" class="form-control" 
+                                        <input type="text" id="contador_destinatarios" class="form-control corporate-theme" 
                                                readonly placeholder="Seleccione un curso">
                                     </div>
                                     <div class="form-helper-text">Número estimado de destinatarios</div>
@@ -168,7 +168,7 @@
                         <!-- Botones -->
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <div class="d-flex gap-2">
-                                <button type="button" class="btn-modern btn-secondary-modern" onclick="limpiarFormulario()">
+                                <button type="button" class="btn btn-secondary corporate-theme" onclick="limpiarFormulario()">
                                     <i class="fas fa-eraser me-2"></i>
                                     Limpiar
                                 </button>
@@ -179,11 +179,11 @@
                             </div>
                             <div class="d-flex gap-2">
                                 <a href="{{ url_for('docente.comunicados') }}" 
-                                   class="btn-modern btn-secondary-modern">
+                                   class="btn btn-secondary corporate-theme">
                                     <i class="fas fa-times me-2"></i>
                                     Cancelar
                                 </a>
-                                <button type="submit" class="btn-modern btn-primary-modern">
+                                <button type="submit" class="btn btn-primary corporate-theme">
                                     <i class="fas fa-paper-plane me-2"></i>
                                     Enviar Comunicado
                                 </button>
@@ -196,14 +196,14 @@
 
         <!-- Panel de Ayuda -->
         <div class="col-lg-4">
-            <div class="card-modern mb-4">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h5 class="text-h5 mb-0">
                         <i class="fas fa-lightbulb me-2"></i>
                         Consejos para Comunicados
                     </h5>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="mb-3">
                         <h6 class="text-h6 mb-2">Título Efectivo</h6>
                         <ul class="list-unstyled small">
@@ -231,14 +231,14 @@
             </div>
 
             <!-- Plantillas -->
-            <div class="card-modern">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <h5 class="text-h5 mb-0">
                         <i class="fas fa-file-alt me-2"></i>
                         Plantillas Rápidas
                     </h5>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <div class="d-grid gap-2">
                         <button type="button" class="btn-modern btn-outline-primary btn-sm-modern" onclick="aplicarPlantilla('reunion')">
                             <i class="fas fa-users me-2"></i>

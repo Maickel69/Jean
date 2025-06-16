@@ -8,8 +8,8 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card-modern card-glass">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h2 class="text-h2 mb-2">{{ curso.nombre }}</h2>
@@ -20,12 +20,12 @@
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ url_for('docente.registrar_nota', curso_id=curso.id) }}" 
-                               class="btn-modern btn-primary-modern">
+                               class="btn btn-primary corporate-theme">
                                 <i class="fas fa-plus me-2"></i>
                                 Nueva Nota
                             </a>
                             <a href="{{ url_for('docente.curso_detalle', curso_id=curso.id) }}" 
-                               class="btn-modern btn-secondary-modern">
+                               class="btn btn-secondary corporate-theme">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Volver al Curso
                             </a>
@@ -39,7 +39,7 @@
     <!-- Estadísticas -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card-modern card-interactive">
+            <div class="card corporate-theme"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-primary);">
@@ -52,7 +52,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card-modern card-interactive">
+            <div class="card corporate-theme"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-success);">
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card-modern card-interactive">
+            <div class="card corporate-theme"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-warning);">
@@ -87,7 +87,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card-modern card-interactive">
+            <div class="card corporate-theme"> data-aos="fade-up"
                 <div class="card-modern-body text-center">
                     <div class="mb-3">
                         <div class="surface-elevated rounded-circle mx-auto d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background: var(--gradient-info);">
@@ -104,8 +104,8 @@
     <!-- Filtros -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card-modern">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="row align-items-end">
                         <div class="col-md-3">
                             <div class="form-group-modern">
@@ -140,7 +140,7 @@
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <button type="button" onclick="limpiarFiltros()" class="btn-modern btn-secondary-modern w-100">
+                            <button type="button" onclick="limpiarFiltros()" class="btn btn-secondary corporate-theme">
                                 <i class="fas fa-times me-2"></i>
                                 Limpiar Filtros
                             </button>
@@ -154,22 +154,22 @@
     <!-- Lista de Notas -->
     <div class="row">
         <div class="col-12">
-            <div class="card-modern">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h4 class="text-h4 mb-1">Historial de Notas</h4>
                             <p class="text-body-small opacity-75 mb-0">Todas las calificaciones registradas</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn-modern btn-secondary-modern btn-sm-modern" onclick="exportarNotas()">
+                            <button type="button" class="btn btn-secondary corporate-theme" onclick="exportarNotas()">
                                 <i class="fas fa-download me-1"></i>
                                 Exportar
                             </button>
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     {% if notas %}
                         <div class="table-responsive">
                             <table class="table-modern" id="tabla_notas">
@@ -245,7 +245,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge-modern badge-info">
+                                            <span class="badge badge-info corporate-theme">
                                                 <i class="fas fa-calendar me-1"></i>
                                                 {{ nota.periodo }}
                                             </span>
@@ -257,7 +257,7 @@
                                         </td>
                                         <td>
                                             <div class="d-flex gap-1">
-                                                <button type="button" class="btn-modern btn-primary-modern btn-sm-modern"
+                                                <button type="button" class="btn btn-primary corporate-theme"
                                                         onclick="editarNota({{ nota.id }})">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
@@ -280,7 +280,7 @@
                             <h5 class="text-h4 text-muted mb-2">No hay notas registradas</h5>
                             <p class="text-body-small text-muted mb-3">Comienza registrando la primera evaluación para este curso</p>
                             <a href="{{ url_for('docente.registrar_nota', curso_id=curso.id) }}" 
-                               class="btn-modern btn-primary-modern">
+                               class="btn btn-primary corporate-theme">
                                 <i class="fas fa-plus me-2"></i>
                                 Registrar Primera Nota
                             </a>

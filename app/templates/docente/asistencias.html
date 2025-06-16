@@ -8,8 +8,8 @@
     <!-- Header -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card-modern card-glass">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h2 class="text-h2 mb-2">{{ curso.nombre }}</h2>
@@ -20,7 +20,7 @@
                         </div>
                         <div class="d-flex gap-2">
                             <a href="{{ url_for('docente.curso_detalle', curso_id=curso.id) }}" 
-                               class="btn-modern btn-secondary-modern">
+                               class="btn btn-secondary corporate-theme">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Volver al Curso
                             </a>
@@ -34,8 +34,8 @@
     <!-- Selector de Fecha -->
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card-modern">
-                <div class="card-modern-body">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="card-body">
                     <form method="GET" class="d-flex align-items-center gap-3">
                         <div class="form-group-modern mb-0">
                             <label class="form-label-modern">Seleccionar Fecha:</label>
@@ -43,11 +43,11 @@
                                    class="form-control-modern" onchange="this.form.submit()">
                         </div>
                         <div class="d-flex gap-2">
-                            <button type="button" onclick="setToday()" class="btn-modern btn-primary-modern btn-sm-modern">
+                            <button type="button" onclick="setToday()" class="btn btn-primary corporate-theme">
                                 <i class="fas fa-calendar-day me-1"></i>
                                 Hoy
                             </button>
-                            <button type="button" onclick="setYesterday()" class="btn-modern btn-secondary-modern btn-sm-modern">
+                            <button type="button" onclick="setYesterday()" class="btn btn-secondary corporate-theme">
                                 <i class="fas fa-calendar-minus me-1"></i>
                                 Ayer
                             </button>
@@ -61,8 +61,8 @@
     <!-- Formulario de Asistencia -->
     <div class="row">
         <div class="col-12">
-            <div class="card-modern">
-                <div class="card-modern-header">
+            <div class="card corporate-theme"> data-aos="fade-up"
+                <div class="section-header corporate-theme">
                     <div class="d-flex align-items-center justify-content-between">
                         <div>
                             <h4 class="text-h4 mb-1">Lista de Asistencia</h4>
@@ -82,7 +82,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-modern-body">
+                <div class="card-body">
                     <form method="POST" action="{{ url_for('docente.registrar_asistencia') }}">
                         <input type="hidden" name="curso_id" value="{{ curso.id }}">
                         <input type="hidden" name="fecha" value="{{ fecha_seleccionada }}">
@@ -115,7 +115,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge-modern badge-neutral">
+                                            <span class="badge badge-neutral corporate-theme">
                                                 {{ estudiante.codigo_estudiante or 'Sin código' }}
                                             </span>
                                         </td>
@@ -161,7 +161,7 @@
                                 <i class="fas fa-info-circle me-1"></i>
                                 Total de estudiantes: {{ curso.estudiantes|length }}
                             </div>
-                            <button type="submit" class="btn-modern btn-primary-modern">
+                            <button type="submit" class="btn btn-primary corporate-theme">
                                 <i class="fas fa-save me-2"></i>
                                 Guardar Asistencia
                             </button>

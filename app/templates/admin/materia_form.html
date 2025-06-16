@@ -54,7 +54,7 @@
                     <div class="form-card-body">
                         <div class="row g-4">
                             <div class="col-12 col-md-6">
-                                <div class="form-group">
+                                <div class="form-group corporate-theme">
                                     <label for="nombre" class="form-label">
                                         <i class="fas fa-book me-2"></i>
                                         Nombre de la Materia
@@ -62,7 +62,7 @@
                                     <input type="text" 
                                            id="nombre" 
                                            name="nombre" 
-                                           class="form-control"
+                                           class="form-control corporate-theme"
                                            value="{{ materia.nombre if materia else '' }}"
                                            placeholder="Ingrese el nombre de la materia"
                                            required>
@@ -73,7 +73,7 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <div class="form-group">
+                                <div class="form-group corporate-theme">
                                     <label for="codigo" class="form-label">
                                         <i class="fas fa-hashtag me-2"></i>
                                         Código
@@ -82,21 +82,21 @@
                                     <input type="text" 
                                            id="codigo" 
                                            name="codigo" 
-                                           class="form-control"
+                                           class="form-control corporate-theme"
                                            value="{{ materia.codigo if materia else '' }}"
                                            placeholder="Se genera automáticamente si no se especifica">
                                 </div>
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <div class="form-group">
+                                <div class="form-group corporate-theme">
                                     <label for="area_curricular" class="form-label">
                                         <i class="fas fa-layer-group me-2"></i>
                                         Área Curricular
                                     </label>
                                     <select id="area_curricular" 
                                             name="area_curricular" 
-                                            class="form-select"
+                                            class="form-select corporate-theme"
                                             required>
                                         <option value="">Seleccionar área curricular...</option>
                                         <option value="Matemática" {% if materia and materia.area_curricular == 'Matemática' %}selected{% endif %}>Matemática</option>
@@ -117,7 +117,7 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <div class="form-group">
+                                <div class="form-group corporate-theme">
                                     <label for="horas_semanales" class="form-label">
                                         <i class="fas fa-clock me-2"></i>
                                         Horas por Semana
@@ -125,7 +125,7 @@
                                     <input type="number" 
                                            id="horas_semanales" 
                                            name="horas_semanales" 
-                                           class="form-control"
+                                           class="form-control corporate-theme"
                                            value="{{ materia.horas_semanales if materia else 2 }}"
                                            min="1" 
                                            max="10"
@@ -134,14 +134,14 @@
                             </div>
 
                             <div class="col-12">
-                                <div class="form-group">
+                                <div class="form-group corporate-theme">
                                     <label for="descripcion" class="form-label">
                                         <i class="fas fa-align-left me-2"></i>
                                         Descripción
                                     </label>
                                     <textarea id="descripcion" 
                                               name="descripcion" 
-                                              class="form-control"
+                                              class="form-control corporate-theme"
                                               rows="4"
                                               placeholder="Descripción opcional de la materia">{{ materia.descripcion if materia else '' }}</textarea>
                                 </div>

@@ -28,7 +28,7 @@
                     <form method="POST" id="matriculaMasivaForm">
                         <div class="mb-4">
                             <label for="curso_id" class="form-label">Curso Destino <span class="text-danger">*</span></label>
-                            <select class="form-select" id="curso_id" name="curso_id" required>
+                            <select class="form-select corporate-theme" id="curso_id" name="curso_id" required>
                                 <option value="">Seleccionar curso...</option>
                                 {% for curso in cursos %}
                                 <option value="{{ curso.id }}" 
@@ -58,7 +58,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <label for="filtroGrado" class="form-label">Grado</label>
-                                        <select class="form-select" id="filtroGrado">
+                                        <select class="form-select corporate-theme" id="filtroGrado">
                                             <option value="">Todos los grados</option>
                                             {% for grado in estudiantes|map(attribute='grado')|unique %}
                                             <option value="{{ grado }}">{{ grado }}</option>
@@ -67,7 +67,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label for="filtroSeccion" class="form-label">Sección</label>
-                                        <select class="form-select" id="filtroSeccion">
+                                        <select class="form-select corporate-theme" id="filtroSeccion">
                                             <option value="">Todas las secciones</option>
                                             {% for seccion in estudiantes|map(attribute='seccion')|unique %}
                                             <option value="{{ seccion }}">{{ seccion }}</option>
@@ -76,7 +76,7 @@
                                     </div>
                                     <div class="col-md-4">
                                         <label for="buscarEstudiante" class="form-label">Buscar</label>
-                                        <input type="text" class="form-control" id="buscarEstudiante" 
+                                        <input type="text" class="form-control corporate-theme" id="buscarEstudiante" 
                                                placeholder="Nombre del estudiante...">
                                     </div>
                                 </div>

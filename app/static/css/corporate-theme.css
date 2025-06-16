@@ -124,9 +124,62 @@
 }
 
 /* 🏢 Corporate Theme Overrides */
-body.corporate-theme {
+body {
   background-color: var(--bg-corporate);
   color: var(--text-primary);
+}
+
+/* 🎯 Universal Corporate Card Styling */
+.card.corporate-theme,
+.data-card.corporate-theme,
+.form-card.corporate-theme,
+.management-card.corporate-theme {
+  background: var(--bg-card);
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-card);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.card.corporate-theme:hover,
+.data-card.corporate-theme:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* 🎯 Universal Corporate Header */
+.page-header.corporate-theme,
+.section-header.corporate-theme {
+  background: var(--bg-card);
+  border: 1px solid var(--neutral-200);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-card);
+}
+
+.page-header .header-content,
+.section-header .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-header .page-title h1,
+.section-header .page-title h1 {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 1.5rem;
+}
+
+.page-header .page-subtitle,
+.section-header .page-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
 }
 
 /* 📊 Header Styling */
@@ -496,6 +549,146 @@ body.corporate-theme {
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 1.5rem;
   margin-top: 2rem;
+}
+
+/* 📊 Universal Corporate Lists and Tables */
+.list-group.corporate-theme {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.list-group-item.corporate-theme {
+  background: var(--bg-card);
+  border-color: var(--neutral-200);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.list-group-item.corporate-theme:hover {
+  background: var(--hover-bg);
+}
+
+/* 📝 Universal Corporate Forms */
+.form-group.corporate-theme {
+  margin-bottom: 1.5rem;
+}
+
+.form-label.corporate-theme {
+  color: var(--text-primary);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.form-select.corporate-theme,
+.form-control.corporate-theme {
+  border: 1px solid var(--neutral-300);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.form-select.corporate-theme:focus,
+.form-control.corporate-theme:focus {
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+  outline: none;
+}
+
+/* 🎯 Universal Corporate Modals */
+.modal.corporate-theme .modal-content {
+  border: none;
+  border-radius: 16px;
+  box-shadow: var(--shadow-modal);
+}
+
+.modal.corporate-theme .modal-header {
+  background: var(--neutral-50);
+  border-bottom: 1px solid var(--neutral-200);
+  border-radius: 16px 16px 0 0;
+  padding: 1.5rem;
+}
+
+.modal.corporate-theme .modal-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.modal.corporate-theme .modal-body {
+  padding: 2rem;
+}
+
+.modal.corporate-theme .modal-footer {
+  background: var(--neutral-50);
+  border-top: 1px solid var(--neutral-200);
+  border-radius: 0 0 16px 16px;
+  padding: 1.5rem;
+}
+
+/* 🎨 Corporate Role-based Color Schemes */
+.admin-theme {
+  --role-primary: var(--primary-600);
+  --role-secondary: var(--secondary-600);
+  --role-accent: var(--education-blue);
+}
+
+.docente-theme {
+  --role-primary: var(--education-green);
+  --role-secondary: var(--primary-600);
+  --role-accent: var(--success-600);
+}
+
+.padre-theme {
+  --role-primary: var(--education-purple);
+  --role-secondary: var(--primary-600);
+  --role-accent: var(--secondary-600);
+}
+
+/* 📊 Role-based Stat Cards */
+.stat-card.admin-theme::before {
+  background: var(--education-blue);
+}
+
+.stat-card.docente-theme::before {
+  background: var(--education-green);
+}
+
+.stat-card.padre-theme::before {
+  background: var(--education-purple);
+}
+
+/* 🔔 Corporate Notifications */
+.notification.corporate-theme {
+  background: var(--bg-card);
+  border: 1px solid var(--neutral-200);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.notification.corporate-theme.info {
+  border-left: 4px solid var(--primary-600);
+  background: var(--primary-50);
+}
+
+.notification.corporate-theme.success {
+  border-left: 4px solid var(--success-600);
+  background: var(--success-50);
+}
+
+.notification.corporate-theme.warning {
+  border-left: 4px solid var(--warning-600);
+  background: var(--warning-50);
+}
+
+.notification.corporate-theme.danger {
+  border-left: 4px solid var(--danger-600);
+  background: var(--danger-50);
 }
 
 /* 🌙 Dark Mode Support (Optional) */
