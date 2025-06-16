@@ -46,6 +46,27 @@ python run.py
 
 La aplicación estará disponible en: **http://localhost:5000**
 
+### 6. Acceso Público (Opcional)
+Para hacer tu aplicación accesible desde internet:
+
+#### **Método Rápido (Windows):**
+```bash
+# Ejecutar script automático
+.\public_access.ps1
+```
+
+#### **Método Manual:**
+```bash
+# 1. Instalar ngrok desde https://ngrok.com
+# 2. Ejecutar aplicación
+python run.py
+
+# 3. En otra terminal
+ngrok http 5000
+```
+
+Ver **ACCESO_PUBLICO.md** para instrucciones detalladas.
+
 ## 👥 Usuarios de Prueba
 
 ### Administrador
