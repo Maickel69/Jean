@@ -9,6 +9,8 @@ Sistema completo de gestión educativa desarrollado en Flask con funcionalidades
 
 ## 🚀 Instalación y Configuración
 
+> ⚠️ **IMPORTANTE:** NO ejecutes `run.py` directamente. Sigue estos pasos en orden.
+
 ### 1. Descargar el Proyecto
 ```bash
 # Clonar el repositorio
@@ -129,8 +131,25 @@ proyecto/
 ## 🛠️ Solución de Problemas
 
 ### Error: "No module named 'flask'"
+**Causa:** Intentaste ejecutar `run.py` sin instalar las dependencias.
+
+**Solución:**
 ```bash
-pip install flask
+# NO hagas esto:
+python run.py  # ❌ ERROR
+
+# Haz esto:
+python -m venv venv
+venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+python init_db.py
+python run.py  # ✅ CORRECTO
+```
+
+**O simplemente usa los scripts automáticos:**
+```bash
+.\install.bat
+.\start.bat
 ```
 
 ### Error: "Database not found"

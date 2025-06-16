@@ -20,12 +20,36 @@ def init_database():
     app = create_app()
     
     with app.app_context():
-        # Eliminar todas las tablas existentes
-        db.drop_all()
-        # Crear todas las tablas
-        db.create_all()
-        
-        print("🗃️  Base de datos recreada correctamente")
+        try:
+            # Eliminar todas las tablas existentes
+            db.drop_all()
+            # Crear todas las tablas
+            db.create_all()
+            
+            print("🗃️  Base de datos recreada correctamente")
+            
+            # Verificar que las tablas estén vacías
+            from app.models.docente_model import Docente
+            from app.models.usuario_model import Usuario
+            
+            docente_count = Docente.query.count()
+            usuario_count = Usuario.query.count()
+            
+            if docente_count > 0 or usuario_count > 0:
+                print("⚠️  ADVERTENCIA: La base de datos no está completamente vacía")
+                print(f"   Docentes existentes: {docente_count}")
+                print(f"   Usuarios existentes: {usuario_count}")
+                print("   Limpiando registros existentes...")
+                
+                # Limpiar manualmente si es necesario
+                db.session.execute(db.text('DELETE FROM docentes'))
+                db.session.execute(db.text('DELETE FROM usuarios'))
+                db.session.commit()
+                print("✅ Base de datos limpiada manualmente")
+                
+        except Exception as e:
+            print(f"❌ Error al limpiar base de datos: {e}")
+            print("   Intentando continuar...")
         
         # Crear usuarios padre
         padre1 = Usuario(

@@ -1,0 +1,320 @@
+/* 🏢 Corporate Education Theme - Professional & Sophisticated */
+
+:root {
+  /* 🎯 Corporate Primary Colors - Deep Navy & Charcoal */
+  --primary-50: #f8fafc;
+  --primary-100: #f1f5f9;
+  --primary-200: #e2e8f0;
+  --primary-300: #cbd5e1;
+  --primary-400: #94a3b8;
+  --primary-500: #64748b;  /* Refined slate gray */
+  --primary-600: #475569;  /* Corporate navy */
+  --primary-700: #334155;  /* Deep charcoal */
+  --primary-800: #1e293b;  /* Dark slate */
+  --primary-900: #0f172a;  /* Rich black */
+
+  /* 🏛️ Secondary - Sophisticated Indigo */
+  --secondary-50: #f8fafc;
+  --secondary-100: #f1f5f9;
+  --secondary-200: #e2e8f0;
+  --secondary-300: #cbd5e1;
+  --secondary-400: #94a3b8;
+  --secondary-500: #6366f1;  /* Professional indigo */
+  --secondary-600: #4f46e5;  /* Rich indigo */
+  --secondary-700: #4338ca;  /* Deep indigo */
+  --secondary-800: #3730a3;  /* Dark indigo */
+  --secondary-900: #312e81;  /* Very dark indigo */
+
+  /* ✅ Success - Forest Green (Trustworthy) */
+  --success-50: #f0f9f0;
+  --success-100: #dcf2dc;
+  --success-200: #bbe6bb;
+  --success-300: #86d186;
+  --success-400: #4ade4a;  /* Balanced green */
+  --success-500: #16a316;  /* Forest green */
+  --success-600: #15803d;  /* Deep forest */
+  --success-700: #166534;  /* Dark forest */
+  --success-800: #14532d;  /* Rich forest */
+  --success-900: #0f3f0f;  /* Deep green */
+
+  /* ⚠️ Warning - Amber (Professional) */
+  --warning-50: #fffcf0;
+  --warning-100: #fef7dc;
+  --warning-200: #fdeabb;
+  --warning-300: #fbd786;
+  --warning-400: #f8c455;  /* Sophisticated amber */
+  --warning-500: #f59e0b;  /* Professional gold */
+  --warning-600: #d97706;  /* Rich amber */
+  --warning-700: #b45309;  /* Deep amber */
+  --warning-800: #92400e;  /* Dark amber */
+  --warning-900: #78350f;  /* Deep gold */
+
+  /* 🚨 Danger - Crimson (Authoritative) */
+  --danger-50: #fef7f7;
+  --danger-100: #fee8e8;
+  --danger-200: #fccfcf;
+  --danger-300: #faa8a8;
+  --danger-400: #f68080;  /* Balanced red */
+  --danger-500: #dc2626;  /* Corporate red */
+  --danger-600: #b91c1c;  /* Deep red */
+  --danger-700: #991b1b;  /* Rich red */
+  --danger-800: #7f1d1d;  /* Dark red */
+  --danger-900: #660000;  /* Deep crimson */
+
+  /* 🏗️ Corporate Neutrals - Professional Grays */
+  --neutral-0: #ffffff;     /* Pure white */
+  --neutral-25: #fdfdfe;    /* Almost white */
+  --neutral-50: #f8f9fa;    /* Light background */
+  --neutral-100: #f1f3f4;   /* Subtle background */
+  --neutral-200: #e8eaed;   /* Border light */
+  --neutral-300: #dadce0;   /* Border medium */
+  --neutral-400: #9aa0a6;   /* Text disabled */
+  --neutral-500: #5f6368;   /* Text secondary */
+  --neutral-600: #3c4043;   /* Text primary */
+  --neutral-700: #202124;   /* Heading text */
+  --neutral-800: #1a1a1a;   /* Dark text */
+  --neutral-900: #000000;   /* Pure black */
+
+  /* 🎓 Education Accent Colors */
+  --education-blue: #1565c0;    /* Academic blue */
+  --education-green: #2e7d32;   /* Knowledge green */
+  --education-purple: #6a1b9a;  /* Wisdom purple */
+  --education-orange: #ef6c00;  /* Energy orange */
+
+  /* 💼 Corporate Backgrounds */
+  --bg-corporate: #f5f7fa;      /* Main background */
+  --bg-sidebar: #ffffff;        /* Sidebar background */
+  --bg-header: #ffffff;         /* Header background */
+  --bg-card: #ffffff;           /* Card background */
+  --bg-modal: rgba(15, 23, 42, 0.8); /* Modal overlay */
+
+  /* 🔍 Interactive States */
+  --hover-bg: rgba(99, 102, 241, 0.08);  /* Subtle hover */
+  --active-bg: rgba(99, 102, 241, 0.12); /* Active state */
+  --focus-ring: rgba(99, 102, 241, 0.3); /* Focus outline */
+
+  /* 📝 Text Colors */
+  --text-primary: var(--neutral-700);    /* Main text */
+  --text-secondary: var(--neutral-500);  /* Secondary text */
+  --text-muted: var(--neutral-400);      /* Muted text */
+  --text-white: var(--neutral-0);        /* White text */
+
+  /* 🎨 Brand Gradients */
+  --gradient-primary: linear-gradient(135deg, #475569 0%, #334155 100%);
+  --gradient-secondary: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+  --gradient-success: linear-gradient(135deg, #16a316 0%, #15803d 100%);
+  --gradient-hero: linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%);
+
+  /* 📊 Chart Colors (Professional) */
+  --chart-1: #475569;  /* Corporate navy */
+  --chart-2: #6366f1;  /* Professional indigo */
+  --chart-3: #16a316;  /* Forest green */
+  --chart-4: #f59e0b;  /* Professional gold */
+  --chart-5: #dc2626;  /* Corporate red */
+  --chart-6: #1565c0;  /* Academic blue */
+  --chart-7: #2e7d32;  /* Knowledge green */
+  --chart-8: #6a1b9a;  /* Wisdom purple */
+
+  /* 🔲 Enhanced Shadows (Professional) */
+  --shadow-subtle: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-modal: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-dropdown: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* 🏢 Corporate Theme Overrides */
+body.corporate-theme {
+  background-color: var(--bg-corporate);
+  color: var(--text-primary);
+}
+
+/* 📊 Header Styling */
+.navbar.corporate-theme,
+.header.corporate-theme {
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-subtle);
+}
+
+/* 🔗 Navigation Styling */
+.nav-link.corporate-theme {
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.nav-link.corporate-theme:hover {
+  color: var(--primary-600);
+  background-color: var(--hover-bg);
+}
+
+.nav-link.corporate-theme.active {
+  color: var(--primary-700);
+  background-color: var(--active-bg);
+  font-weight: 500;
+}
+
+/* 💳 Card Styling */
+.card.corporate-theme {
+  background: var(--bg-card);
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-card);
+  border-radius: 8px;
+}
+
+.card-header.corporate-theme {
+  background: var(--neutral-50);
+  border-bottom: 1px solid var(--neutral-200);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* 🎯 Button Styling */
+.btn-primary.corporate-theme {
+  background: var(--primary-600);
+  border-color: var(--primary-600);
+  color: var(--text-white);
+  font-weight: 500;
+}
+
+.btn-primary.corporate-theme:hover {
+  background: var(--primary-700);
+  border-color: var(--primary-700);
+  transform: translateY(-1px);
+}
+
+.btn-secondary.corporate-theme {
+  background: var(--secondary-600);
+  border-color: var(--secondary-600);
+  color: var(--text-white);
+}
+
+.btn-success.corporate-theme {
+  background: var(--success-500);
+  border-color: var(--success-500);
+  color: var(--text-white);
+}
+
+.btn-outline.corporate-theme {
+  background: transparent;
+  border: 2px solid var(--primary-600);
+  color: var(--primary-600);
+}
+
+.btn-outline.corporate-theme:hover {
+  background: var(--primary-600);
+  color: var(--text-white);
+}
+
+/* 📝 Form Controls */
+.form-control.corporate-theme {
+  border: 1px solid var(--neutral-300);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control.corporate-theme:focus {
+  border-color: var(--primary-600);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+  outline: none;
+}
+
+/* 📊 Table Styling */
+.table.corporate-theme {
+  background: var(--bg-card);
+}
+
+.table.corporate-theme th {
+  background: var(--neutral-50);
+  color: var(--text-primary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--neutral-200);
+}
+
+.table.corporate-theme td {
+  border-bottom: 1px solid var(--neutral-200);
+  color: var(--text-primary);
+}
+
+.table.corporate-theme tbody tr:hover {
+  background-color: var(--hover-bg);
+}
+
+/* 🎯 Badge Styling */
+.badge.corporate-theme {
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.badge-primary.corporate-theme {
+  background: var(--primary-600);
+  color: var(--text-white);
+}
+
+.badge-success.corporate-theme {
+  background: var(--success-500);
+  color: var(--text-white);
+}
+
+.badge-warning.corporate-theme {
+  background: var(--warning-500);
+  color: var(--text-white);
+}
+
+.badge-danger.corporate-theme {
+  background: var(--danger-500);
+  color: var(--text-white);
+}
+
+/* 🔔 Alert Styling */
+.alert.corporate-theme {
+  border-radius: 6px;
+  border-left: 4px solid;
+  font-weight: 500;
+}
+
+.alert-info.corporate-theme {
+  background: var(--primary-50);
+  border-left-color: var(--primary-600);
+  color: var(--primary-800);
+}
+
+.alert-success.corporate-theme {
+  background: var(--success-50);
+  border-left-color: var(--success-600);
+  color: var(--success-800);
+}
+
+.alert-warning.corporate-theme {
+  background: var(--warning-50);
+  border-left-color: var(--warning-600);
+  color: var(--warning-800);
+}
+
+.alert-danger.corporate-theme {
+  background: var(--danger-50);
+  border-left-color: var(--danger-600);
+  color: var(--danger-800);
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+  .card.corporate-theme {
+    margin-bottom: 1rem;
+    border-radius: 6px;
+  }
+}
+
+/* 🌙 Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+  .corporate-theme.dark-mode {
+    --bg-corporate: #0f172a;
+    --bg-card: #1e293b;
+    --bg-header: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+  }
+} 

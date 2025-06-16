@@ -12,6 +12,7 @@ setup(
         "Flask==2.3.3",
         "Flask-SQLAlchemy==3.0.5",
         "Flask-Login==0.6.3",
+        "Flask-Migrate==4.0.5",
         "Flask-WTF==1.1.1",
         "WTForms==3.0.1",
         "Werkzeug==2.3.7",
@@ -21,6 +22,7 @@ setup(
         "click==8.1.7",
         "blinker==1.6.3",
         "python-dotenv==1.0.0",
+        "Alembic==1.12.0",
     ],
     python_requires=">=3.8",
     classifiers=[
