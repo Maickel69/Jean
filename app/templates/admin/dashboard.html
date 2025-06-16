@@ -4,17 +4,24 @@
 
 {% block content %}
 <div class="admin-dashboard">
-    <!-- Hero Section -->
-    <div class="hero-section admin-hero" data-aos="fade-down">
-        <div class="hero-content">
-            <div class="admin-profile">
-                <div class="admin-avatar">
-                    <i class="fas fa-user-shield"></i>
+    <!-- Professional Header -->
+    <div class="dashboard-header corporate-theme" data-aos="fade-down">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="page-title">
+                    <h1 class="h3 mb-0">Panel de Administración</h1>
+                    <p class="text-muted mb-0">Sistema de Gestión Educativa</p>
                 </div>
-                <div class="admin-info">
-                    <h1>Bienvenido, Administrador</h1>
-                    <p class="admin-subtitle">{{ current_user.nombre_completo }}</p>
-                    <p class="admin-role">Panel de Control del Sistema</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <span class="user-name">{{ current_user.nombre_completo }}</span>
+                        <small class="user-role">Administrador del Sistema</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,7 +29,7 @@
 
     <!-- Statistics Cards -->
     <div class="stats-grid" data-aos="fade-up" data-aos-delay="200">
-        <div class="stat-card primary-gradient">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="200">
             <div class="stat-icon">
                 <i class="fas fa-users"></i>
             </div>
@@ -37,7 +44,7 @@
             </div>
         </div>
 
-        <div class="stat-card secondary-gradient" data-aos="fade-up" data-aos-delay="300">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="300">
             <div class="stat-icon">
                 <i class="fas fa-chalkboard-teacher"></i>
             </div>
@@ -52,7 +59,7 @@
             </div>
         </div>
 
-        <div class="stat-card tertiary-gradient" data-aos="fade-up" data-aos-delay="400">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="400">
             <div class="stat-icon">
                 <i class="fas fa-graduation-cap"></i>
             </div>
@@ -67,7 +74,7 @@
             </div>
         </div>
 
-        <div class="stat-card quaternary-gradient" data-aos="fade-up" data-aos-delay="500">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="500">
             <div class="stat-icon">
                 <i class="fas fa-book-open"></i>
             </div>
@@ -82,7 +89,7 @@
             </div>
         </div>
 
-        <div class="stat-card quinary-gradient" data-aos="fade-up" data-aos-delay="600">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="600">
             <div class="stat-icon">
                 <i class="fas fa-book"></i>
             </div>
@@ -97,7 +104,7 @@
             </div>
         </div>
 
-        <div class="stat-card senary-gradient" data-aos="fade-up" data-aos-delay="700">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="700">
             <div class="stat-icon">
                 <i class="fas fa-layer-group"></i>
             </div>
@@ -112,7 +119,7 @@
             </div>
         </div>
 
-        <div class="stat-card matriculas-gradient" data-aos="fade-up" data-aos-delay="800">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="800">
             <div class="stat-icon">
                 <i class="fas fa-user-graduate"></i>
             </div>
@@ -127,7 +134,7 @@
             </div>
         </div>
 
-        <div class="stat-card warning-gradient" data-aos="fade-up" data-aos-delay="900">
+        <div class="stat-card corporate-theme" data-aos="fade-up" data-aos-delay="900">
             <div class="stat-icon">
                 <i class="fas fa-exclamation-triangle"></i>
             </div>
